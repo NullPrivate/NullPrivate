@@ -615,7 +615,7 @@ func run(opts options, clientBuildFS fs.FS, done chan struct{}) {
 	slogLogger := newSlogLogger(ls)
 
 	// Print the first message after logger is configured.
-	log.Info(version.Full())
+	log.Info("%s", version.Full())
 	log.Debug("current working directory is %s", Context.workDir)
 	if opts.runningAsService {
 		log.Info("AdGuard Home is running as a service")
@@ -989,7 +989,7 @@ func exitWithError() {
 func loadCmdLineOpts() (opts options) {
 	opts, eff, err := parseCmdOpts(os.Args[0], os.Args[1:])
 	if err != nil {
-		log.Error(err.Error())
+		log.Error("%s", err.Error())
 		printHelp(os.Args[0])
 
 		exitWithError()
@@ -998,7 +998,7 @@ func loadCmdLineOpts() (opts options) {
 	if eff != nil {
 		err = eff()
 		if err != nil {
-			log.Error(err.Error())
+			log.Error("%s", err.Error())
 			exitWithError()
 		}
 

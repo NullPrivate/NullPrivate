@@ -474,20 +474,18 @@ func (s *Server) isEnterpriseConfigAllowed() bool {
 	return s.conf.ServiceType == "enterprise"
 }
 
-// handleSetConfig handles requests to the POST /control/dns_config endpoint.
-func (s *Server) handleSetConfig(w http.ResponseWriter, r *http.Request) {
+// processConfigRequest processes and validates a DNS configuration request
+func (s *Server) processConfigRequest(r *http.Request) (*jsonDNSConfig, error) {
 	req := &jsonDNSConfig{}
 	err := json.NewDecoder(r.Body).Decode(req)
 	if err != nil {
-		aghhttp.Error(r, w, http.StatusBadRequest, "decoding request: %s", err)
-
-		return
+		return nil, fmt.Errorf("decoding request: %w", err)
 	}
 
-	// 检查服务类型，只有在enterprise模式下才允许修改ratelimit和cache_size
+	// Check service type, only allow ratelimit and cache_size changes in enterprise mode
 	if req.Ratelimit != nil || req.CacheSize != nil {
 		if !s.isEnterpriseConfigAllowed() {
-			// 如果不是enterprise类型，则忽略ratelimit和cache_size的修改请求
+			// Ignore ratelimit and cache_size modification requests if not enterprise type
 			if req.Ratelimit != nil {
 				log.Info("ignoring ratelimit change request: service_type is not enterprise")
 				req.Ratelimit = nil
@@ -499,19 +497,26 @@ func (s *Server) handleSetConfig(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// TODO(e.burkov):  Consider prebuilding this set on startup.
+	// Get our own address set for validation
 	ourAddrs, err := s.conf.ourAddrsSet()
 	if err != nil {
-		// TODO(e.burkov):  Put into openapi.
-		aghhttp.Error(r, w, http.StatusInternalServerError, "getting our addresses: %s", err)
-
-		return
+		return nil, fmt.Errorf("getting our addresses: %w", err)
 	}
 
+	// Validate the configuration
 	err = req.validate(ourAddrs, s.sysResolvers, s.privateNets)
 	if err != nil {
-		aghhttp.Error(r, w, http.StatusBadRequest, "%s", err)
+		return nil, err
+	}
 
+	return req, nil
+}
+
+// handleSetConfig handles requests to the POST /control/dns_config endpoint.
+func (s *Server) handleSetConfig(w http.ResponseWriter, r *http.Request) {
+	req, err := s.processConfigRequest(r)
+	if err != nil {
+		aghhttp.Error(r, w, http.StatusBadRequest, "%s", err)
 		return
 	}
 

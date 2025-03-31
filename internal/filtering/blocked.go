@@ -375,7 +375,7 @@ func (d *DNSFilter) handleServiceURLsSet(w http.ResponseWriter, r *http.Request)
 	}
 
 	if len(data.ServiceURLs) == 0 {
-		// 使用默认值
+		// Use default value
 		data.ServiceURLs = []string{"https://adguardteam.github.io/HostlistsRegistry/assets/services.json"}
 	}
 
@@ -385,14 +385,14 @@ func (d *DNSFilter) handleServiceURLsSet(w http.ResponseWriter, r *http.Request)
 		d.conf.ServiceURLs = data.ServiceURLs
 	}()
 
-	// 重新初始化服务加载器
+	// Reinitialize service loader
 	d.initServiceLoader(r.Context())
 
-	// 重新加载服务
+	// Reload services
 	if serviceLoader != nil {
-		_, err := serviceLoader.LoadServices(r.Context())
-		if err != nil {
-			log.Error("failed to reload services: %s", err)
+		_, loadErr := serviceLoader.LoadServices(r.Context())
+		if loadErr != nil {
+			log.Error("failed to reload services: %s", loadErr)
 		}
 		updateBlockedServicesFromLoader(r.Context())
 	}
@@ -407,6 +407,6 @@ func (d *DNSFilter) handleServiceURLsSet(w http.ResponseWriter, r *http.Request)
 	}{
 		Status:  "ok",
 		URLs:    data.ServiceURLs,
-		Message: "服务URL已更新",
+		Message: "Service URLs updated",
 	})
 }

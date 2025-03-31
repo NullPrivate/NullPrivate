@@ -184,6 +184,7 @@ run_linter gocognit --over='14' \
 
 run_linter gocognit --over='13' \
 	./internal/aghnet/ \
+	./internal/dnsforward/ \
 	;
 
 run_linter gocognit --over='12' \
@@ -203,7 +204,6 @@ run_linter gocognit --over='10' \
 	./internal/client/ \
 	./internal/configmigrate/ \
 	./internal/dhcpsvc \
-	./internal/dnsforward/ \
 	./internal/filtering/hashprefix/ \
 	./internal/filtering/rulelist/ \
 	./internal/filtering/safesearch/ \

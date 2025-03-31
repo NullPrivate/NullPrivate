@@ -46,3 +46,4 @@ __debug_bin*
 .github/prompts/
 go.work
 go.work.sum
+.vscode/

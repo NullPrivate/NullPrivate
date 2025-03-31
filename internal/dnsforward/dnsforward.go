@@ -542,24 +542,31 @@ func (s *Server) getHomeConfigServiceType() string {
 // limit the DomainReservedUpstreams and SpecifiedDomainUpstreams Upstreams count to 5
 // limit the Upstreams count to 5 if the UpstreamMode is Parallel
 func (s *Server) limitResourceUsage(conf *proxy.Config) {
-	const (
-		maxDomainUpstreams   = 10000
-		maxUpstreams         = 5
-		maxParallelUpstreams = 5
-	)
-
 	upsConf := conf.UpstreamConfig
 
-	// Limit specified domain count
+	// Limit domain maps
+	limitDomainMaps(upsConf)
+
+	// Apply parallel mode limits if needed
+	if conf.UpstreamMode == proxy.UpstreamModeParallel {
+		limitParallelModeResources(conf, upsConf)
+	}
+
+	// Limit upstream counts for all domain maps
+	limitUpstreamsPerDomain(upsConf)
+}
+
+// limitDomainMaps limits the number of domain-specific upstream entries
+func limitDomainMaps(upsConf *proxy.UpstreamConfig) {
+	const maxDomainUpstreams = 10000
+
 	mapsToLimit := []*map[string][]upstream.Upstream{
 		&upsConf.DomainReservedUpstreams,
 		&upsConf.SpecifiedDomainUpstreams,
 	}
+
 	for _, currentMap := range mapsToLimit {
-		if *currentMap == nil {
-			continue
-		}
-		if len(*currentMap) <= maxDomainUpstreams {
+		if *currentMap == nil || len(*currentMap) <= maxDomainUpstreams {
 			continue
 		}
 
@@ -574,41 +581,55 @@ func (s *Server) limitResourceUsage(conf *proxy.Config) {
 		}
 		*currentMap = limitedMap
 	}
+}
 
-	// Limit Upstreams in Parallel mode
-	if conf.UpstreamMode == proxy.UpstreamModeParallel {
-		for _, currentMap := range mapsToLimit {
-			if *currentMap == nil {
-				continue
-			}
-			for domain, upstreams := range *currentMap {
-				// Limit upstreams per domain
-				if len(upstreams) > maxParallelUpstreams {
-					upstreams = upstreams[:maxParallelUpstreams]
-				}
-				(*currentMap)[domain] = upstreams
-			}
-		}
+// limitParallelModeResources applies specific limits when in parallel upstream mode
+func limitParallelModeResources(conf *proxy.Config, upsConf *proxy.UpstreamConfig) {
+	const maxParallelUpstreams = 5
 
-		// Limit the Upstreams count
-		if len(upsConf.Upstreams) > maxParallelUpstreams {
-			upsConf.Upstreams = upsConf.Upstreams[:maxParallelUpstreams]
-		}
+	// Limit domain maps in parallel mode
+	limitUpstreamsInMaps(
+		[]*map[string][]upstream.Upstream{
+			&upsConf.DomainReservedUpstreams,
+			&upsConf.SpecifiedDomainUpstreams,
+		},
+		maxParallelUpstreams,
+	)
 
-		// Limit the Fallbacks count,增加 nil 检查
-		if conf.Fallbacks != nil && len(conf.Fallbacks.Upstreams) > maxParallelUpstreams {
-			conf.Fallbacks.Upstreams = conf.Fallbacks.Upstreams[:maxParallelUpstreams]
-		}
+	// Limit the Upstreams count
+	if len(upsConf.Upstreams) > maxParallelUpstreams {
+		upsConf.Upstreams = upsConf.Upstreams[:maxParallelUpstreams]
 	}
 
-	// Limit the DomainReservedUpstreams and SpecifiedDomainUpstreams Upstreams count to 5
-	for _, currentMap := range mapsToLimit {
+	// Limit the Fallbacks count
+	if conf.Fallbacks != nil && len(conf.Fallbacks.Upstreams) > maxParallelUpstreams {
+		conf.Fallbacks.Upstreams = conf.Fallbacks.Upstreams[:maxParallelUpstreams]
+	}
+}
+
+// limitUpstreamsPerDomain enforces a maximum number of upstreams per domain
+func limitUpstreamsPerDomain(upsConf *proxy.UpstreamConfig) {
+	const maxUpstreams = 5
+
+	limitUpstreamsInMaps(
+		[]*map[string][]upstream.Upstream{
+			&upsConf.DomainReservedUpstreams,
+			&upsConf.SpecifiedDomainUpstreams,
+		},
+		maxUpstreams,
+	)
+}
+
+// limitUpstreamsInMaps limits the number of upstreams in each domain's entry
+func limitUpstreamsInMaps(maps []*map[string][]upstream.Upstream, maxCount int) {
+	for _, currentMap := range maps {
 		if *currentMap == nil {
 			continue
 		}
+
 		for domain, upstreams := range *currentMap {
-			if len(upstreams) > maxUpstreams {
-				(*currentMap)[domain] = upstreams[:maxUpstreams]
+			if len(upstreams) > maxCount {
+				(*currentMap)[domain] = upstreams[:maxCount]
 			}
 		}
 	}
@@ -617,70 +638,97 @@ func (s *Server) limitResourceUsage(conf *proxy.Config) {
 // prepareUpstreamSettings sets upstream DNS server settings.
 func (s *Server) prepareUpstreamSettings(boot upstream.Resolver) (err error) {
 	// Load upstreams either from the file, or from the settings
-	var upstreams []string
-	upstreams, err = s.conf.loadUpstreams()
+	upstreams, err := s.conf.loadUpstreams()
 	if err != nil {
 		return fmt.Errorf("loading upstreams: %w", err)
 	}
 
-	uc, err := newUpstreamConfig(upstreams, defaultDNS, &upstream.Options{
+	// Configure the main upstream servers
+	err = s.configureMainUpstreams(upstreams, boot)
+	if err != nil {
+		return err
+	}
+
+	// Process alternate DNS settings if configured
+	err = s.configureAlternateUpstreams(boot)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// configureMainUpstreams sets up the primary upstream DNS servers
+func (s *Server) configureMainUpstreams(upstreams []string, boot upstream.Resolver) (err error) {
+	opts := &upstream.Options{
 		Bootstrap:    boot,
 		Timeout:      s.conf.UpstreamTimeout,
 		HTTPVersions: UpstreamHTTPVersions(s.conf.UseHTTP3Upstreams),
 		PreferIPv6:   s.conf.BootstrapPreferIPv6,
-		// Use a customized set of RootCAs, because Go's default mechanism of
-		// loading TLS roots does not always work properly on some routers so we're
-		// loading roots manually and pass it here.
-		//
-		// See [aghtls.SystemRootCAs].
-		//
-		// TODO(a.garipov): Investigate if that's true.
 		RootCAs:      s.conf.TLSv12Roots,
 		CipherSuites: s.conf.TLSCiphers,
-	})
+	}
+
+	uc, err := newUpstreamConfig(upstreams, defaultDNS, opts)
 	if err != nil {
 		return fmt.Errorf("preparing upstream config: %w", err)
 	}
 
 	s.conf.UpstreamConfig = uc
+	return nil
+}
 
-	// Process alternate DNS settings
-	if len(s.conf.UpstreamAlternateDNS) > 0 && len(s.conf.UpstreamAlternateRulesets) > 0 {
-		altUC, err := prepareAlternateUpstreams(
-			s.conf.UpstreamAlternateDNS,
-			s.conf.UpstreamAlternateRulesets,
-			"", // Use default rulesets dir
-			&upstream.Options{
-				Bootstrap:    boot,
-				Timeout:      s.conf.UpstreamTimeout,
-				HTTPVersions: UpstreamHTTPVersions(s.conf.UseHTTP3Upstreams),
-				PreferIPv6:   s.conf.BootstrapPreferIPv6,
-				RootCAs:      s.conf.TLSv12Roots,
-				CipherSuites: s.conf.TLSCiphers,
-			},
-		)
-		if err != nil {
-			log.Error("dnsforward: preparing alternate upstream config: %s", err)
-		} else if altUC != nil {
-			// Merge the domain-specific upstreams from alternate config into the main config
-			if len(altUC.DomainReservedUpstreams) > 0 {
-				log.Info("dnsforward: added %d domain-specific alternate upstreams", len(altUC.DomainReservedUpstreams))
-
-				// If UpstreamConfig.DomainReservedUpstreams is nil, initialize it
-				if s.conf.UpstreamConfig.DomainReservedUpstreams == nil {
-					s.conf.UpstreamConfig.DomainReservedUpstreams = make(map[string][]upstream.Upstream)
-				}
-
-				// Merge the alternate upstreams into the main config
-				for domain, upstreams := range altUC.DomainReservedUpstreams {
-					// append "." to domain to make it a FQDN
-					s.conf.UpstreamConfig.DomainReservedUpstreams[dns.Fqdn(domain)] = upstreams
-				}
-			}
-		}
+// configureAlternateUpstreams sets up alternate upstream DNS servers if configured
+func (s *Server) configureAlternateUpstreams(boot upstream.Resolver) (err error) {
+	// Skip if alternate DNS is not configured
+	if len(s.conf.UpstreamAlternateDNS) == 0 || len(s.conf.UpstreamAlternateRulesets) == 0 {
+		return nil
 	}
 
+	opts := &upstream.Options{
+		Bootstrap:    boot,
+		Timeout:      s.conf.UpstreamTimeout,
+		HTTPVersions: UpstreamHTTPVersions(s.conf.UseHTTP3Upstreams),
+		PreferIPv6:   s.conf.BootstrapPreferIPv6,
+		RootCAs:      s.conf.TLSv12Roots,
+		CipherSuites: s.conf.TLSCiphers,
+	}
+
+	altUC, err := prepareAlternateUpstreams(
+		s.conf.UpstreamAlternateDNS,
+		s.conf.UpstreamAlternateRulesets,
+		"", // Use default rulesets dir
+		opts,
+	)
+	if err != nil {
+		log.Error("dnsforward: preparing alternate upstream config: %s", err)
+		return nil
+	}
+
+	s.mergeAlternateUpstreams(altUC)
 	return nil
+}
+
+// mergeAlternateUpstreams merges domain-specific alternate upstreams into the main config
+func (s *Server) mergeAlternateUpstreams(altUC *proxy.UpstreamConfig) {
+	// Skip if there are no domain-reserved upstreams
+	if altUC == nil || len(altUC.DomainReservedUpstreams) == 0 {
+		return
+	}
+
+	log.Info("dnsforward: added %d domain-specific alternate upstreams",
+		len(altUC.DomainReservedUpstreams))
+
+	// Initialize the map if needed
+	if s.conf.UpstreamConfig.DomainReservedUpstreams == nil {
+		s.conf.UpstreamConfig.DomainReservedUpstreams = make(map[string][]upstream.Upstream)
+	}
+
+	// Merge the alternate upstreams into the main config
+	for domain, upstreams := range altUC.DomainReservedUpstreams {
+		// append "." to domain to make it a FQDN
+		s.conf.UpstreamConfig.DomainReservedUpstreams[dns.Fqdn(domain)] = upstreams
+	}
 }
 
 // PrivateRDNSError is returned when the private rDNS upstreams are

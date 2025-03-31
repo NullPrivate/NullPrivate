@@ -1,6 +1,6 @@
 module github.com/jqknono/AdGuardHome
 
-go 1.23.4
+go 1.24.1
 
 require (
 	github.com/AdguardTeam/dnsproxy v0.73.4

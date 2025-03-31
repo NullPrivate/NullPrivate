@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-// respondJSON 将数据以JSON格式返回给客户端
-func respondJSON(w http.ResponseWriter, r *http.Request, data interface{}) {
+// respondJSON returns data to the client in JSON format
+func respondJSON(w http.ResponseWriter, _ *http.Request, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	err := json.NewEncoder(w).Encode(data)
 	if err != nil {
@@ -15,24 +15,24 @@ func respondJSON(w http.ResponseWriter, r *http.Request, data interface{}) {
 	}
 }
 
-// BlockedServicesController 处理与阻止服务相关的API请求
+// BlockedServicesController handles API requests related to blocked services
 type BlockedServicesController struct {
-	// 这里可以添加所需的依赖项
+	// Dependencies can be added here
 }
 
-// NewBlockedServicesController 创建一个新的阻止服务控制器
+// NewBlockedServicesController creates a new blocked services controller
 func NewBlockedServicesController() *BlockedServicesController {
 	return &BlockedServicesController{}
 }
 
-// Get 处理获取阻止服务列表的请求
+// Get handles requests to retrieve the list of blocked services
 // GET /control/blocked_services/get
 func (c *BlockedServicesController) Get(w http.ResponseWriter, r *http.Request) {
-	// 实现获取阻止服务列表的逻辑
-	// 例如：
+	// Implement logic to get the list of blocked services
+	// For example:
 	data := map[string]interface{}{
-		"services": []string{}, // 这里应该返回实际的阻止服务列表
-		"enabled":  false,      // 是否启用阻止服务功能
+		"services": []string{}, // Should return the actual list of blocked services
+		"enabled":  false,      // Whether the blocked services feature is enabled
 	}
 
 	respondJSON(w, r, data)
