@@ -103,7 +103,7 @@ func (s *DefaultStorage) MatchRequest(dReq *urlfilter.DNSRequest) (rws []*rules.
 		if host == rwAns && isWildcard(rule.RuleText) {
 			// An "*.example.com → sub.example.com" rewrite matching in a loop.
 			//
-			// See https://github.com/jqknono/AdGuardHome/issues/4016.
+			// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/4016.
 
 			return []*rules.DNSRewrite{rule.DNSRewrite}
 		}

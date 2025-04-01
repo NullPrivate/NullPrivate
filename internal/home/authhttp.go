@@ -11,12 +11,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/httphdr"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/timeutil"
-	"github.com/jqknono/AdGuardHome/internal/aghhttp"
 )
 
 // cookieTTL is the time-to-live of the session cookie.
@@ -141,7 +141,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	// realIP cannot be used here without taking TrustedProxies into account due
 	// to security issues.
 	//
-	// See https://github.com/jqknono/AdGuardHome/issues/2799.
+	// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/2799.
 	if remoteIP, err = netutil.SplitHost(r.RemoteAddr); err != nil {
 		writeErrorWithIP(
 			r,

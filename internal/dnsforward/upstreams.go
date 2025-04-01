@@ -5,12 +5,12 @@ import (
 	"slices"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghnet"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/dnsproxy/upstream"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/stringutil"
-	"github.com/jqknono/AdGuardHome/internal/aghnet"
 )
 
 // newBootstrap returns a bootstrap resolver based on the configuration of s.

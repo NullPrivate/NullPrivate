@@ -4,11 +4,11 @@ import (
 	"net"
 	"testing"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghtest"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/testutil"
-	"github.com/jqknono/AdGuardHome/internal/aghtest"
-	"github.com/jqknono/AdGuardHome/internal/filtering"
 	"github.com/miekg/dns"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

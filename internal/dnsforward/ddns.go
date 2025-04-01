@@ -8,8 +8,8 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
 	"github.com/AdguardTeam/golibs/log"
-	"github.com/jqknono/AdGuardHome/internal/aghhttp"
 )
 
 //go:embed ddns-template/*

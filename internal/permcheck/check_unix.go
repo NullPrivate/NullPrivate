@@ -6,7 +6,7 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/jqknono/AdGuardHome/internal/aghos"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
 )
 
 // check is the Unix-specific implementation of [Check].

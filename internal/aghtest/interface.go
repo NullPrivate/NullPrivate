@@ -6,12 +6,12 @@ import (
 	"net/netip"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/next/agh"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/rdns"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/whois"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/dnsproxy/upstream"
-	"github.com/jqknono/AdGuardHome/internal/aghos"
-	"github.com/jqknono/AdGuardHome/internal/next/agh"
-	"github.com/jqknono/AdGuardHome/internal/rdns"
-	"github.com/jqknono/AdGuardHome/internal/whois"
 	"github.com/miekg/dns"
 )
 

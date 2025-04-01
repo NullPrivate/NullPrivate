@@ -8,7 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/jqknono/AdGuardHome/internal/aghos"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

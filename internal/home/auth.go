@@ -9,10 +9,10 @@ import (
 	"sync"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/netutil"
-	"github.com/jqknono/AdGuardHome/internal/aghos"
 	"go.etcd.io/bbolt"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -95,7 +95,7 @@ func InitAuth(
 	if err != nil {
 		log.Error("auth: open DB: %s: %s", dbFilename, err)
 		if err.Error() == "invalid argument" {
-			log.Error("AdGuard Home cannot be initialized due to an incompatible file system.\nPlease read the explanation here: https://github.com/jqknono/AdGuardHome/wiki/Getting-Started#limitations")
+			log.Error("AdGuard Home cannot be initialized due to an incompatible file system.\nPlease read the explanation here: https://github.com/AdGuardPrivate/AdGuardPrivate/wiki/Getting-Started#limitations")
 		}
 
 		return nil

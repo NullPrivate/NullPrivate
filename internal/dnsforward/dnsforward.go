@@ -17,6 +17,12 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghnet"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/client"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/querylog"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/rdns"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/stats"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/dnsproxy/upstream"
 	"github.com/AdguardTeam/golibs/cache"
@@ -26,12 +32,6 @@ import (
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/netutil/sysresolv"
 	"github.com/AdguardTeam/golibs/stringutil"
-	"github.com/jqknono/AdGuardHome/internal/aghnet"
-	"github.com/jqknono/AdGuardHome/internal/client"
-	"github.com/jqknono/AdGuardHome/internal/filtering"
-	"github.com/jqknono/AdGuardHome/internal/querylog"
-	"github.com/jqknono/AdGuardHome/internal/rdns"
-	"github.com/jqknono/AdGuardHome/internal/stats"
 	"github.com/miekg/dns"
 )
 
@@ -424,7 +424,7 @@ func hostFromPTR(resp *dns.Msg) (host string, ttl time.Duration, err error) {
 		// Respect zero TTL records since some DNS servers use it to
 		// locally-resolved addresses.
 		//
-		// See https://github.com/jqknono/AdGuardHome/issues/6046.
+		// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/6046.
 		if ptr.Hdr.Ttl >= ttlSec {
 			host = ptr.Ptr
 			ttlSec = ptr.Hdr.Ttl
@@ -987,7 +987,7 @@ const srvClosedErr errors.Error = "server is closed"
 // proxy returns a pointer to the current DNS proxy instance.  If p is nil, the
 // server is closing.
 //
-// See https://github.com/jqknono/AdGuardHome/issues/3655.
+// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/3655.
 func (s *Server) proxy() (p *proxy.Proxy) {
 	s.serverLock.RLock()
 	defer s.serverLock.RUnlock()

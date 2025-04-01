@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"runtime"
 
-	"github.com/jqknono/AdGuardHome/internal/aghhttp"
-	"github.com/jqknono/AdGuardHome/internal/version"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/version"
 )
 
 // System Handlers

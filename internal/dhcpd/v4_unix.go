@@ -12,14 +12,14 @@ import (
 	"sync"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghnet"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/dhcpsvc"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/timeutil"
 	"github.com/insomniacslk/dhcp/dhcpv4"
 	"github.com/insomniacslk/dhcp/dhcpv4/server4"
-	"github.com/jqknono/AdGuardHome/internal/aghnet"
-	"github.com/jqknono/AdGuardHome/internal/dhcpsvc"
 
 	//lint:ignore SA1019 See the TODO in go.mod.
 	"github.com/go-ping/ping"

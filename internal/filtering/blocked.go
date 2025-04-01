@@ -10,11 +10,11 @@ import (
 	"sync"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering/rulelist"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/schedule"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/urlfilter/rules"
-	"github.com/jqknono/AdGuardHome/internal/aghhttp"
-	"github.com/jqknono/AdGuardHome/internal/filtering/rulelist"
-	"github.com/jqknono/AdGuardHome/internal/schedule"
 )
 
 // 首先，创建一个互斥锁保护 serviceLoader

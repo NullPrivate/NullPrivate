@@ -9,15 +9,15 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghnet"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/dnsforward"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/version"
 	"github.com/AdguardTeam/golibs/httphdr"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/netutil/urlutil"
 	"github.com/NYTimes/gziphandler"
-	"github.com/jqknono/AdGuardHome/internal/aghhttp"
-	"github.com/jqknono/AdGuardHome/internal/aghnet"
-	"github.com/jqknono/AdGuardHome/internal/dnsforward"
-	"github.com/jqknono/AdGuardHome/internal/version"
 )
 
 // appendDNSAddrs is a convenient helper for appending a formatted form of DNS

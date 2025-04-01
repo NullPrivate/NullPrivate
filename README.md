@@ -1,18 +1,14 @@
-This project is forked from AdGuardHome and provides a SaaS hosted version at [adguardprivate.com](https://adguardprivate.com). Compared to the original version, it adds more customizable features, including:
+This project is forked from AdGuardHome and offers a SaaS hosted version on [Adguard Private](https://adguardprivate.com). Compared to the original version, it includes more customizable features, specifically:
 
-1. **DNS traffic splitting based on rule lists**  
-   Rules sourced from [Loyalsoldier/v2ray-rules-dat](https://github.com/Loyalsoldier/v2ray-rules-dat). The default rule is `gfwlist`, which can be customized in the configuration file.
+1. **DNS routing based on rule lists**, which can be customized in the configuration file, supporting third-party rules like [Loyalsoldier/v2ray-rules-dat](https://github.com/Loyalsoldier/v2ray-rules-dat).
 
-2. **Support for blocking specified application configuration sources**  
-   Can block third-party configuration sources for applications, providing more flexible management capabilities.
+2. **Support for configuring the blocking of sources from specific applications**, capable of receiving third-party configurations to block application sources, providing more flexible management capabilities.
 
-3. **DDNS functionality**  
-   Dynamic domain name resolution capabilities to meet more use case requirements.
+3. **Support for DDNS functionality**, dynamic domain name resolution capabilities to meet more scenario needs.
 
-4. **More advanced rate limiting measures**  
-   Provides more efficient traffic management and control.
+4. **More advanced rate limiting measures**, offering more efficient traffic management and control.
 
-In addition to one-click deployment, AdGuardPrivate also offers the following enhanced features:
+In addition to one-click deployment, AdGuardPrivate also provides the following enhanced features:
 
 - **Load balancing support**
 - **Automatic certificate maintenance**

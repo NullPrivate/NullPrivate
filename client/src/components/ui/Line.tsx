@@ -62,7 +62,7 @@ const Line = ({ data, color = 'black' }: LineProps) => {
 
                 return dateFormat(addDays(daysAgo, x), 'D MMM YYYY');
             }}
-            yFormat={(y: number) => round(y, 2)}
+            yFormat={(y: number) => round(y, 2).toString()}
             sliceTooltip={(slice) => {
                 const { xFormatted, yFormatted } = slice.slice.points[0].data;
 

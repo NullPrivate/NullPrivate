@@ -12,13 +12,13 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghalg"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghnet"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/updater"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/osutil"
-	"github.com/jqknono/AdGuardHome/internal/aghalg"
-	"github.com/jqknono/AdGuardHome/internal/aghhttp"
-	"github.com/jqknono/AdGuardHome/internal/aghnet"
-	"github.com/jqknono/AdGuardHome/internal/updater"
 )
 
 // temporaryError is the interface for temporary errors from the Go standard
@@ -92,7 +92,7 @@ func (web *webAPI) requestVersionInfo(
 			// Temporary network error.  This case may happen while we're
 			// restarting our DNS server.  Log and sleep for some time.
 			//
-			// See https://github.com/jqknono/AdGuardHome/issues/934.
+			// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/934.
 			const sleepTime = 2 * time.Second
 
 			err = fmt.Errorf("temp net error: %w; sleeping for %s and retrying", err, sleepTime)
@@ -125,7 +125,7 @@ func (web *webAPI) handleUpdate(w http.ResponseWriter, r *http.Request) {
 	// Retain the current absolute path of the executable, since the updater is
 	// likely to change the position current one to the backup directory.
 	//
-	// See https://github.com/jqknono/AdGuardHome/issues/4735.
+	// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/4735.
 	execPath, err := os.Executable()
 	if err != nil {
 		aghhttp.Error(r, w, http.StatusInternalServerError, "getting path: %s", err)

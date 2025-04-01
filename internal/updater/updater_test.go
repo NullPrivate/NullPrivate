@@ -11,9 +11,9 @@ import (
 	"runtime"
 	"testing"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/updater"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/version"
 	"github.com/AdguardTeam/golibs/testutil"
-	"github.com/jqknono/AdGuardHome/internal/updater"
-	"github.com/jqknono/AdGuardHome/internal/version"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -26,7 +26,7 @@ func TestUpdater_Update(t *testing.T) {
 	const jsonData = `{
   "version": "v0.103.0-beta.2",
   "announcement": "AdGuard Home v0.103.0-beta.2 is now available!",
-  "announcement_url": "https://github.com/jqknono/AdGuardHome/internal/releases",
+  "announcement_url": "https://github.com/AdGuardPrivate/AdGuardPrivate/internal/releases",
   "selfupdate_min_version": "v0.0",
   "download_linux_amd64": "%s"
 }`

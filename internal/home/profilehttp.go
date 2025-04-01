@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
 	"github.com/AdguardTeam/golibs/log"
-	"github.com/jqknono/AdGuardHome/internal/aghhttp"
 )
 
 // Theme is an enum of all allowed UI themes.

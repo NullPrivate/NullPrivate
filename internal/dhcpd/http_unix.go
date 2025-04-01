@@ -13,13 +13,13 @@ import (
 	"slices"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghalg"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghnet"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/dhcpsvc"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/netutil"
-	"github.com/jqknono/AdGuardHome/internal/aghalg"
-	"github.com/jqknono/AdGuardHome/internal/aghhttp"
-	"github.com/jqknono/AdGuardHome/internal/aghnet"
-	"github.com/jqknono/AdGuardHome/internal/dhcpsvc"
 )
 
 type v4ServerConfJSON struct {
@@ -127,7 +127,7 @@ func leasesToDynamic(leases []*dhcpsvc.Lease) (dynamic []*leaseDynamic) {
 			// The front-end is waiting for RFC 3999 format of the time
 			// value.
 			//
-			// See https://github.com/jqknono/AdGuardHome/issues/2692.
+			// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/2692.
 			Expiry: l.Expiry.Format(time.RFC3339),
 		}
 	}
@@ -181,7 +181,7 @@ func (s *server) enableDHCP(ifaceName string) (code int, err error) {
 			// machine doesn't have a static IP, so we can assume that it has
 			// and go on.  If the machine doesn't, we'll get an error later.
 			//
-			// See https://github.com/jqknono/AdGuardHome/issues/2667.
+			// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/2667.
 			//
 			// TODO(a.garipov): I was thinking about moving this into
 			// IfaceHasStaticIP, but then we wouldn't be able to log it.  Think

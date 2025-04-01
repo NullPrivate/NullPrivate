@@ -10,11 +10,11 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/version"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/netutil/urlutil"
-	"github.com/jqknono/AdGuardHome/internal/aghos"
-	"github.com/jqknono/AdGuardHome/internal/version"
 	"github.com/kardianos/service"
 )
 
@@ -596,7 +596,7 @@ exit 0
 `
 
 // OpenWrt procd init script
-// https://github.com/jqknono/AdGuardHome/internal/issues/1386
+// https://github.com/AdGuardPrivate/AdGuardPrivate/internal/issues/1386
 const openWrtScript = `#!/bin/sh /etc/rc.common
 
 USE_PROCD=1

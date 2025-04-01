@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/whois"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/testutil/fakenet"
-	"github.com/jqknono/AdGuardHome/internal/whois"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

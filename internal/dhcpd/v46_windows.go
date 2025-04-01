@@ -8,7 +8,7 @@ import (
 	"net"
 	"net/netip"
 
-	"github.com/jqknono/AdGuardHome/internal/dhcpsvc"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/dhcpsvc"
 )
 
 type winServer struct{}

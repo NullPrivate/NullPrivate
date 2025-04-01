@@ -12,9 +12,9 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/stringutil"
-	"github.com/jqknono/AdGuardHome/internal/aghos"
 )
 
 func newARPDB(logger *slog.Logger) (arp *arpdbs) {
@@ -48,7 +48,7 @@ func newARPDB(logger *slog.Logger) (arp *arpdbs) {
 			// By default ARP attempts to resolve the hostnames via DNS.  See
 			// man 8 arp.
 			//
-			// See also https://github.com/jqknono/AdGuardHome/issues/3157.
+			// See also https://github.com/AdGuardPrivate/AdGuardPrivate/issues/3157.
 			args: []string{"-a", "-n"},
 		},
 		// Finally, try "ip neigh".

@@ -8,12 +8,12 @@ import (
 	"net/url"
 	"path"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/dnsforward"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/httphdr"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/netutil/urlutil"
 	"github.com/google/uuid"
-	"github.com/jqknono/AdGuardHome/internal/dnsforward"
 	"howett.net/plist"
 )
 
@@ -37,7 +37,7 @@ type dnsSettings struct {
 	//
 	// TODO(a.garipov): Allow users to set this.
 	//
-	// See https://github.com/jqknono/AdGuardHome/issues/3607.
+	// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/3607.
 	ServerAddresses []net.IP `plist:",omitempty"`
 }
 

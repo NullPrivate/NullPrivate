@@ -160,11 +160,6 @@ func (m *rulesetManager) saveRulesetToFile(content io.Reader, filename string) (
 		return "", fmt.Errorf("writing ruleset file: %w", err)
 	}
 
-	// Close the file before renaming
-	if err = f.Close(); err != nil {
-		return "", fmt.Errorf("closing ruleset file: %w", err)
-	}
-
 	return filename, nil
 }
 

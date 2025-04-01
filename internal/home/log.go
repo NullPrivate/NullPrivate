@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"runtime"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
-	"github.com/jqknono/AdGuardHome/internal/aghos"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"gopkg.in/yaml.v3"
 )

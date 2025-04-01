@@ -10,11 +10,11 @@ import (
 	"os"
 	"strings"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/stringutil"
 	"github.com/google/renameio/v2/maybe"
-	"github.com/jqknono/AdGuardHome/internal/aghos"
 	"golang.org/x/sys/unix"
 )
 

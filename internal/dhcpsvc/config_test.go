@@ -4,8 +4,8 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/dhcpsvc"
 	"github.com/AdguardTeam/golibs/testutil"
-	"github.com/jqknono/AdGuardHome/internal/dhcpsvc"
 )
 
 func TestConfig_Validate(t *testing.T) {

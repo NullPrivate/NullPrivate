@@ -5,10 +5,10 @@ import (
 	"net/netip"
 	"testing"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/client"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/testutil"
-	"github.com/jqknono/AdGuardHome/internal/client"
-	"github.com/jqknono/AdGuardHome/internal/filtering"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

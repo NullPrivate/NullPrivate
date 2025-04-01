@@ -50,7 +50,7 @@ func parseDHCPOptionIP(s string) (val dhcpv4.OptionValue, err error) {
 	// Otherwise, the clients will receive weird data that looks like four IPv4
 	// addresses.
 	//
-	// See https://github.com/jqknono/AdGuardHome/issues/2688.
+	// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/2688.
 	if ip, err = netutil.ParseIPv4(s); err != nil {
 		return nil, err
 	}
@@ -266,7 +266,7 @@ func (s *v4Server) prepareOptions() {
 		// Don't set the Interface MTU because client may choose the value on
 		// their own since it's listed in the [Host Requirements RFC].  It also
 		// seems the values listed there sometimes appear obsolete, see
-		// https://github.com/jqknono/AdGuardHome/issues/5281.
+		// https://github.com/AdGuardPrivate/AdGuardPrivate/issues/5281.
 		//
 		// [Host Requirements RFC]: https://datatracker.ietf.org/doc/html/rfc1122#section-3.3.3.
 

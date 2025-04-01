@@ -9,8 +9,8 @@ import (
 	"runtime"
 	"testing"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/configmigrate"
 	"github.com/AdguardTeam/golibs/testutil"
-	"github.com/jqknono/AdGuardHome/internal/configmigrate"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/bcrypt"
 	yaml "gopkg.in/yaml.v3"

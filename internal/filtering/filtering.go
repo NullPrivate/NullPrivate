@@ -19,6 +19,9 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering/rulelist"
 	"github.com/AdguardTeam/golibs/container"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/hostsfile"
@@ -28,9 +31,6 @@ import (
 	"github.com/AdguardTeam/urlfilter"
 	"github.com/AdguardTeam/urlfilter/filterlist"
 	"github.com/AdguardTeam/urlfilter/rules"
-	"github.com/jqknono/AdGuardHome/internal/aghhttp"
-	"github.com/jqknono/AdGuardHome/internal/aghos"
-	"github.com/jqknono/AdGuardHome/internal/filtering/rulelist"
 	"github.com/miekg/dns"
 )
 
@@ -327,7 +327,7 @@ const (
 	// TODO(a.garipov): Remove Rewritten and RewrittenAutoHosts by merging their
 	// functionality into RewrittenRule.
 	//
-	// See https://github.com/jqknono/AdGuardHome/issues/2499.
+	// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/2499.
 	RewrittenRule
 )
 
@@ -662,7 +662,7 @@ func (d *DNSFilter) processRewrites(host string, qtype uint16) (res Result) {
 		} else if host == rwAns && isWildcard(rwPat) {
 			// An "*.example.com → sub.example.com" rewrite matching in a loop.
 			//
-			// See https://github.com/jqknono/AdGuardHome/issues/4016.
+			// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/4016.
 
 			res.CanonName = host
 

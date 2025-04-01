@@ -12,9 +12,9 @@ import (
 	"syscall"
 	"text/template"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/log"
-	"github.com/jqknono/AdGuardHome/internal/aghos"
 	"github.com/kardianos/service"
 )
 

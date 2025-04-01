@@ -117,7 +117,7 @@
     'if':
       ${{
         always() &&
-        github.repository_owner == 'jqknono' &&
+        github.repository_owner == 'AdGuardPrivate' &&
         (
           github.event_name == 'push' ||
           github.event.pull_request.head.repo.full_name == github.repository

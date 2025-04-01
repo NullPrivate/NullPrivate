@@ -1,10 +1,10 @@
 package aghtest_test
 
 import (
-	"github.com/jqknono/AdGuardHome/internal/aghtest"
-	"github.com/jqknono/AdGuardHome/internal/client"
-	"github.com/jqknono/AdGuardHome/internal/dnsforward"
-	"github.com/jqknono/AdGuardHome/internal/filtering"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghtest"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/client"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/dnsforward"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering"
 )
 
 // Put interface checks that cause import cycles here.

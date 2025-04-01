@@ -7,14 +7,14 @@ import (
 	"net/http"
 	"net/netip"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghalg"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/client"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering/safesearch"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/schedule"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/whois"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
-	"github.com/jqknono/AdGuardHome/internal/aghalg"
-	"github.com/jqknono/AdGuardHome/internal/aghhttp"
-	"github.com/jqknono/AdGuardHome/internal/client"
-	"github.com/jqknono/AdGuardHome/internal/filtering"
-	"github.com/jqknono/AdGuardHome/internal/filtering/safesearch"
-	"github.com/jqknono/AdGuardHome/internal/schedule"
-	"github.com/jqknono/AdGuardHome/internal/whois"
 )
 
 // clientJSON is a common structure used by several handlers to deal with
@@ -503,7 +503,7 @@ func (clients *clientsContainer) findRuntime(ip netip.Addr, idStr string) (cj *c
 		// list, but then the server was reloaded.  So, check the DNS server's
 		// blocked IP list.
 		//
-		// See https://github.com/jqknono/AdGuardHome/issues/2428.
+		// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/2428.
 		disallowed, rule := clients.clientChecker.IsBlockedClient(ip, idStr)
 		cj = &clientJSON{
 			IDs:            []string{idStr},

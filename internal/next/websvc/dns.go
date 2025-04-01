@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"net/netip"
 
-	"github.com/jqknono/AdGuardHome/internal/aghhttp"
-	"github.com/jqknono/AdGuardHome/internal/next/jsonpatch"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/next/jsonpatch"
 )
 
 // ReqPatchSettingsDNS describes the request to the PATCH /api/v1/settings/dns

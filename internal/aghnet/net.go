@@ -13,11 +13,11 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
 	"github.com/AdguardTeam/dnsproxy/upstream"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/osutil"
-	"github.com/jqknono/AdGuardHome/internal/aghos"
 )
 
 // DialContextFunc is the semantic alias for dialing functions, such as

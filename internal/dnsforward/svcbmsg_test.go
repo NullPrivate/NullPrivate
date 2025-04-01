@@ -4,8 +4,8 @@ import (
 	"net"
 	"testing"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering"
 	"github.com/AdguardTeam/urlfilter/rules"
-	"github.com/jqknono/AdGuardHome/internal/filtering"
 	"github.com/miekg/dns"
 	"github.com/stretchr/testify/assert"
 )

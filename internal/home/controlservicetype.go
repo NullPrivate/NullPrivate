@@ -3,8 +3,8 @@ package home
 import (
 	"net/http"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
 	"github.com/AdguardTeam/golibs/log"
-	"github.com/jqknono/AdGuardHome/internal/aghhttp"
 )
 
 // serviceTypeJSON is the response format for GET/PUT service-type API.

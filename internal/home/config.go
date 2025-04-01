@@ -8,22 +8,22 @@ import (
 	"path/filepath"
 	"sync"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghalg"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghtls"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/configmigrate"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/dhcpd"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/dnsforward"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/querylog"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/schedule"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/stats"
 	"github.com/AdguardTeam/dnsproxy/fastip"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/timeutil"
 	"github.com/google/renameio/v2/maybe"
-	"github.com/jqknono/AdGuardHome/internal/aghalg"
-	"github.com/jqknono/AdGuardHome/internal/aghos"
-	"github.com/jqknono/AdGuardHome/internal/aghtls"
-	"github.com/jqknono/AdGuardHome/internal/configmigrate"
-	"github.com/jqknono/AdGuardHome/internal/dhcpd"
-	"github.com/jqknono/AdGuardHome/internal/dnsforward"
-	"github.com/jqknono/AdGuardHome/internal/filtering"
-	"github.com/jqknono/AdGuardHome/internal/querylog"
-	"github.com/jqknono/AdGuardHome/internal/schedule"
-	"github.com/jqknono/AdGuardHome/internal/stats"
 	yaml "gopkg.in/yaml.v3"
 )
 
@@ -377,8 +377,8 @@ var config = &configuration{
 
 			// set default maximum concurrent queries to 300
 			// we introduced a default limit due to this:
-			// https://github.com/jqknono/AdGuardHome/issues/2015#issuecomment-674041912
-			// was later increased to 300 due to https://github.com/jqknono/AdGuardHome/issues/2257
+			// https://github.com/AdGuardPrivate/AdGuardPrivate/issues/2015#issuecomment-674041912
+			// was later increased to 300 due to https://github.com/AdGuardPrivate/AdGuardPrivate/issues/2257
 			MaxGoroutines: 300,
 		},
 		UpstreamTimeout:  timeutil.Duration(dnsforward.DefaultTimeout),

@@ -6,9 +6,9 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghnet"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/testutil"
-	"github.com/jqknono/AdGuardHome/internal/aghnet"
 	"github.com/stretchr/testify/assert"
 )
 

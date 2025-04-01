@@ -6,9 +6,9 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghrenameio"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/testutil"
-	"github.com/jqknono/AdGuardHome/internal/aghrenameio"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

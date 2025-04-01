@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghalg"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghnet"
 	"github.com/AdguardTeam/golibs/timeutil"
-	"github.com/jqknono/AdGuardHome/internal/aghalg"
-	"github.com/jqknono/AdGuardHome/internal/aghhttp"
-	"github.com/jqknono/AdGuardHome/internal/aghnet"
 )
 
 // topAddrs is an alias for the types of the TopFoo fields of statsResponse.

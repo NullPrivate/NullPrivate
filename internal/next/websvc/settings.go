@@ -3,7 +3,7 @@ package websvc
 import (
 	"net/http"
 
-	"github.com/jqknono/AdGuardHome/internal/aghhttp"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
 )
 
 // All Settings Handlers

@@ -1,7 +1,7 @@
 package configmigrate
 
 import (
-	"github.com/jqknono/AdGuardHome/internal/dnsforward"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/dnsforward"
 )
 
 // migrateTo28 performs the following changes:

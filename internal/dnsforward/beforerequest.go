@@ -4,10 +4,10 @@ import (
 	"encoding/binary"
 	"fmt"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghnet"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/log"
-	"github.com/jqknono/AdGuardHome/internal/aghnet"
 	"github.com/miekg/dns"
 )
 

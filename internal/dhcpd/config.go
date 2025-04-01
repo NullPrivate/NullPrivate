@@ -6,10 +6,10 @@ import (
 	"net/netip"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghnet"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/dhcpsvc"
 	"github.com/AdguardTeam/golibs/errors"
-	"github.com/jqknono/AdGuardHome/internal/aghhttp"
-	"github.com/jqknono/AdGuardHome/internal/aghnet"
-	"github.com/jqknono/AdGuardHome/internal/dhcpsvc"
 )
 
 // ServerConfig is the configuration for the DHCP server.  The order of YAML

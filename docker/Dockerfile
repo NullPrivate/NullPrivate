@@ -7,17 +7,15 @@ ARG VERSION
 ARG VCS_REF
 
 LABEL\
-	maintainer="AdGuard Team <devteam@adguard.com>" \
-	org.opencontainers.image.authors="AdGuard Team <devteam@adguard.com>" \
+	maintainer="AdGuard Private  <dev1@adguardprivate.com>" \
+	org.opencontainers.image.authors="AdGuard Private  <dev1@adguardprivate.com>" \
 	org.opencontainers.image.created=$BUILD_DATE \
 	org.opencontainers.image.description="Network-wide ads & trackers blocking DNS server" \
-	org.opencontainers.image.documentation="https://github.com/AdguardTeam/AdGuardHome/wiki/" \
+	org.opencontainers.image.documentation="https://github.com/AdGuardPrivate/AdGuardPrivate/wiki/" \
 	org.opencontainers.image.licenses="GPL-3.0" \
 	org.opencontainers.image.revision=$VCS_REF \
-	org.opencontainers.image.source="https://github.com/jqknono/AdGuardHome" \
-	org.opencontainers.image.title="AdGuard Home" \
-	org.opencontainers.image.url="https://adguard.com/en/adguard-home/overview.html" \
-	org.opencontainers.image.vendor="AdGuard" \
+	org.opencontainers.image.source="https://github.com/AdGuardPrivate/AdGuardPrivate" \
+	org.opencontainers.image.title="AdGuard Private" \
 	org.opencontainers.image.version=$VERSION
 
 # Update certificates.

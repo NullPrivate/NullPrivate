@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghtest"
 	"github.com/AdguardTeam/golibs/cache"
-	"github.com/jqknono/AdGuardHome/internal/aghtest"
 	"github.com/miekg/dns"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

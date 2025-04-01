@@ -8,12 +8,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/next/agh"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/next/dnssvc"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/next/websvc"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/netutil/urlutil"
-	"github.com/jqknono/AdGuardHome/internal/aghhttp"
-	"github.com/jqknono/AdGuardHome/internal/next/agh"
-	"github.com/jqknono/AdGuardHome/internal/next/dnssvc"
-	"github.com/jqknono/AdGuardHome/internal/next/websvc"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

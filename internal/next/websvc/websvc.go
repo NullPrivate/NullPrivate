@@ -17,11 +17,11 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/next/agh"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/next/dnssvc"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/netutil/httputil"
-	"github.com/jqknono/AdGuardHome/internal/next/agh"
-	"github.com/jqknono/AdGuardHome/internal/next/dnssvc"
 )
 
 // ConfigManager is the configuration manager interface.

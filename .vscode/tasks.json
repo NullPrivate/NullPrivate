@@ -1,0 +1,211 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "(Dprecate)customize build init",
+            "type": "shell",
+            "command": "bash customize-init.sh"
+        },
+        {
+            "label": "(Dprecate)simple build",
+            "type": "shell",
+            "command": "bash customize-build.sh"
+        },
+        {
+            "label": "3.0 build front",
+            "type": "shell",
+            "command": "make js-deps js-build"
+        },
+        {
+            "label": "3.1 build release v1.2.0",
+            "type": "shell",
+            "command": "make build-release VERBOSE=2 CHANNEL='development' VERSION='v1.2.0' ARCH='amd64 arm64' OS='linux' SIGN='0' FRONTEND_PREBUILT='1'"
+        },
+        {
+            "label": "3.2 docker build release",
+            "type": "shell",
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='v1.2.0' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='AdGuardPrivate:v1.2.0' DOCKER_OUTPUT='type=image'"
+        },
+        {
+            "label": "(Dprecate)3.3 push to dev.jqknono.com/AdGuardPrivate:v1.2.0",
+            "type": "shell",
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='v1.2.0' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='dev.jqknono.com:34005/AdGuardPrivate' DOCKER_OUTPUT='type=image,name=dev.jqknono.com:34005/AdGuardPrivate:v1.2.0,push=true'"
+        },
+        {
+            "label": "(Dprecate)3.4 push to docker.io/jqknono/AdGuardPrivate:v1.2.0",
+            "type": "shell",
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='v1.2.0' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='docker.io/jqknono/AdGuardPrivate' DOCKER_OUTPUT='type=image,name=docker.io/jqknono/AdGuardPrivate:v1.2.0,push=true'"
+        },
+        {
+            "label": "(Dprecate)3.5 push to aliyuncs/jqknono/AdGuardPrivate:v1.2.0",
+            "type": "shell",
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='v1.2.0' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/jqknono/AdGuardPrivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/jqknono/adguardprivate:v1.2.0,push=true'"
+        },
+        {
+            "label": "3.5.1 push to aliyuncs/adguardprivate/adguardprivate:dev",
+            "type": "shell",
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='dev' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:dev,push=true'",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "3.0 build front",
+                "3.1 build release"
+            ]
+        },
+        {
+            "label": "3.5.2 push to aliyuncs/adguardprivate/adguardprivate:latest",
+            "type": "shell",
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='latest' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest,push=true'",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "3.0 build front",
+                "3.1 build release"
+            ]
+        },
+        {
+            "label": "git commit no verified",
+            "type": "shell",
+            "command": "git commit --no-verify -m 'adguardprivate commit'"
+        },
+        {
+            "label": "2.1 docker build dev",
+            "type": "shell",
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='v1.2.0' ARCH='amd64' DOCKER_IMAGE_NAME='AdGuardHome-dev' DOCKER_OUTPUT='type=docker,dest=./dist/docker/AdGuardHome_linux_amd64_' VERBOSE=2"
+        },
+        {
+            "label": "2.2 docker load dev",
+            "type": "shell",
+            "command": "docker load -i ./dist/docker/AdGuardHome_linux_amd64_"
+        },
+        {
+            "label": "(Dprecate)2.3 docker run dev",
+            "type": "shell",
+            "command": "docker run --name AdGuardPrivate-dev -d -p 50000:3000 -p 50001:80 -p 50002:443 -p 50003:853 -p 50004:53/udp -v ./data/work:/opt/AdGuardPrivate/work -v ./data/conf:/opt/AdGuardPrivate/conf ./dist/docker/AdGuardHome_linux_amd64_:latest"
+        },
+        {
+            "label": "1.0 build",
+            "type": "shell",
+            "command": "make build VERBOSE=2 "
+        },
+        {
+            "label": "1.1 build front",
+            "type": "shell",
+            "command": "make js-build-dev VERBOSE=2 ",
+            "problemMatcher": [
+                "$tsc"
+            ]
+        },
+        {
+            "label": "1.2 build AdGuardHome",
+            "type": "shell",
+            "command": "make go-build VERBOSE=2 CHANNEL='development' VERSION='v1.2.0' ARCH='amd64' OS='linux' SIGN='0'",
+            "problemMatcher": [
+                "$go"
+            ]
+        },
+        {
+            "label": "1.3 quick build",
+            "type": "shell",
+            "command": "make quick-build VERBOSE=2 "
+        },
+        {
+            "label": "1.4 run AdGuardHome",
+            "type": "shell",
+            "command": "./AdGuardHome -c ../AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose",
+            "problemMatcher": []
+        },
+        {
+            "label": "Debug: tools/q",
+            "type": "shell",
+            "command": "./tools/q -s 127.0.0.1:5353 -t A -w -q baidu.com"
+        },
+        {
+            "label": "4.1 push to aliyuncs/adguardprivate/adguardprivate:base",
+            "type": "shell",
+            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.base -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:base . --push"
+        },
+        {
+            "label": "4.2 update dist docker",
+            "type": "shell",
+            "command": "cp -f dist/AdGuardHome_linux_amd64/AdGuardHome/AdGuardHome dist/docker/AdGuardHome_linux_amd64_ && cp -f dist/AdGuardHome_linux_arm64/AdGuardHome/AdGuardHome dist/docker/AdGuardHome_linux_arm64_"
+        },
+        {
+            "label": "4.3 push to aliyuncs/adguardprivate/adguardprivate:dev",
+            "type": "shell",
+            "command": "docker buildx build --platform linux/amd64 -f docker/Dockerfile.quick -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:dev . --push",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "3.0 build front",
+                "3.1 build release v1.2.0",
+                "4.2 update dist docker"
+            ],
+            "problemMatcher": [
+                "$go",
+                "$tsc"
+            ]
+        },
+        {
+            "label": "4.4 push to aliyuncs/adguardprivate/adguardprivate:latest",
+            "type": "shell",
+            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.quick -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest . --push",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "3.0 build front",
+                "3.1 build release v1.2.0",
+                "4.2 update dist docker"
+            ],
+            "problemMatcher": [
+                "$go",
+                "$tsc"
+            ]
+        },
+        {
+            "label": "4.5 push to aliyuncs/adguardprivate/adguardprivate:rollback",
+            "type": "shell",
+            "command": "docker tag registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:rollback && docker push registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:rollback",
+        },
+        {
+            "label": "4.6 push to aliyuncs/adguardprivate/adguardprivate:1.2.0",
+            "type": "shell",
+            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:1.2.0 . --push",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "3.0 build front",
+                "3.1 build release v1.2.0",
+                "4.2 update dist docker"
+            ],
+            "problemMatcher": [
+                "$go",
+                "$tsc"
+            ]
+        },
+        {
+            "label": "i18n: Convert from table to json",
+            "type": "shell",
+            "command": "cd ./scripts/i18n && ./table_to_i18n.py",
+            "group": "none",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "i18n: Convert from json to table",
+            "type": "shell",
+            "command": "cd ./scripts/i18n && ./i18n_to_table.py",
+            "group": "none",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Test",
+            "type": "shell",
+            "command": "VERBOSE=2 && bash ./scripts/make/go-test.sh"
+        }
+    ]
+}

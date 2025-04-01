@@ -8,12 +8,12 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/next/configmgr"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/osutil"
 	"github.com/AdguardTeam/golibs/service"
 	"github.com/google/renameio/v2/maybe"
-	"github.com/jqknono/AdGuardHome/internal/next/configmgr"
 )
 
 // signalHandler processes incoming signals and shuts services down.

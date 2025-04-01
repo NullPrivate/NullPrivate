@@ -72,7 +72,7 @@ func IfaceIPAddrs(iface NetIface, ipv IPVersion) (ips []net.IP, err error) {
 // each time using the provided backoff.  Sometimes an interface needs a few
 // seconds to really initialize.
 //
-// See https://github.com/jqknono/AdGuardHome/issues/2304.
+// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/2304.
 func IfaceDNSIPAddrs(
 	iface NetIface,
 	ipv IPVersion,
@@ -110,7 +110,7 @@ func IfaceDNSIPAddrs(
 		// server.  Fix that by setting the secondary DNS address to the same
 		// address.
 		//
-		// See https://github.com/jqknono/AdGuardHome/issues/1708.
+		// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/1708.
 		log.Debug("dhcpv%d: setting secondary dns ip to itself", ipv)
 		addrs = append(addrs, addrs[0])
 	default:

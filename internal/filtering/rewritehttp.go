@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"slices"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
 	"github.com/AdguardTeam/golibs/log"
-	"github.com/jqknono/AdGuardHome/internal/aghhttp"
 )
 
 // TODO(d.kolyshev): Use [rewrite.Item] instead.

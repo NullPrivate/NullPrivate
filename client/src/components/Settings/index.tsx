@@ -17,7 +17,8 @@ import Card from '../ui/Card';
 
 import { getObjectKeysSorted, captitalizeWords } from '../../helpers/helpers';
 import './Settings.css';
-import { SettingsData } from '../../initialState';
+import { RootState, SettingsData } from '../../initialState';
+import { useSelector } from 'react-redux';
 
 const ORDER_KEY = 'order';
 
@@ -49,6 +50,7 @@ interface SettingsProps {
     getLogsConfig?: (...args: unknown[]) => unknown;
     setLogsConfig?: (...args: unknown[]) => unknown;
     clearLogs?: (...args: unknown[]) => unknown;
+    serviceType?: string;
     stats?: {
         processingGetConfig?: boolean;
         interval?: number;
@@ -177,8 +179,12 @@ class Settings extends Component<SettingsProps> {
                                             processing={filtering.processingSetConfig}
                                             setFiltersConfig={setFiltersConfig}
                                         />
-                                        {this.renderSettings(settings.settingsList)}
-                                        {this.renderSafeSearch()}
+                                        {this.props.serviceType === 'enterprise' && (
+                                            <>
+                                                {this.renderSettings(settings.settingsList)}
+                                                {this.renderSafeSearch()}
+                                            </>
+                                        )}
                                     </div>
                                 </Card>
                             </div>
@@ -217,4 +223,13 @@ class Settings extends Component<SettingsProps> {
     }
 }
 
-export default withTranslation()(Settings);
+// Connect the component to get serviceType from Redux, then apply translation
+const SettingsWithTranslation = withTranslation()(Settings);
+
+// Wrap with a function component to use hooks
+const SettingsContainer = (props) => {
+    const { service_type } = useSelector((state: RootState) => state);
+    return <SettingsWithTranslation {...props} serviceType={service_type} />;
+};
+
+export default SettingsContainer;

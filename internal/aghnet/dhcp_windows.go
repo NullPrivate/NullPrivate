@@ -2,7 +2,7 @@
 
 package aghnet
 
-import "github.com/jqknono/AdGuardHome/internal/aghos"
+import "github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
 
 func checkOtherDHCP(ifaceName string) (ok4, ok6 bool, err4, err6 error) {
 	return false,

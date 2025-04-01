@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering/rulelist"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/AdguardTeam/urlfilter"
-	"github.com/jqknono/AdGuardHome/internal/filtering/rulelist"
 	"github.com/miekg/dns"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

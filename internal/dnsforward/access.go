@@ -8,14 +8,14 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghalg"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
 	"github.com/AdguardTeam/golibs/container"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/stringutil"
 	"github.com/AdguardTeam/urlfilter"
 	"github.com/AdguardTeam/urlfilter/filterlist"
 	"github.com/AdguardTeam/urlfilter/rules"
-	"github.com/jqknono/AdGuardHome/internal/aghalg"
-	"github.com/jqknono/AdGuardHome/internal/aghhttp"
 )
 
 // accessManager controls IP and client blocking that takes place before all

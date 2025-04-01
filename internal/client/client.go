@@ -10,7 +10,7 @@ import (
 	"net/netip"
 	"slices"
 
-	"github.com/jqknono/AdGuardHome/internal/whois"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/whois"
 )
 
 // Source represents the source from which the information about the client has

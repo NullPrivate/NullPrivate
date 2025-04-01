@@ -7,9 +7,9 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
-	"github.com/jqknono/AdGuardHome/internal/aghos"
 )
 
 // needsMigration is a Unix-specific implementation of [NeedsMigration].

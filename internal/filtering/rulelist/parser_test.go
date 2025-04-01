@@ -6,10 +6,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering/rulelist"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/AdguardTeam/golibs/testutil/fakeio"
-	"github.com/jqknono/AdGuardHome/internal/filtering/rulelist"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -227,7 +227,7 @@ func BenchmarkParser_Parse(b *testing.B) {
 	//
 	//	goos: linux
 	//	goarch: amd64
-	//	pkg: github.com/jqknono/AdGuardHome/internal/filtering/rulelist
+	//	pkg: github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering/rulelist
 	//	cpu: AMD Ryzen 7 PRO 4750U with Radeon Graphics
 	//	BenchmarkParser_Parse-16        100000000              128.0 ns/op            48 B/op          1 allocs/op
 }

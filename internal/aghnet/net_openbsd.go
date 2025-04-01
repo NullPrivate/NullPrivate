@@ -8,8 +8,8 @@ import (
 	"io"
 	"strings"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
 	"github.com/AdguardTeam/golibs/netutil"
-	"github.com/jqknono/AdGuardHome/internal/aghos"
 )
 
 func ifaceHasStaticIP(ifaceName string) (ok bool, err error) {

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/next/jsonpatch"
 	"github.com/AdguardTeam/golibs/testutil"
-	"github.com/jqknono/AdGuardHome/internal/next/jsonpatch"
 	"github.com/stretchr/testify/assert"
 )
 

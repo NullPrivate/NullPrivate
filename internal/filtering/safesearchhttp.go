@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/jqknono/AdGuardHome/internal/aghhttp"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
 )
 
 // handleSafeSearchEnable is the handler for POST /control/safesearch/enable

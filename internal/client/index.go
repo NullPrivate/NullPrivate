@@ -8,8 +8,8 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghalg"
 	"github.com/AdguardTeam/golibs/errors"
-	"github.com/jqknono/AdGuardHome/internal/aghalg"
 )
 
 // macKey contains MAC as byte array of 6, 8, or 20 bytes.

@@ -5,7 +5,7 @@ package ipset
 import (
 	"context"
 
-	"github.com/jqknono/AdGuardHome/internal/aghos"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
 )
 
 func newManager(_ context.Context, _ *Config) (mgr Manager, err error) {

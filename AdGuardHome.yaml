@@ -5,14 +5,14 @@ http:
   address: 0.0.0.0:34020
   session_ttl: 720h
 users:
-  - name: jqknono
-    password: $2a$10$4AYmaNFdqVIUTvHs7XuDI..2HzN0hA21Mk5UDh2.aHQrjWatC86zS
+  - name: test
+    password: $2y$10$oFcEK.YayaZVPUYA3ukp4.V74A4v5aHQ/6CB47RYc/zP0Lw.pBuOm
 auth_attempts: 5
 block_auth_min: 15
 http_proxy: ""
 language: en
 theme: light
-service_type: enterprise
+service_type: personal
 dns:
   bind_hosts:
     - 0.0.0.0

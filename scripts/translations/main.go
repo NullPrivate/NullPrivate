@@ -19,10 +19,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/osutil"
-	"github.com/jqknono/AdGuardHome/internal/aghos"
 )
 
 const (

@@ -7,12 +7,12 @@ import (
 	"sync"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghnet"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/rdns"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/whois"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/netutil"
-	"github.com/jqknono/AdGuardHome/internal/aghnet"
-	"github.com/jqknono/AdGuardHome/internal/rdns"
-	"github.com/jqknono/AdGuardHome/internal/whois"
 )
 
 // ErrClosed is returned from [AddressProcessor.Close] if it's closed more than

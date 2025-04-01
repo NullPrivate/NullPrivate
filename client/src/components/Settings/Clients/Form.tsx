@@ -207,7 +207,6 @@ let Form = (props: FormProps) => {
                 <div title={props.t('main_settings')}>
                     <div className="form__label--bot form__label--bold">{t('protection_section_label')}</div>
                     {settingsCheckboxes.map((setting) => {
-                        // 检查是否应该显示此设置选项
                         const shouldShow = !setting.requiredServiceTypes ||
                             setting.requiredServiceTypes.includes(service_type);
 

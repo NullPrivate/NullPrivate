@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/dhcpsvc"
 	"github.com/AdguardTeam/golibs/testutil"
-	"github.com/jqknono/AdGuardHome/internal/dhcpsvc"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"sync/atomic"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering/rulelist"
 	"github.com/AdguardTeam/golibs/container"
 	"github.com/AdguardTeam/golibs/log"
-	"github.com/jqknono/AdGuardHome/internal/filtering/rulelist"
 )
 
 // idGenerator generates filtering-list IDs in a way broadly compatible with the

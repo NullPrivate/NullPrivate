@@ -1,4 +1,4 @@
-module github.com/jqknono/AdGuardHome
+module github.com/AdGuardPrivate/AdGuardPrivate
 
 go 1.24.1
 

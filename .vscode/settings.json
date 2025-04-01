@@ -1,0 +1,97 @@
+{
+    "github.copilot.chat.codeGeneration.instructions": [
+        {
+            "file": ".github/prompts/.copilot-codeGeneration-instructions.md",
+        }
+    ],
+    // "go.testEnvVars": {
+    //     // "GOPATH": "${workspaceFolder}/.gopath",
+    //     // "GOCACHE": "${workspaceFolder}/.gopath/.gocache",
+    //     "GOMIPS": "softfloat",
+    //     "CGO_ENABLED": "0",
+    //     "CGO_CFLAGS": "-O3 -std=gnu11 -g",
+    //     "CC": "cc",
+    //     "GOTOOLCHAIN": "local",
+    //     "GOPROXY": "https://proxy.golang.org,direct"
+    // },
+    // "go.toolsEnvVars": {
+    //     // "GOCACHE": "${workspaceFolder}/.gopath/.gocache",
+    //     "GOPROXY": "https://goproxy.cn|direct",
+    //     "GOENV": "${workspaceFolder}/.vscode/.goenv",
+    //     // "GOPATH": "${workspaceFolder}/.gopath",
+    //     "GOMIPS": "softfloat",
+    //     "CGO_ENABLED": "0",
+    //     "CGO_CFLAGS": "-O3 -std=gnu11 -g",
+    //     "CC": "cc",
+    //     "GOTOOLCHAIN": "local"
+    // },
+    // "go.toolsGopath": "${workspaceFolder}/.gopath",
+    // "go.gopath": "${workspaceFolder}/.gopath",
+    // "go.editorContextMenuCommands": {
+    //     "benchmarkAtCursor": true,
+    //     "generateTestForPackage": true,
+    //     "generateTestForFile": true,
+    //     "testPackage": true,
+    //     "fillStruct": true,
+    //     "testFile": true,
+    //     "removeTags": true
+    // },
+    // "go.inferGopath": true,
+    "go.formatTool": "gofumpt",
+    "go.testFlags": [
+        "-v",
+        "-tags",
+        "!excludedir"
+    ],
+    "files.exclude": {
+        "client/pkg/**": true
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/*.code-search": true,
+        "**/Living_SDK/out": true,
+        "**/Store": true
+    },
+    "projectTranslator.currentVendor": "grok",
+    "projectTranslator.vendors": [
+        {
+            "name": "gemini",
+            "apiEndpoint": "https://generativelanguage.googleapis.com/v1beta",
+            "apiKeyEnvVarName": "GEMINI_API_KEY",
+            "model": "gemini-2.0-flash",
+            "rpm": 15,
+            "maxTokensPerSegment": 1000,
+            "timeout": 30,
+            "temperature": 0.0,
+        },
+        {
+            "name": "grok",
+            "apiEndpoint": "https://api.x.ai/v1",
+            "apiKeyEnvVarName": "GROK_API_KEY",
+            "model": "grok-2",
+            "rpm": 20,
+            "maxTokensPerSegment": 1000,
+            "timeout": 30,
+            "temperature": 0.0,
+        }
+    ],
+    "projectTranslator.specifiedFiles": [
+        {
+            "sourceFile": {
+                "path": "readmes/readme.zh-cn.md",
+                "lang": "zh-cn"
+            },
+            "destFiles": [
+                {
+                    "path": "readme.md",
+                    "lang": "en-us"
+                },
+                {
+                    "path": "readmes/readme.ja-jp.md",
+                    "lang": "ja-jp"
+                }
+            ]
+        }
+    ]
+}

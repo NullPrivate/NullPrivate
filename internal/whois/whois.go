@@ -14,13 +14,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghnet"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/ioutil"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/bluele/gcache"
 	"github.com/c2h5oh/datasize"
-	"github.com/jqknono/AdGuardHome/internal/aghnet"
 )
 
 const (

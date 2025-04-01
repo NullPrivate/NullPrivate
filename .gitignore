@@ -30,7 +30,7 @@
 /test-reports/
 AdGuardHome
 AdGuardHome.exe
-# AdGuardHome.yaml*
+AdGuardHome.yaml*
 coverage.txt
 node_modules/
 
@@ -46,4 +46,4 @@ __debug_bin*
 .github/prompts/
 go.work
 go.work.sum
-.vscode/
+.translation-cache/

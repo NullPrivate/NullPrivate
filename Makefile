@@ -109,6 +109,7 @@ js-build: ; $(NPM) $(NPM_FLAGS) run build-prod
 js-deps:  ; $(NPM) $(NPM_INSTALL_FLAGS) ci
 js-lint:  ; $(NPM) $(NPM_FLAGS) run lint
 js-test:  ; $(NPM) $(NPM_FLAGS) run test
+js-build-dev: ; $(NPM) $(NPM_FLAGS) run build-dev
 
 go-bench:     ; $(ENV) "$(SHELL)"    ./scripts/make/go-bench.sh
 go-build:     ; $(ENV) "$(SHELL)"    ./scripts/make/go-build.sh

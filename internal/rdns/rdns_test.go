@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghtest"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/rdns"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/testutil"
-	"github.com/jqknono/AdGuardHome/internal/aghtest"
-	"github.com/jqknono/AdGuardHome/internal/rdns"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

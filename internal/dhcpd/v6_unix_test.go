@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/dhcpsvc"
 	"github.com/insomniacslk/dhcp/dhcpv6"
 	"github.com/insomniacslk/dhcp/iana"
-	"github.com/jqknono/AdGuardHome/internal/dhcpsvc"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
