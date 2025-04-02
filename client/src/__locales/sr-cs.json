@@ -47,7 +47,7 @@
   "blocked_response_ttl_desc": "Određuje koliko sekundi klijenti treba da keširaju filtrirani odgovor",
   "blocked_safebrowsing": "Blokiralo bezbedno pregledanje",
   "blocked_service": "Blokirana usluga",
-  "blocked_services": "Blokiraj usluge",
+  "blocked_services": "Spreči zavisnost",
   "blocked_services_desc": "Dozvoljava vam da brzo blokirate popularne sajtove i usluge.",
   "blocked_services_global": "Koristi globalne blokirane usluge",
   "blocked_services_reloaded": "Usluge su uspešno ponovo učitane",

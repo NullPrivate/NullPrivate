@@ -47,7 +47,7 @@
   "blocked_response_ttl_desc": "Chỉ định trong bao nhiêu giây máy khách sẽ lưu vào bộ đệm một phản hồi đã được lọc",
   "blocked_safebrowsing": "Chặn bởi Safebrowsing",
   "blocked_service": "Dịch vụ bị chặn",
-  "blocked_services": "Dịch vụ bị chặn",
+  "blocked_services": "Ngăn ngừa nghiện",
   "blocked_services_desc": "Cho phép nhanh chóng chặn các trang web và dịch vụ phổ biến.",
   "blocked_services_global": "Sử dụng các dịch vụ bị chặn toàn cầu",
   "blocked_services_reloaded": "Dịch vụ đã được tải lại thành công",

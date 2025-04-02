@@ -47,7 +47,7 @@
   "blocked_response_ttl_desc": "フィルタリングされた応答をクライアントがキャッシュしておく時間（秒）を指定します。",
   "blocked_safebrowsing": "セーフブラウジングによってブロック済み",
   "blocked_service": "ブロックするサービス",
-  "blocked_services": "ブロックするサービス",
+  "blocked_services": "依存症を防止する",
   "blocked_services_desc": "人気のあるサイトやサービスを一気にブロック。",
   "blocked_services_global": "ブロックするサービスに対しグローバル設定を使用する",
   "blocked_services_reloaded": "サービスが正常に再読み込みされました",

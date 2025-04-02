@@ -40,7 +40,7 @@
   "blocked_response_ttl_desc": "مشخص می کند که کلاینت ها برای چند ثانیه یک پاسخ فیلتر شده را در حافظه پنهان نگه دارند",
   "blocked_safebrowsing": "بستن وب گردی اَمن",
   "blocked_service": "سرویس مسدود شده",
-  "blocked_services": "سرویس های مسدود شده",
+  "blocked_services": "جلوگیری از اعتیاد",
   "blocked_services_desc": "مسدودسازی سریع سایت های عمومی و سرویس ها را اجازه می دهد.",
   "blocked_services_global": "از سرویس های مسدود شده سراسری استفاده کن",
   "blocked_services_reloaded": "خدمات با موفقیت دوباره بارگذاری شدند",

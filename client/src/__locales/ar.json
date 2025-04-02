@@ -47,7 +47,7 @@
   "blocked_response_ttl_desc": "تحديد عدد الثواني التي يجب على العملاء تخزين الاستجابة التي تمت تصفيتها مؤقتًا",
   "blocked_safebrowsing": "محظور بواسطة التصفح الآمن",
   "blocked_service": "الخدمات المحجوبة",
-  "blocked_services": "الخوادم المحجوبة",
+  "blocked_services": "منع الإدمان",
   "blocked_services_desc": "يسمح بحجب المواقع والخدمات الشعبية بسرعة.",
   "blocked_services_global": "استخدام خدمات الحظر العالمية",
   "blocked_services_reloaded": "الخدمة أعيد تحميلها بنجاح",

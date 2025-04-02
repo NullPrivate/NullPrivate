@@ -47,7 +47,7 @@
   "blocked_response_ttl_desc": "Паказвае, на працягу колькіх секунд кліенты павінны кэшаваць адфільтраваць адказ",
   "blocked_safebrowsing": "Заблакіравана згодна з базай даных Safe Browsing",
   "blocked_service": "Заблакаваны сэрвіс",
-  "blocked_services": "Заблакаваныя сэрвісы",
+  "blocked_services": "Прадухіленне залежнасці",
   "blocked_services_desc": "Дазваляе хутка заблакаваць папулярныя сайты і сэрвісы.",
   "blocked_services_global": "Выкарыстаць глабальныя заблакаваныя сэрвісы",
   "blocked_services_reloaded": "Сэрвісы паспяхова перазагружаны",

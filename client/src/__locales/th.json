@@ -29,7 +29,7 @@
   "blocked_by": "<0>ถูกปิดกั้นโดยตัวกรอง</0>",
   "blocked_by_response": "ปิดกั้นโดย CNAME หรือ IP ในการตอบกลับ",
   "blocked_service": "ปิดกั้นบริการ",
-  "blocked_services": "ปิดกั้นบริการ",
+  "blocked_services": "ป้องกันการเสพติด",
   "blocked_services_desc": "อนุญาตให้บล็อกเว็บไซต์และบริการยอดนิยมได้อย่างรวดเร็ว",
   "blocked_services_global": "ใช้บริการที่ถูกบล็อกทั่วโลก",
   "blocked_services_reloaded": "บริการโหลดใหม่สำเร็จ",

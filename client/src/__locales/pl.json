@@ -47,7 +47,7 @@
   "blocked_response_ttl_desc": "Określa, przez ile sekund klienci powinni buforować przefiltrowaną odpowiedź",
   "blocked_safebrowsing": "Zablokowane przez Bezpieczne przeglądanie",
   "blocked_service": "Zablokowana usługa",
-  "blocked_services": "Zablokowane usługi",
+  "blocked_services": "Zapobiegaj uzależnieniu",
   "blocked_services_desc": "Pozwala szybko zablokować popularne witryny i usługi.",
   "blocked_services_global": "Użyj globalnych zablokowanych usług",
   "blocked_services_reloaded": "Usługi zostały pomyślnie przeładowane",

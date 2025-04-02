@@ -42,7 +42,7 @@
   "blocked_by_response": "Blokkert av responsens CNAME eller IP",
   "blocked_safebrowsing": "Blokkert av barnevennlig nettlesing",
   "blocked_service": "Blokkert tjeneste",
-  "blocked_services": "Blokkerte tjenester",
+  "blocked_services": "Forebygg avhengighet",
   "blocked_services_desc": "Gjør det mulig å blokkere populære nettsteder og tjenester med letthet.",
   "blocked_services_global": "Bruk de overbestyrt blokkerte tjenestene",
   "blocked_services_reloaded": "Tjenestene ble lastet inn på nytt",

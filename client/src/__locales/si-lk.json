@@ -41,7 +41,7 @@
   "blocked_by_response": "ප්‍රතිචාරය අන්. නාමයක් (CNAME) හෝ අ.ජා.කෙ. මගින් අවහිර කර ඇත",
   "blocked_safebrowsing": "ආරක්‍ෂිත පිරික්සුම මගින් අවහිර කළ",
   "blocked_service": "අවහිර කළ සේවාව",
-  "blocked_services": "අවහිර කළ සේවා",
+  "blocked_services": "ඇබ්බැහි වීම වළක්වන්න",
   "blocked_services_desc": "ජනප්‍රිය අඩවි සහ සේවා ඉක්මනින් අවහිර කිරීමට ඉඩ දෙයි.",
   "blocked_services_global": "ගෝලීය අවහිර කළ සේවා භාවිතා කරන්න",
   "blocked_services_reloaded": "සේවා සාර්ථකව නැවත පූරණය කරන ලදී",

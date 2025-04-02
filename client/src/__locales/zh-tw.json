@@ -47,7 +47,7 @@
   "blocked_response_ttl_desc": "對用戶端應快取受過濾的回應，指定多少秒數",
   "blocked_safebrowsing": "被安全瀏覽封鎖",
   "blocked_service": "已封鎖的服務",
-  "blocked_services": "已封鎖的服務",
+  "blocked_services": "防沉迷",
   "blocked_services_desc": "允許立即封鎖熱門的網站和服務。",
   "blocked_services_global": "使用全域已封鎖的服務",
   "blocked_services_reloaded": "服務已成功重新載入",

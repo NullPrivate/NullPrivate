@@ -47,7 +47,7 @@
   "blocked_response_ttl_desc": "Gibt an, wie viele Sekunden lang die Clients eine gefilterte Antwort zwischenspeichern sollen",
   "blocked_safebrowsing": "Gesperrt durch Internetsicherheit",
   "blocked_service": "Gesperrte Dienste",
-  "blocked_services": "Gesperrte Dienste",
+  "blocked_services": "Suchtprävention",
   "blocked_services_desc": "Ermöglicht das schnelle Sperren beliebter Websites und Dienste.",
   "blocked_services_global": "Global gesperrte Dienste verwenden",
   "blocked_services_reloaded": "Dienste wurden erfolgreich neu geladen",

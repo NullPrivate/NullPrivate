@@ -47,7 +47,7 @@
   "blocked_response_ttl_desc": "Specifică pentru câte secunde trebuie să memoreze clienții un răspuns filtrat",
   "blocked_safebrowsing": "Blocat de Navigarea în siguranță",
   "blocked_service": "Serviciu blocat",
-  "blocked_services": "Servicii blocate",
+  "blocked_services": "Preveniți dependența",
   "blocked_services_desc": "Permite blocarea rapidă a site-urilor și serviciilor populare.",
   "blocked_services_global": "Folosiți servicii blocate globale",
   "blocked_services_reloaded": "Serviciile au fost reîncărcate cu succes",

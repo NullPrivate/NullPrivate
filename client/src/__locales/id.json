@@ -47,7 +47,7 @@
   "blocked_response_ttl_desc": "Menentukan berapa detik klien harus menyimpan respons yang difilter dalam cache",
   "blocked_safebrowsing": "Diblokir oleh Penjelajahan Aman",
   "blocked_service": "Layanan terblokir",
-  "blocked_services": "Layanan terblokir",
+  "blocked_services": "Mencegah kecanduan",
   "blocked_services_desc": "Memungkinkan untuk dengan cepat memblokir situs dan layanan populer.",
   "blocked_services_global": "Gunakan layanan global yang diblokir",
   "blocked_services_reloaded": "Layanan berhasil dimuat ulang",

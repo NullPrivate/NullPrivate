@@ -47,7 +47,7 @@
   "blocked_response_ttl_desc": "Določa, koliko sekund naj odjemalci predpomnijo filtrirane odgovore",
   "blocked_safebrowsing": "Onemogočeno z 'Varnim brskanjem'",
   "blocked_service": "Onemogočena storitev",
-  "blocked_services": "Onemogočene storitve",
+  "blocked_services": "Preprečevanje zasvojenosti",
   "blocked_services_desc": "Omogoča hitro onemogočanje priljubljenih spletnih strani in storitev.",
   "blocked_services_global": "Uporabi splošne onemogočene storitve",
   "blocked_services_reloaded": "Storitve so bile uspešno ponovno naložene",

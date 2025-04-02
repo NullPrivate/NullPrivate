@@ -47,7 +47,7 @@
   "blocked_response_ttl_desc": "Anger hur många sekunder klienterna ska cache ett filtrerat svar",
   "blocked_safebrowsing": "Blockerad av Säker webbsökning",
   "blocked_service": "Blockerad tjänst",
-  "blocked_services": "Blockerade tjänster",
+  "blocked_services": "Förhindra beroende",
   "blocked_services_desc": "Gör det möjligt att snabbt blockera populära webbplatser och tjänster.",
   "blocked_services_global": "Använd globalt blockerade tjänster",
   "blocked_services_reloaded": "Tjänster har lästs in på nytt",

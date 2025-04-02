@@ -47,7 +47,7 @@
   "blocked_response_ttl_desc": "指定客户端应缓存已过滤响应的秒数",
   "blocked_safebrowsing": "被安全浏览阻止",
   "blocked_service": "阻止指定应用",
-  "blocked_services": "阻止指定应用",
+  "blocked_services": "防沉迷",
   "blocked_services_desc": "允许快速地阻止热门网站和服务。",
   "blocked_services_global": "使用全局已阻止服务设置",
   "blocked_services_reloaded": "服务已成功重新加载",

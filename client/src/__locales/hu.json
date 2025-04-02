@@ -47,7 +47,7 @@
   "blocked_response_ttl_desc": "Meghatározza, hogy a klienseknek hány másodpercig kell gyorsítótárazniuk a szűrt választ",
   "blocked_safebrowsing": "Blokkolva a Biztonságos böngészés által",
   "blocked_service": "Blokkolt szolgáltatás",
-  "blocked_services": "Blokkolt szolgáltatások",
+  "blocked_services": "Függőség megelőzése",
   "blocked_services_desc": "Lehetővé teszi a népszerű oldalak és szolgáltatások blokkolását.",
   "blocked_services_global": "A globálisan tiltott szolgáltatások használata",
   "blocked_services_reloaded": "A szolgáltatások sikeresen újratöltve",

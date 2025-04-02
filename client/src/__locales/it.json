@@ -47,7 +47,7 @@
   "blocked_response_ttl_desc": "Specifica per quanti secondi i client devono tenere nella cache una risposta filtrata",
   "blocked_safebrowsing": "Bloccato da Navigazione Sicura",
   "blocked_service": "Servizio bloccato",
-  "blocked_services": "Servizi bloccati",
+  "blocked_services": "Prevenzione dipendenza",
   "blocked_services_desc": "Consente di bloccare rapidamente siti e servizi popolari.",
   "blocked_services_global": "Utilizza le servizi globali bloccati",
   "blocked_services_reloaded": "Servizi ricaricati con successo",

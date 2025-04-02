@@ -47,7 +47,7 @@
   "blocked_response_ttl_desc": "Určuje, na kolik sekund by měli klienti ukládat filtrovanou odezvu do mezipaměti",
   "blocked_safebrowsing": "Blokováno modulem Bezpečné prohlížení",
   "blocked_service": "Blokovaná služba",
-  "blocked_services": "Blokované služby",
+  "blocked_services": "Prevence závislosti",
   "blocked_services_desc": "Umožňuje rychle blokovat oblíbené weby a služby.",
   "blocked_services_global": "Použít globální blokované služby",
   "blocked_services_reloaded": "Služby byly úspěšně znovu načteny",

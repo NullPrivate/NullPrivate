@@ -47,7 +47,7 @@
   "blocked_response_ttl_desc": "Hiermee geef je op hoeveel seconden de clients een gefilterd antwoord in de cache moeten opslaan",
   "blocked_safebrowsing": "Geblokkeerd door Veilig browsen",
   "blocked_service": "Geblokkeerde service",
-  "blocked_services": "Geblokkeerde services",
+  "blocked_services": "Voorkom verslaving",
   "blocked_services_desc": "Hiermee kunt u populaire sites en services snel blokkeren.",
   "blocked_services_global": "Gebruik algemeen geblokkeerde services",
   "blocked_services_reloaded": "Services succesvol opnieuw geladen",

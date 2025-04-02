@@ -47,7 +47,7 @@
   "blocked_response_ttl_desc": "İstemcilerin filtrelenmiş bir yanıtı kaç saniye süreyle önbelleğe alması gerektiğini belirtir",
   "blocked_safebrowsing": "Güvenli Gezinti tarafından engellendi",
   "blocked_service": "Engellenen hizmet",
-  "blocked_services": "Engellenen hizmetler",
+  "blocked_services": "Bağımlılığı önle",
   "blocked_services_desc": "Popüler siteleri ve hizmetleri hızlı bir şekilde engellemenizi sağlar.",
   "blocked_services_global": "Genel olarak engellenen hizmetleri kullan",
   "blocked_services_reloaded": "Hizmetler başarıyla yeniden yüklendi",

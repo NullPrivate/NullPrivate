@@ -47,7 +47,7 @@
   "blocked_response_ttl_desc": "Määrittää montako sekuntia päätteiden tulee puskuroida suodatettuja vastauksia.",
   "blocked_safebrowsing": "Turvallisen selauksen estämät",
   "blocked_service": "Estetty palvelu",
-  "blocked_services": "Estetyt palvelut",
+  "blocked_services": "Estä riippuvuutta",
   "blocked_services_desc": "Mahdollistaa suosittujen sivustojen ja palveluiden nopean eston.",
   "blocked_services_global": "Käytä yleisiä estettyjä palveluita",
   "blocked_services_reloaded": "Palvelut ladattiin onnistuneesti uudelleen",

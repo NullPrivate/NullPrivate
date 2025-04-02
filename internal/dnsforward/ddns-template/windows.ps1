@@ -1,12 +1,12 @@
-# AdGuard Home DDNS Update Script
+# AdGuard Private DDNS Update Script
 # For Windows Systems (PowerShell)
 #
 
 # Configuration - modify before running
 $base_url = "{{server_name}}"  # Example: http://localhost:34020 or https://dns.example.com
-$username = "{{username}}"      # AdGuard Home username
-$password = "{{password}}"      # AdGuard Home password
-$domain = "{{domain}}"          # Domain to update, e.g.: home.example.com
+$username = "{{username}}"      # AdGuard Private username
+$password = "{{password}}"      # AdGuard Private password
+$domain = "{{domain}}"          # Domain to update, e.g.: nas.example.com
 $cookies = "{{cookies}}"        # Cookie string for authentication, e.g.: "agh_session=abc123"
 
 # IP version configuration
@@ -20,6 +20,79 @@ $DEBUG = 1
 $TEMP_FILE_IPV4 = "$env:TEMP\adguard_ddns_ipv4.tmp"
 $TEMP_FILE_IPV6 = "$env:TEMP\adguard_ddns_ipv6.tmp"
 
+# Display usage information
+function Show-Usage {
+    Write-Host "Usage:" -ForegroundColor Blue
+    Write-Host "  Edit the script and set the following parameters before running:"
+    Write-Host "  base_url  - AdGuard Private server URL (e.g., https://{xxxxxxxxxxxxxxxx}.adguardprivate.com)" -ForegroundColor Yellow
+    Write-Host "  domain    - Domain to update (e.g., nas.example.com)" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "  For authentication, use one of the following methods:"
+    Write-Host "  1. Username/Password (recommended):"
+    Write-Host "     username - AdGuard Private username" -ForegroundColor Yellow
+    Write-Host "     password - AdGuard Private password" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "  2. Cookies (alternative, may expire):"
+    Write-Host "     cookies  - Cookie string (e.g., 'agh_session=abc123')" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "  Example configuration:"
+    Write-Host "    `$base_url = 'https://{xxxxxxxxxxxxxxxx}.adguardprivate.com'"
+    Write-Host "    `$username = 'admin'"
+    Write-Host "    `$password = 'password123'"
+    Write-Host "    `$domain = 'nas.example.com'"
+    Write-Host ""
+    Write-Host "    # OR using cookies instead of username/password:"
+    Write-Host "    `$cookies = 'agh_session=abc123'"
+    Write-Host ""
+    Write-Host "Note: This script is specifically developed for adguardprivate.com" -ForegroundColor Blue
+    exit
+}
+
+# Check if all essential parameters are provided
+function Check-Params {
+    $missing = $false
+
+    # Check base_url
+    if ([string]::IsNullOrEmpty($base_url) -or $base_url -eq "{{server_name}}") {
+        Write-Host "Error: Server URL (base_url) is required" -ForegroundColor Red
+        $missing = $true
+    }
+
+    # Check domain
+    if ([string]::IsNullOrEmpty($domain) -or $domain -eq "{{domain}}") {
+        Write-Host "Error: Domain name (domain) is required" -ForegroundColor Red
+        $missing = $true
+    }
+
+    # Check authentication
+    if (([string]::IsNullOrEmpty($username) -or $username -eq "{{username}}") -or 
+        ([string]::IsNullOrEmpty($password) -or $password -eq "{{password}}")) {
+        if ([string]::IsNullOrEmpty($cookies) -or $cookies -eq "{{cookies}}") {
+            Write-Host "Error: Authentication is required (either username/password or cookies)" -ForegroundColor Red
+            $missing = $true
+        }
+    }
+
+    # Show usage if any essential parameter is missing
+    if ($missing) {
+        Write-Host ""
+        Show-Usage
+    }
+}
+
+# Check authentication method
+function Check-Auth {
+    if (([string]::IsNullOrEmpty($username) -or $username -eq "{{username}}") -or 
+        ([string]::IsNullOrEmpty($password) -or $password -eq "{{password}}")) {
+        if ([string]::IsNullOrEmpty($cookies) -or $cookies -eq "{{cookies}}") {
+            Write-Host "Error: No authentication method available." -ForegroundColor Red
+            Write-Host "Please provide either username/password or cookies." -ForegroundColor Red
+            Show-Usage
+        } else {
+            Write-Host "Warning: Using cookies for authentication. Username/password is recommended as cookies may expire." -ForegroundColor Yellow
+        }
+    }
+}
 
 # Color output function
 function Write-ColorOutput {
@@ -240,8 +313,14 @@ function Update-DNSRecord {
 
 # Main function
 function Start-DDNSUpdate {
-    Write-ColorOutput "AdGuard Home DDNS Update Script" "Cyan"
+    Write-ColorOutput "AdGuard Private DDNS Update Script" "Cyan"
     Write-ColorOutput "===================" "Cyan"
+    
+    # Check if all essential parameters are provided
+    Check-Params
+
+    # Check authentication method
+    Check-Auth
     
     # Update IPv4 record if enabled
     if ($enable_ipv4) {
