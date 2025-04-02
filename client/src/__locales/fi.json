@@ -38,7 +38,7 @@
   "block_all": "Estä kaikki",
   "block_domain_use_filters_and_hosts": "Estä verkkotunnuksia suodattimilla ja hosts-tiedostoilla",
   "block_for_this_client_only": "Estä vain tältä päätelaitteelta",
-  "block_services": "Estä tietyt palvelut",
+  "block_services": "Estä riippuvuutta",
   "blocked_adult_websites": "Estetty lapsilukolla",
   "blocked_by": "<0>Suodatinten estämää</0>",
   "blocked_by_cname_or_ip": "Estetty CNAME:n tai IP:n perusteella",

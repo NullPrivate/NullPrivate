@@ -38,7 +38,7 @@
   "block_all": "Blokir semua",
   "block_domain_use_filters_and_hosts": "Blokir domain menggunakan filter dan berkas host",
   "block_for_this_client_only": "Blok hanya untuk klien ini",
-  "block_services": "Blokir layanan tertentu",
+  "block_services": "Mencegah kecanduan",
   "blocked_adult_websites": "Diblokir oleh Kontrol Orang Tua",
   "blocked_by": "<0>Diblokir oleh</0>",
   "blocked_by_cname_or_ip": "Diblokir oleh CNAME atau IP",

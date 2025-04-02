@@ -24,7 +24,7 @@
   "block": "ปิดกั้น",
   "block_all": "ปิดกั้นทั้งหมด",
   "block_domain_use_filters_and_hosts": "ปิดกั้นโดเมนโดยใช้ตัวกรองและไฟล์โฮสต์",
-  "block_services": "ปิดกั้นบริการเฉพาะ",
+  "block_services": "ป้องกันการเสพติด",
   "blocked_adult_websites": "ถูกปิดกั้นโดยการควบคุมของผู้ปกครอง",
   "blocked_by": "<0>ถูกปิดกั้นโดยตัวกรอง</0>",
   "blocked_by_response": "ปิดกั้นโดย CNAME หรือ IP ในการตอบกลับ",

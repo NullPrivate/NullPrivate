@@ -38,7 +38,7 @@
   "block_all": "Tümünü engelle",
   "block_domain_use_filters_and_hosts": "Filtre ve hosts dosyalarını kullanarak alan adlarını engelle",
   "block_for_this_client_only": "Yalnızca bu istemci için engelle",
-  "block_services": "Belirli hizmetleri engelle",
+  "block_services": "Bağımlılığı önle",
   "blocked_adult_websites": "Ebeveyn Denetimi tarafından engellendi",
   "blocked_by": "<0>Filtreler tarafından engellenen</0>",
   "blocked_by_cname_or_ip": "CNAME veya IP tarafından engellendi",

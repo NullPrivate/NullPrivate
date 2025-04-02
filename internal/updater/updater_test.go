@@ -31,21 +31,21 @@ func TestUpdater_Update(t *testing.T) {
   "download_linux_amd64": "%s"
 }`
 
-	const packagePath = "/AdGuardHome.tar.gz"
+	const packagePath = "/AdGuardPrivate.tar.gz"
 
 	wd := t.TempDir()
 
-	exePath := filepath.Join(wd, "AdGuardHome")
+	exePath := filepath.Join(wd, "AdGuardPrivate")
 	yamlPath := filepath.Join(wd, "AdGuardHome.yaml")
 	readmePath := filepath.Join(wd, "README.md")
 	licensePath := filepath.Join(wd, "LICENSE.txt")
 
-	require.NoError(t, os.WriteFile(exePath, []byte("AdGuardHome"), 0o755))
+	require.NoError(t, os.WriteFile(exePath, []byte("AdGuardPrivate"), 0o755))
 	require.NoError(t, os.WriteFile(yamlPath, []byte("AdGuardHome.yaml"), 0o644))
 	require.NoError(t, os.WriteFile(readmePath, []byte("README.md"), 0o644))
 	require.NoError(t, os.WriteFile(licensePath, []byte("LICENSE.txt"), 0o644))
 
-	pkgData, err := os.ReadFile("testdata/AdGuardHome_unix.tar.gz")
+	pkgData, err := os.ReadFile("testdata/AdGuardPrivate_unix.tar.gz")
 	require.NoError(t, err)
 
 	mux := http.NewServeMux()

@@ -38,7 +38,7 @@
   "block_all": "Blokiraj sve",
   "block_domain_use_filters_and_hosts": "Blokiraj domene koristeći filtre ili hosts datoteke",
   "block_for_this_client_only": "Blokiraj samo za ovog klijenta",
-  "block_services": "Blokiraj specifične usluge",
+  "block_services": "Spriječi ovisnost",
   "blocked_adult_websites": "Blokirano Roditeljskom kontrolom",
   "blocked_by": "<0>Blokirano filtrima</0>",
   "blocked_by_cname_or_ip": "Blokirao CNAME ili IP",

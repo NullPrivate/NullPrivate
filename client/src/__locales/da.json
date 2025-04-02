@@ -38,7 +38,7 @@
   "block_all": "Blokér alle",
   "block_domain_use_filters_and_hosts": "Blokér domæner vha. filtre og værtsfiler",
   "block_for_this_client_only": "Blokér kun for denne klient",
-  "block_services": "Blokere specifikke tjenester",
+  "block_services": "Forebyg afhængighed",
   "blocked_adult_websites": "Blokeret af Forælderkontrol",
   "blocked_by": "<0>Blokeret af Filtre</0>",
   "blocked_by_cname_or_ip": "Blokeret af CNAME eller IP",

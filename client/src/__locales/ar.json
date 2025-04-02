@@ -38,7 +38,7 @@
   "block_all": "حجب الكل",
   "block_domain_use_filters_and_hosts": "حظر النطاقات باستخدام عوامل التصفية وملفات المضيفين",
   "block_for_this_client_only": "احجب هذا العميل فقط",
-  "block_services": "حظر خدمات معينة",
+  "block_services": "منع الإدمان",
   "blocked_adult_websites": "محظور بواسطة الرِّقابة الأبوية",
   "blocked_by": "<0>تم حظره بواسطة الفلاتر</0>",
   "blocked_by_cname_or_ip": "حظر بواسطة CNAME or IP",

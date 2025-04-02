@@ -38,7 +38,7 @@
   "block_all": "阻止所有",
   "block_domain_use_filters_and_hosts": "使用过滤器和 Hosts 文件以拦截指定域名",
   "block_for_this_client_only": "仅对此客户端拦截",
-  "block_services": "阻止特定服务",
+  "block_services": "防沉迷",
   "blocked_adult_websites": "被家长控制阻止",
   "blocked_by": "<0>已被过滤器拦截</0>",
   "blocked_by_cname_or_ip": "按 CNAME 或 IP 拦截",

@@ -38,7 +38,7 @@
   "block_all": "Onemogoči vse",
   "block_domain_use_filters_and_hosts": "Onemogoči domene s filtri in gostiteljskimi datotekami",
   "block_for_this_client_only": "Onemogoči samo za tega odjemalca",
-  "block_services": "Onemogoči določene storitve",
+  "block_services": "Preprečevanje zasvojenosti",
   "blocked_adult_websites": "Onemogočeno s Starševskim nadzorom",
   "blocked_by": "<0>Onemogočeno s filtri</0>",
   "blocked_by_cname_or_ip": "Onemogočeno s CNAME ali IP naslovom",

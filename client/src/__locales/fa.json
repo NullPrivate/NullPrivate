@@ -32,7 +32,7 @@
   "block_all": "مسدودسازی همه",
   "block_domain_use_filters_and_hosts": "مسدودسازی دامنه ها توسط فیلترها و فایل های میزبان",
   "block_for_this_client_only": "مسدود کردن فقط برای این مشتری",
-  "block_services": "مسدودسازی سرویس های خاص",
+  "block_services": "جلوگیری از اعتیاد",
   "blocked_adult_websites": "وبسایت غیراخلاقی مسدود شده",
   "blocked_by": "<0/>مسدود شده با<0>",
   "blocked_by_response": "مسدودسازی با CNAME  یا IP در پاسخ",

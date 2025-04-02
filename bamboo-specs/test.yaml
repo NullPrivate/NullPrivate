@@ -90,7 +90,7 @@
 
 'Build frontend':
     'artifacts':
-      - 'name': 'AdGuardHome frontend'
+      - 'name': 'AdGuardPrivate frontend'
         'pattern': 'build/**'
         'shared': true
         'required': true
@@ -120,18 +120,18 @@
 
 'Artifact':
     'artifact-subscriptions':
-      - 'artifact': 'AdGuardHome frontend'
+      - 'artifact': 'AdGuardPrivate frontend'
     'artifacts':
-      - 'name': 'AdGuardHome_windows_amd64'
-        'pattern': 'dist/AdGuardHome_windows_amd64.zip'
+      - 'name': 'AdGuardPrivate_windows_amd64'
+        'pattern': 'dist/AdGuardPrivate_windows_amd64.zip'
         'shared': true
         'required': true
-      - 'name': 'AdGuardHome_darwin_amd64'
-        'pattern': 'dist/AdGuardHome_darwin_amd64.zip'
+      - 'name': 'AdGuardPrivate_darwin_amd64'
+        'pattern': 'dist/AdGuardPrivate_darwin_amd64.zip'
         'shared': true
         'required': true
-      - 'name': 'AdGuardHome_linux_amd64'
-        'pattern': 'dist/AdGuardHome_linux_amd64.tar.gz'
+      - 'name': 'AdGuardPrivate_linux_amd64'
+        'pattern': 'dist/AdGuardPrivate_linux_amd64.tar.gz'
         'shared': true
         'required': true
     'docker':

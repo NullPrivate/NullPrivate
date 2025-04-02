@@ -100,7 +100,7 @@ readonly GOFLAGS
 export GOFLAGS
 
 # Allow users to specify a different output name.
-out="${OUT:-AdGuardHome}"
+out="${OUT:-AdGuardPrivate}"
 readonly out
 
 o_flags="-o=${out}"

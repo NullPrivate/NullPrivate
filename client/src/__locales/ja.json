@@ -38,7 +38,7 @@
   "block_all": "すべてブロック",
   "block_domain_use_filters_and_hosts": "フィルタとhostsファイルを使用してドメインをブロックする",
   "block_for_this_client_only": "このクライアントに対してのみブロックする",
-  "block_services": "特定のサービスをブロックする",
+  "block_services": "依存症を防止する",
   "blocked_adult_websites": "ペアレンタルコントロールによってブロック済み",
   "blocked_by": "<0>フィルタにブロックされたDNSクエリ</0>",
   "blocked_by_cname_or_ip": "CNAMEもしくはIPアドレスによってブロック済み",

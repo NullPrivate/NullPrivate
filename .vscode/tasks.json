@@ -19,49 +19,56 @@
             "command": "make js-deps js-build"
         },
         {
-            "label": "3.1 build release v1.2.0",
+            "label": "3.1 build release",
             "type": "shell",
             "command": "make build-release VERBOSE=2 CHANNEL='development' VERSION='v1.2.0' ARCH='amd64 arm64' OS='linux' SIGN='0' FRONTEND_PREBUILT='1'"
         },
         {
-            "label": "3.2 docker build release",
+            "label": "3.2 docker build dev",
             "type": "shell",
-            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='v1.2.0' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='AdGuardPrivate:v1.2.0' DOCKER_OUTPUT='type=image'"
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='adguardprivate' DOCKER_OUTPUT='type=docker,name=adguardprivate:dev,push=false'"
         },
         {
-            "label": "(Dprecate)3.3 push to dev.jqknono.com/AdGuardPrivate:v1.2.0",
+            "label": "3.2.1 docker run dev",
             "type": "shell",
-            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='v1.2.0' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='dev.jqknono.com:34005/AdGuardPrivate' DOCKER_OUTPUT='type=image,name=dev.jqknono.com:34005/AdGuardPrivate:v1.2.0,push=true'"
+            "command": "docker run --rm --name AdGuardPrivatev -p 50000:3000 -p 50001:80 -p 50002:443 -p 50003:853 -p 50004:53/udp -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf adguardprivate:dev"
         },
         {
-            "label": "(Dprecate)3.4 push to docker.io/jqknono/AdGuardPrivate:v1.2.0",
+            "label": "(Dprecate)3.3 push to dev.jqknono.com/adguardprivate:dev",
             "type": "shell",
-            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='v1.2.0' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='docker.io/jqknono/AdGuardPrivate' DOCKER_OUTPUT='type=image,name=docker.io/jqknono/AdGuardPrivate:v1.2.0,push=true'"
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='v0.0.1' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='dev.jqknono.com:34005/adguardprivate' DOCKER_OUTPUT='type=image,name=dev.jqknono.com:34005/adguardprivate:dev,push=true'"
         },
         {
-            "label": "(Dprecate)3.5 push to aliyuncs/jqknono/AdGuardPrivate:v1.2.0",
+            "label": "(Dprecate)3.4 push to docker.io/jqknono/adguardprivate:dev",
             "type": "shell",
-            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='v1.2.0' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/jqknono/AdGuardPrivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/jqknono/adguardprivate:v1.2.0,push=true'"
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='v0.0.1' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='docker.io/jqknono/adguardprivate' DOCKER_OUTPUT='type=image,name=docker.io/jqknono/adguardprivate:dev,push=true'"
+        },
+        {
+            "label": "3.5 push to aliyuncs/jqknono/adguardprivate:v1.2.0",
+            "type": "shell",
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='v1.2.0' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/jqknono/adguardprivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/jqknono/adguardprivate:v1.2.0,push=true'",
+            "dependsOn": [
+                "3.0 build front",
+                "3.1 build release",
+            ],
         },
         {
             "label": "3.5.1 push to aliyuncs/adguardprivate/adguardprivate:dev",
             "type": "shell",
-            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='dev' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:dev,push=true'",
-            "dependsOrder": "sequence",
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:dev,push=true'",
             "dependsOn": [
                 "3.0 build front",
-                "3.1 build release"
-            ]
+                "3.1 build release",
+            ],
         },
         {
             "label": "3.5.2 push to aliyuncs/adguardprivate/adguardprivate:latest",
             "type": "shell",
-            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='latest' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest,push=true'",
-            "dependsOrder": "sequence",
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest,push=true'",
             "dependsOn": [
                 "3.0 build front",
-                "3.1 build release"
-            ]
+                "3.1 build release",
+            ],
         },
         {
             "label": "git commit no verified",
@@ -71,17 +78,17 @@
         {
             "label": "2.1 docker build dev",
             "type": "shell",
-            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='v1.2.0' ARCH='amd64' DOCKER_IMAGE_NAME='AdGuardHome-dev' DOCKER_OUTPUT='type=docker,dest=./dist/docker/AdGuardHome_linux_amd64_' VERBOSE=2"
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64' DOCKER_IMAGE_NAME='adguardprivate-dev' DOCKER_OUTPUT='type=docker,dest=./dist/docker/AdGuardPrivate_linux_amd64_.tar' VERBOSE=2"
         },
         {
             "label": "2.2 docker load dev",
             "type": "shell",
-            "command": "docker load -i ./dist/docker/AdGuardHome_linux_amd64_"
+            "command": "docker load -i ./dist/docker/AdGuardPrivate_linux_amd64_.tar && IMAGE_ID=$(docker images -q --filter \"dangling=true\" | head -n 1) && docker tag $IMAGE_ID adguardprivate-dev:dev && echo \"Loaded and tagged image $IMAGE_ID as adguardprivate-dev\""
         },
         {
-            "label": "(Dprecate)2.3 docker run dev",
+            "label": "2.3 docker run dev",
             "type": "shell",
-            "command": "docker run --name AdGuardPrivate-dev -d -p 50000:3000 -p 50001:80 -p 50002:443 -p 50003:853 -p 50004:53/udp -v ./data/work:/opt/AdGuardPrivate/work -v ./data/conf:/opt/AdGuardPrivate/conf ./dist/docker/AdGuardHome_linux_amd64_:latest"
+            "command": "docker run --rm --name AdGuardPrivate-dev -p 50000:3000 -p 50001:80 -p 50002:443 -p 50003:853 -p 50004:53/udp -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf adguardprivate-dev:dev"
         },
         {
             "label": "1.0 build",
@@ -97,9 +104,9 @@
             ]
         },
         {
-            "label": "1.2 build AdGuardHome",
+            "label": "1.2 build AdGuardPrivate",
             "type": "shell",
-            "command": "make go-build VERBOSE=2 CHANNEL='development' VERSION='v1.2.0' ARCH='amd64' OS='linux' SIGN='0'",
+            "command": "make go-build VERBOSE=2 CHANNEL='development' ARCH='amd64' OS='linux' SIGN='0'",
             "problemMatcher": [
                 "$go"
             ]
@@ -110,9 +117,9 @@
             "command": "make quick-build VERBOSE=2 "
         },
         {
-            "label": "1.4 run AdGuardHome",
+            "label": "1.4 run AdGuardPrivate",
             "type": "shell",
-            "command": "./AdGuardHome -c ../AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose",
+            "command": "./AdGuardPrivate -c ../AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose",
             "problemMatcher": []
         },
         {
@@ -137,7 +144,7 @@
             "dependsOrder": "sequence",
             "dependsOn": [
                 "3.0 build front",
-                "3.1 build release v1.2.0",
+                "3.1 build release",
                 "4.2 update dist docker"
             ],
             "problemMatcher": [
@@ -152,7 +159,7 @@
             "dependsOrder": "sequence",
             "dependsOn": [
                 "3.0 build front",
-                "3.1 build release v1.2.0",
+                "3.1 build release",
                 "4.2 update dist docker"
             ],
             "problemMatcher": [
@@ -172,7 +179,7 @@
             "dependsOrder": "sequence",
             "dependsOn": [
                 "3.0 build front",
-                "3.1 build release v1.2.0",
+                "3.1 build release",
                 "4.2 update dist docker"
             ],
             "problemMatcher": [

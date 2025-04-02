@@ -30,18 +30,17 @@ readonly version
 sudo_cmd="${SUDO:-}"
 readonly sudo_cmd
 
-if [ "$CHANNEL" = "development" ]; then
+if [ "$CHANNEL" = "development" ] || [ "$CHANNEL" = "edge" ]; then
     docker_platforms="linux/amd64"
 else
-    docker_platforms="linux/amd64,linux/arm64"
+    docker_platforms="\
+linux/386,\
+linux/amd64,\
+linux/arm/v6,\
+linux/arm/v7,\
+linux/arm64,\
+linux/ppc64le"
 fi
-# "\
-# linux/386,\
-# linux/amd64,\
-# linux/arm/v6,\
-# linux/arm/v7,\
-# linux/arm64,\
-# linux/ppc64le"
 readonly docker_platforms
 
 build_date="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
@@ -49,7 +48,7 @@ readonly build_date
 
 # Set DOCKER_IMAGE_NAME to 'adguard/adguard-home' if you want (and are allowed)
 # to push to DockerHub.
-docker_image_name="${DOCKER_IMAGE_NAME:-adguardhome-dev}"
+docker_image_name="${DOCKER_IMAGE_NAME:-adguardprivate}"
 readonly docker_image_name
 
 # Set DOCKER_OUTPUT to 'type=image,name=adguard/adguard-home,push=true' if you
@@ -96,29 +95,29 @@ dist_docker="${dist_dir}/docker"
 readonly dist_docker
 
 mkdir -p "$dist_docker"
-if [ -d "${dist_dir}/AdGuardHome_linux_386/AdGuardHome" ]; then
-    cp "${dist_dir}/AdGuardHome_linux_386/AdGuardHome/AdGuardHome" \
-        "${dist_docker}/AdGuardHome_linux_386_"
+if [ -d "${dist_dir}/AdGuardPrivate_linux_386/AdGuardPrivate" ]; then
+    cp "${dist_dir}/AdGuardPrivate_linux_386/AdGuardPrivate/AdGuardPrivate" \
+        "${dist_docker}/AdGuardPrivate_linux_386_"
 fi
-if [ -d "${dist_dir}/AdGuardHome_linux_amd64/AdGuardHome" ]; then
-    cp "${dist_dir}/AdGuardHome_linux_amd64/AdGuardHome/AdGuardHome" \
-        "${dist_docker}/AdGuardHome_linux_amd64_"
+if [ -d "${dist_dir}/AdGuardPrivate_linux_amd64/AdGuardPrivate" ]; then
+    cp "${dist_dir}/AdGuardPrivate_linux_amd64/AdGuardPrivate/AdGuardPrivate" \
+        "${dist_docker}/AdGuardPrivate_linux_amd64_"
 fi
-if [ -d "${dist_dir}/AdGuardHome_linux_arm64/AdGuardHome" ]; then
-    cp "${dist_dir}/AdGuardHome_linux_arm64/AdGuardHome/AdGuardHome" \
-        "${dist_docker}/AdGuardHome_linux_arm64_"
+if [ -d "${dist_dir}/AdGuardPrivate_linux_arm64/AdGuardPrivate" ]; then
+    cp "${dist_dir}/AdGuardPrivate_linux_arm64/AdGuardPrivate/AdGuardPrivate" \
+        "${dist_docker}/AdGuardPrivate_linux_arm64_"
 fi
-if [ -d "${dist_dir}/AdGuardHome_linux_arm_6/AdGuardHome" ]; then
-    cp "${dist_dir}/AdGuardHome_linux_arm_6/AdGuardHome/AdGuardHome" \
-        "${dist_docker}/AdGuardHome_linux_arm_v6"
+if [ -d "${dist_dir}/AdGuardPrivate_linux_arm_6/AdGuardPrivate" ]; then
+    cp "${dist_dir}/AdGuardPrivate_linux_arm_6/AdGuardPrivate/AdGuardPrivate" \
+        "${dist_docker}/AdGuardPrivate_linux_arm_v6"
 fi
-if [ -d "${dist_dir}/AdGuardHome_linux_arm_7/AdGuardHome" ]; then
-    cp "${dist_dir}/AdGuardHome_linux_arm_7/AdGuardHome/AdGuardHome" \
-        "${dist_docker}/AdGuardHome_linux_arm_v7"
+if [ -d "${dist_dir}/AdGuardPrivate_linux_arm_7/AdGuardPrivate" ]; then
+    cp "${dist_dir}/AdGuardPrivate_linux_arm_7/AdGuardPrivate/AdGuardPrivate" \
+        "${dist_docker}/AdGuardPrivate_linux_arm_v7"
 fi
-if [ -d "${dist_dir}/AdGuardHome_linux_ppc64le/AdGuardHome" ]; then
-    cp "${dist_dir}/AdGuardHome_linux_ppc64le/AdGuardHome/AdGuardHome" \
-        "${dist_docker}/AdGuardHome_linux_ppc64le_"
+if [ -d "${dist_dir}/AdGuardPrivate_linux_ppc64le/AdGuardPrivate" ]; then
+    cp "${dist_dir}/AdGuardPrivate_linux_ppc64le/AdGuardPrivate/AdGuardPrivate" \
+        "${dist_docker}/AdGuardPrivate_linux_ppc64le_"
 fi
 
 # Don't use quotes with $docker_version_tag and $docker_channel_tag, because we
@@ -129,11 +128,11 @@ fi
 #
 # shellcheck disable=SC2086
 $sudo_cmd docker "$debug_flags" \
-	buildx build \
-	--build-arg BUILD_DATE="$build_date" \
-	--build-arg DIST_DIR="$dist_dir" \
-	--build-arg VCS_REF="$commit" \
-	--build-arg VERSION="$version" \
-	--output "$docker_output" \
-	--platform "$docker_platforms" \
-	$docker_version_tag $docker_channel_tag -f ./docker/Dockerfile .
+    buildx build \
+    --build-arg BUILD_DATE="$build_date" \
+    --build-arg DIST_DIR="$dist_dir" \
+    --build-arg VCS_REF="$commit" \
+    --build-arg VERSION="$version" \
+    --output "$docker_output" \
+    --platform "$docker_platforms" \
+    $docker_version_tag $docker_channel_tag -f ./docker/Dockerfile .

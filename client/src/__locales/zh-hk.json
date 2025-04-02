@@ -38,7 +38,7 @@
   "block_all": "封鎖全部",
   "block_domain_use_filters_and_hosts": "使用過濾器與 hosts 檔案阻擋網域查詢",
   "block_for_this_client_only": "僅封鎖此用戶端",
-  "block_services": "封鎖特定服務",
+  "block_services": "防沉癮",
   "blocked_adult_websites": "已封鎖的成人網站",
   "blocked_by": "<0>被過濾器封鎖</0>",
   "blocked_by_cname_or_ip": "使用 CNAME 或 IP 封鎖",

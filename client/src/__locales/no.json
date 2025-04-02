@@ -35,7 +35,7 @@
   "block_all": "Blokker alt",
   "block_domain_use_filters_and_hosts": "Blokker domener ved hjelp av filtre, «hosts»-filer, og rå domener",
   "block_for_this_client_only": "Blokker kun for denne klienten",
-  "block_services": "Blokker spesifikke tjenester",
+  "block_services": "Forebygg avhengighet",
   "blocked_adult_websites": "Blokkerte voksennettsteder",
   "blocked_by": "<0>Blokkert av filtre</0>",
   "blocked_by_cname_or_ip": "Blokkert av CNAME eller IP",

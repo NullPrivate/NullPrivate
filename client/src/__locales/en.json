@@ -38,7 +38,7 @@
   "block_all": "Block all",
   "block_domain_use_filters_and_hosts": "Block domains using filters and hosts files",
   "block_for_this_client_only": "Block for this client only",
-  "block_services": "Block specific services",
+  "block_services": "Prevent addiction",
   "blocked_adult_websites": "Blocked by Parental Control",
   "blocked_by": "<0>Blocked by Filters</0>",
   "blocked_by_cname_or_ip": "Blocked by CNAME or IP",

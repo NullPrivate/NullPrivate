@@ -38,7 +38,7 @@
   "block_all": "Blocați tot",
   "block_domain_use_filters_and_hosts": "Blocați domenii folosind filtre și fișiere hosts",
   "block_for_this_client_only": "Blocați numai pentru acest client",
-  "block_services": "Blochează anumite servicii",
+  "block_services": "Preveniți dependența",
   "blocked_adult_websites": "Site-uri pentru adulți blocate",
   "blocked_by": "<0>Blocate de Filtre</0>",
   "blocked_by_cname_or_ip": "Blocat de CNAME sau IP",

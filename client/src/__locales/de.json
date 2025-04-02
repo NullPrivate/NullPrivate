@@ -38,7 +38,7 @@
   "block_all": "Alle sperren",
   "block_domain_use_filters_and_hosts": "Domains durch Filter und Host-Dateien sperren",
   "block_for_this_client_only": "Nur für diesen Client sperren",
-  "block_services": "Bestimmte Dienste sperren",
+  "block_services": "Suchtprävention",
   "blocked_adult_websites": "Gesperrt durch Kindersicherung",
   "blocked_by": "<0>Durch Filter gesperrt</0>",
   "blocked_by_cname_or_ip": "Gesperrt durch CNAME oder IP",

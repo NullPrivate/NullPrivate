@@ -38,7 +38,7 @@
   "block_all": "Блокувати все",
   "block_domain_use_filters_and_hosts": "Блокування доменів за допомогою фільтрів та hosts-файлів",
   "block_for_this_client_only": "Заборонити тільки цей клієнт",
-  "block_services": "Блокувати конкретні сервіси",
+  "block_services": "Запобігання залежності",
   "blocked_adult_websites": "Заблоковано «Батьківським контролем»",
   "blocked_by": "<0>Заблоковано фільтрами</0>",
   "blocked_by_cname_or_ip": "Заблоковано по CNAME або IP",

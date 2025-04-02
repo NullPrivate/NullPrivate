@@ -347,7 +347,7 @@ readonly announcement_url
 rm -f "$version_json"
 echo "{
   \"version\": \"${version}\",
-  \"announcement\": \"AdGuard Home ${version} is now available!\",
+  \"announcement\": \"AdGuard Private ${version} is now available!\",
   \"announcement_url\": \"${announcement_url}\",
   \"selfupdate_min_version\": \"0.0\",
 " >>"$version_json"

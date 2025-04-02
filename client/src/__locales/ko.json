@@ -38,7 +38,7 @@
   "block_all": "차단",
   "block_domain_use_filters_and_hosts": "필터 및 호스트 파일을 사용하여 도메인 차단",
   "block_for_this_client_only": "이 클라이언트에 대해서만 차단",
-  "block_services": "특정 서비스 차단",
+  "block_services": "중독 방지",
   "blocked_adult_websites": "자녀 보호에 의해 차단됨",
   "blocked_by": "<0>필터에 의해 차단됨</0>",
   "blocked_by_cname_or_ip": "CNAME 또는 IP에 의해 차단됨",
