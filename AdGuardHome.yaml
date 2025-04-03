@@ -154,9 +154,9 @@ filtering:
   parental_block_host: family-block.dns.adguard.com
   safebrowsing_block_host: standard-block.dns.adguard.com
   rewrites:
-    - domain: nas.home
+    - domain: nas1.home
       answer: 54.179.178.240
-    - domain: nas.home
+    - domain: nas1.home
       answer: 2406:da18:c10:f800:b3fc:22c7:aa7a:abb
   safe_fs_patterns:
     - /home/test/code/AdGuardHome/data/userfilters/*

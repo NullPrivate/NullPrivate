@@ -638,7 +638,7 @@
   "schedule_save": "保存时间表",
   "schedule_select_days": "选择日",
   "schedule_services": "允许在此时间段内访问服务",
-  "schedule_services_desc": "配置「服务拦截过滤器」的暂停计划",
+  "schedule_services_desc": "配置防沉迷的允许使用时间表",
   "schedule_services_desc_client": "为此客户端配置「服务拦截过滤器」的暂停计划",
   "schedule_time_all_day": "全天",
   "schedule_timezone": "选择时区",

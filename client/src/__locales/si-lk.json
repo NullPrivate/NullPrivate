@@ -577,7 +577,7 @@
   "schedule_from": "සිට",
   "schedule_invalid_select": "ආරම්භක වේලාව අවසන් වේලාවට කලින් විය යුතුය",
   "schedule_select_days": "දවස් තෝරන්න",
-  "schedule_services": "සේවා අවහිර විරාමය",
+  "schedule_services_desc": "එක්වීමේ විරෝධී පද්ධතියේ අවසර කාලසටහන සකසන්න",
   "schedule_time_all_day": "දවස පුරාම",
   "schedule_timezone": "වේලා කලාපයක් තෝරන්න",
   "schedule_to": "දක්වා",
