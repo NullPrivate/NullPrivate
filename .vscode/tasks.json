@@ -135,7 +135,7 @@
         {
             "label": "4.2 update dist docker",
             "type": "shell",
-            "command": "cp -f dist/AdGuardHome_linux_amd64/AdGuardHome/AdGuardHome dist/docker/AdGuardHome_linux_amd64_ && cp -f dist/AdGuardHome_linux_arm64/AdGuardHome/AdGuardHome dist/docker/AdGuardHome_linux_arm64_"
+            "command": "cp -f dist/AdGuardPrivate_linux_amd64/AdGuardPrivate/AdGuardPrivate dist/docker/AdGuardPrivate_linux_amd64_ && cp -f dist/AdGuardPrivate_linux_arm64/AdGuardPrivate/AdGuardPrivate dist/docker/AdGuardPrivate_linux_arm64_"
         },
         {
             "label": "4.3 push to aliyuncs/adguardprivate/adguardprivate:dev",
