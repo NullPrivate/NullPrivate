@@ -1,0 +1,182 @@
+name: Create Release on Tag
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: '1.24.1'
+
+    - name: Set up Node
+      uses: actions/setup-node@v1
+      with:
+        node-version: '16'
+
+    - name: Build Frontend
+      run: make js-deps js-build
+
+    - name: Build Release Packages
+      run: 'make SIGN=0 VERBOSE=1 VERSION="${{ github.ref_name }} build-release'
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: dist
+        path: dist/
+
+  create_release:
+    needs: build
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref_name }}
+        release_name: Release ${{ github.ref_name }}
+        draft: false
+        prerelease: false
+
+  upload_assets:
+    needs: create_release
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          # Darwin builds
+          - os: darwin
+            arch: amd64
+            ext: zip
+          - os: darwin
+            arch: arm64
+            ext: zip
+          
+          # FreeBSD builds
+          - os: freebsd
+            arch: 386
+            ext: tar.gz
+          - os: freebsd
+            arch: amd64
+            ext: tar.gz
+          - os: freebsd
+            arch: arm64
+            ext: tar.gz
+          - os: freebsd
+            arch: armv5
+            ext: tar.gz
+          - os: freebsd
+            arch: armv6
+            ext: tar.gz
+          - os: freebsd
+            arch: armv7
+            ext: tar.gz
+
+          # Linux builds
+          - os: linux
+            arch: 386
+            ext: tar.gz
+          - os: linux
+            arch: amd64
+            ext: tar.gz
+          - os: linux
+            arch: arm64
+            ext: tar.gz
+          - os: linux
+            arch: armv5
+            ext: tar.gz
+          - os: linux
+            arch: armv6
+            ext: tar.gz
+          - os: linux
+            arch: armv7
+            ext: tar.gz
+          - os: linux
+            arch: mips_softfloat
+            ext: tar.gz
+          - os: linux
+            arch: mips64_softfloat
+            ext: tar.gz
+          - os: linux
+            arch: mips64le_softfloat
+            ext: tar.gz
+          - os: linux
+            arch: mipsle_softfloat
+            ext: tar.gz
+          - os: linux
+            arch: ppc64le
+            ext: tar.gz
+          - os: linux
+            arch: riscv64
+            ext: tar.gz
+
+          # OpenBSD builds
+          - os: openbsd
+            arch: amd64
+            ext: tar.gz
+          - os: openbsd
+            arch: arm64
+            ext: tar.gz
+
+          # Windows builds
+          - os: windows
+            arch: 386
+            ext: zip
+          - os: windows
+            arch: amd64
+            ext: zip
+          - os: windows
+            arch: arm64
+            ext: zip
+
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: dist
+        path: dist/
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: ./dist/AdGuardPrivate_${{ matrix.os }}_${{ matrix.arch }}.${{ matrix.ext }}
+        asset_name: AdGuardPrivate_${{ matrix.os }}_${{ matrix.arch }}.${{ matrix.ext }}
+        asset_content_type: ${{ matrix.ext == 'zip' && 'application/zip' || 'application/gzip' }}
+
+  upload_frontend:
+    needs: create_release
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: dist
+        path: dist/
+
+    - name: Upload Frontend Package
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.create_release.outputs.upload_url }}
+        asset_path: ./dist/AdGuardPrivate_frontend.tar.gz
+        asset_name: AdGuardPrivate_frontend.tar.gz
+        asset_content_type: application/gzip

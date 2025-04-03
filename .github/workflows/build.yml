@@ -7,9 +7,7 @@
 'on':
   'push':
     'branches':
-    - '*'
-    'tags':
-    - 'v*'
+    - 'master'
   'pull_request':
 
 'jobs':
