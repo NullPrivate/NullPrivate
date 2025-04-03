@@ -1,0 +1,81 @@
+name: Create Release on Tag
+
+env:
+  GO_VERSION: "1.24.1"
+  NODE_VERSION: "16"
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: "${{ env.GO_VERSION }}"
+
+      - name: Set up Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "${{ env.NODE_VERSION }}"
+
+      - name: Set up Go modules cache
+        uses: actions/cache@v4
+        with:
+          path: ~/go/pkg/mod
+          key: "${{ runner.os }}-go-${{ hashFiles('go.sum') }}"
+          restore-keys: "${{ runner.os }}-go-"
+
+      - name: Get npm cache directory
+        id: npm-cache
+        run: 'echo "::set-output name=dir::$(npm config get cache)"'
+
+      - name: Build Frontend
+        run: make js-deps js-build
+
+      - name: Set up npm cache
+        uses: actions/cache@v4
+        with:
+          path: "${{ steps.npm-cache.outputs.dir }}"
+          key: "${{ runner.os }}-node-${{ hashFiles('client/package-lock.json') }}"
+          restore-keys: "${{ runner.os }}-node-"
+
+      - name: Set up Snapcraft
+        run: sudo snap install snapcraft --classic
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Run snapshot build
+        run: 'make SIGN=0 VERBOSE=1 CHANNEL=development OS="linux darwin windows" ARCH="amd64 arm64" VERSION="${{ github.ref_name }}" build-release'
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Release
+        uses: softprops/action-gh-release@v2.2.1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            dist/**/*.tar.gz
+            dist/**/*.zip
+            version.json
+            LICENSE.txt
+            checksums.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
