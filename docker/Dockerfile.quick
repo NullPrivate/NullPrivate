@@ -8,4 +8,5 @@ COPY --chown=nobody:nogroup\
 	./dist/docker/AdGuardPrivate_${TARGETOS}_${TARGETARCH}_${TARGETVARIANT}\
 	/opt/adguardhome/AdGuardHome
 
-RUN setcap 'cap_net_bind_service=+eip' /opt/adguardhome/AdGuardHome
+RUN chmod +x /opt/adguardhome/AdGuardHome && \
+	setcap 'cap_net_bind_service=+eip' /opt/adguardhome/AdGuardHome
