@@ -145,7 +145,7 @@
         {
             "label": "4.4 push to aliyuncs/adguardprivate/adguardprivate:latest",
             "type": "shell",
-            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.quick -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest . --push",
+            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.quick -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:v1.2.0 -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest . --push",
             "dependsOrder": "sequence",
             "dependsOn": [
                 "3.0 build front",
@@ -158,14 +158,9 @@
             ]
         },
         {
-            "label": "(Deprecated)4.5 push to aliyuncs/adguardprivate/adguardprivate:rollback",
+            "label": "4.5 push to docker.io/adguardprivate/adguardprivate:latest",
             "type": "shell",
-            "command": "docker tag registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:rollback && docker push registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:rollback",
-        },
-        {
-            "label": "4.6 push to aliyuncs/adguardprivate/adguardprivate:v1.2.0",
-            "type": "shell",
-            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.quick -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:v1.2.0 . --push",
+            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.quick -t docker.io/adguardprivate/adguardprivate:v1.2.0 -t docker.io/adguardprivate/adguardprivate:latest . --push",
             "dependsOrder": "sequence",
             "dependsOn": [
                 "3.0 build front",
