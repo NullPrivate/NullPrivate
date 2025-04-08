@@ -166,7 +166,7 @@ type Config struct {
 	// ProtectionEnabled defines whether or not use any of filtering features.
 	ProtectionEnabled bool `yaml:"protection_enabled"`
 
-	// ServiceURLs 是用于下载blocked services的URL列表
+	// ServiceURLs is the URL list for downloading blocked services
 	ServiceURLs ServicesURLs `yaml:"service_urls"`
 }
 

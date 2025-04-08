@@ -334,7 +334,7 @@ AdGuard's [Hostlists Registry][reg].
 Optional environment:
 
  *  `URL`: the URL of the index file.  By default it's
-    `https://adguardteam.github.io/HostlistsRegistry/assets/services.json`.
+    `https://hostlistsregistry.adguardprivate.com/assets/services.en-us.json`.
 
    ###  Usage
 
