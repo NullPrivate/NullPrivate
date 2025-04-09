@@ -20,6 +20,9 @@ Modifications to the original repository:
   - Additions
     - Scheduled certificate reloading
     - Rate limit support for other protocols
+    - DDNS scripts for dynamic domain name resolution
+    - Application-specific blocking
+    - DNS routing with rule lists
   - Modifications
     - Replace `github.com/AdguardTeam/dnsproxy` with `github.com/jqknono/dnsproxy`
     - Original library does not support scheduled certificate reloading, added goroutine to reload certificates every three days, `case <-time.After(3 * 24 * time.Hour):`
@@ -43,3 +46,28 @@ cp -R ../dnsproxy/proxy/ .
 cp -R ../dnsproxy/proxyutil/ .
 cp -R ../dnsproxy/upstream/ .
 ```
+
+## New Features
+
+1. **DNS Routing with Rule Lists**
+
+   - Customize DNS routing using rule lists defined in the configuration file.
+   - Supports third-party rules like [Loyalsoldier/v2ray-rules-dat](https://github.com/Loyalsoldier/v2ray-rules-dat).
+
+2. **Application-Specific Blocking Rule Lists**
+
+   - Configure blocking of sources from specific applications.
+   - Supports third-party configurations for flexible management.
+
+3. **Dynamic DNS (DDNS)**
+
+   - Provides dynamic domain name resolution capabilities for various scenarios.
+
+4. **Advanced Rate Limiting**
+
+   - Implements efficient traffic management and control measures.
+
+5. **Enhanced Deployment Features**
+   - Load balancing support.
+   - Automatic certificate maintenance.
+   - Optimized network connections.

@@ -79,17 +79,53 @@
     "projectTranslator.specifiedFiles": [
         {
             "sourceFile": {
-                "path": "readmes/readme.zh-cn.md",
-                "lang": "zh-cn"
+                "path": "README.md",
+                "lang": "en-us"
             },
             "destFiles": [
                 {
-                    "path": "readme.md",
-                    "lang": "en-us"
+                    "path": "readmes/readme.zh-cn.md",
+                    "lang": "zh-cn"
+                },
+                {
+                    "path": "readmes/readme.fr-fr.md",
+                    "lang": "fr-fr"
+                },
+                {
+                    "path": "readmes/readme.de-de.md",
+                    "lang": "de-de"
+                },
+                {
+                    "path": "readmes/readme.es-es.md",
+                    "lang": "es-es"
+                },
+                {
+                    "path": "readmes/readme.ru-ru.md",
+                    "lang": "ru-ru"
+                },
+                {
+                    "path": "readmes/readme.pt-br.md",
+                    "lang": "pt-br"
+                },
+                {
+                    "path": "readmes/readme.ko-kr.md",
+                    "lang": "ko-kr"
+                },
+                {
+                    "path": "readmes/readme.fr-ca.md",
+                    "lang": "fr-ca"
                 },
                 {
                     "path": "readmes/readme.ja-jp.md",
                     "lang": "ja-jp"
+                },
+                {
+                    "lang": "zh-hk",
+                    "path": "readmes/readme.zh-hk.md"
+                },
+                {
+                    "lang": "ar-sa",
+                    "path": "readmes/readme.ar-sa.md"
                 }
             ]
         }
