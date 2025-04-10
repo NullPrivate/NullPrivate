@@ -17,17 +17,17 @@ import (
 	"github.com/AdguardTeam/urlfilter/rules"
 )
 
-// 首先，创建一个互斥锁保护 serviceLoader
-var serviceLoaderMu sync.RWMutex
-
 // serviceRules maps a service ID to its filtering rules.
 var serviceRules map[string][]*rules.NetworkRule
 
 // serviceIDs contains service IDs sorted alphabetically.
 var serviceIDs []string
 
-// serviceLoader 保存动态服务加载器实例
+// serviceLoader is the global service loader instance.
 var serviceLoader *ServiceLoader
+
+// serviceLoaderMu protects the service loader instance.
+var serviceLoaderMu sync.RWMutex
 
 // initBlockedServices initializes package-level blocked service data.
 func initBlockedServices() {
@@ -51,11 +51,13 @@ func initBlockedServices() {
 	log.Debug("filtering: initialized %d services", l)
 }
 
-// initServiceLoader 初始化服务加载器
+// InitServiceLoader initializes the service loader with the configured URLs.
+// It is called when the DNSFilter is created.
 func (d *DNSFilter) initServiceLoader(ctx context.Context) {
 	if len(d.conf.ServiceURLs) == 0 {
-		// use default "https://hostlistsregistry.adguardprivate.com/assets/services.en-us.json"
-		d.conf.ServiceURLs = []string{"https://hostlistsregistry.adguardprivate.com/assets/services.en-us.json"}
+		// d.conf.ServiceURLs = []string{"https://www.adguardprivate.com/services/i18n/zh-cn.json"}
+		// d.conf.ServiceURLs = []string{"https://hostlistsregistry.adguardprivate.com/assets/services.en-us.json"}
+		d.conf.ServiceURLs = []string{"https://hostlistsregistry.adguardprivate.com/assets/services.zh-cn.json"}
 	}
 
 	logger := slog.Default()
@@ -70,7 +72,8 @@ func (d *DNSFilter) initServiceLoader(ctx context.Context) {
 		logger,
 	)
 
-	// 使用锁保护写操作
+	// Use the service loader mutex to ensure that only one instance is created
+	// at a time.
 	serviceLoaderMu.Lock()
 	serviceLoader = newLoader
 	serviceLoaderMu.Unlock()
@@ -171,9 +174,6 @@ func (d *DNSFilter) ApplyBlockedServices(setts *Settings) {
 
 	setts.ServicesRules = []ServiceEntry{}
 	bsvc := d.conf.BlockedServices
-
-	// 在应用服务前动态更新服务规则
-	updateBlockedServicesFromLoader(context.Background())
 
 	// TODO(s.chzhen):  Use startTime from [dnsforward.dnsContext].
 	if bsvc != nil && !bsvc.Schedule.Contains(time.Now()) {

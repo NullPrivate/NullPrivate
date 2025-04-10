@@ -22,7 +22,10 @@
                 "-c",
                 "AdGuardHome.yaml",
                 "-v",
-                "--local-frontend"
+                "--local-frontend",
+                "-l",
+                "adguardprivate.log",
+                "-v"
             ]
         }
     ]

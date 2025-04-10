@@ -1090,7 +1090,7 @@ func (d *DNSFilter) Start() {
 
 	d.RegisterFilteringHandlers()
 
-	// 在启动时初始化服务加载器
+	// Initialize the service loader during startup
 	d.initServiceLoader(context.Background())
 
 	go d.updatesLoop()

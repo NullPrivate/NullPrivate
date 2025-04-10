@@ -115,7 +115,7 @@
         {
             "label": "Debug: tools/q",
             "type": "shell",
-            "command": "./tools/q -s 127.0.0.1:5353 -t A -w -q baidu.com"
+            "command": "./tools/q -s 127.0.0.1:34027 -t A -w -q google.com"
         },
         {
             "label": "4.1 push to aliyuncs/adguardprivate/adguardprivate:base",
