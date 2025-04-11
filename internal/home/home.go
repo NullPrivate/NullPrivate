@@ -31,6 +31,7 @@ import (
 	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering/safesearch"
 	"github.com/AdGuardPrivate/AdGuardPrivate/internal/permcheck"
 	"github.com/AdGuardPrivate/AdGuardPrivate/internal/querylog"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/ruleset"
 	"github.com/AdGuardPrivate/AdGuardPrivate/internal/stats"
 	"github.com/AdGuardPrivate/AdGuardPrivate/internal/updater"
 	"github.com/AdGuardPrivate/AdGuardPrivate/internal/version"
@@ -59,6 +60,7 @@ type homeContext struct {
 	filters    *filtering.DNSFilter // DNS filtering module
 	web        *webAPI              // Web (HTTP, HTTPS) module
 	tls        *tlsManager          // TLS module
+	ruleset    *ruleset.Ruleset     // Ruleset module
 
 	// etcHosts contains IP-hostname mappings taken from the OS-specific hosts
 	// configuration files, for example /etc/hosts.
@@ -1101,7 +1103,7 @@ func cmdlineUpdate(ctx context.Context, l *slog.Logger, opts options, upd *updat
 	//
 	// TODO(e.burkov):  We could probably initialize the internal resolver
 	// separately.
-	err := initDNSServer(nil, nil, nil, nil, nil, nil, &tlsConfigSettings{}, l)
+	err := initDNSServer(nil, nil, nil, nil, nil, nil, nil, &tlsConfigSettings{}, l)
 	fatalOnError(err)
 
 	l.InfoContext(ctx, "performing update via cli")

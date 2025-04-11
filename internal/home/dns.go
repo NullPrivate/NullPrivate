@@ -18,6 +18,7 @@ import (
 	"github.com/AdGuardPrivate/AdGuardPrivate/internal/dnsforward"
 	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering"
 	"github.com/AdGuardPrivate/AdGuardPrivate/internal/querylog"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/ruleset"
 	"github.com/AdGuardPrivate/AdGuardPrivate/internal/stats"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/log"
@@ -106,11 +107,19 @@ func initDNS(baseLogger *slog.Logger, statsDir, querylogDir string) (err error) 
 	tlsConf := &tlsConfigSettings{}
 	Context.tls.WriteDiskConfig(tlsConf)
 
+	Context.ruleset, err = ruleset.New(&ruleset.Config{
+		BaseDir: filepath.Join(Context.getDataDir(), rulesetDataDir),
+	})
+	if err != nil {
+		return fmt.Errorf("creating ruleset: %w", err)
+	}
+
 	return initDNSServer(
 		Context.filters,
 		Context.stats,
 		Context.queryLog,
 		Context.dhcpServer,
+		Context.ruleset,
 		anonymizer,
 		httpRegister,
 		tlsConf,
@@ -129,6 +138,7 @@ func initDNSServer(
 	sts stats.Interface,
 	qlog querylog.QueryLog,
 	dhcpSrv dnsforward.DHCP,
+	ruleset *ruleset.Ruleset,
 	anonymizer *aghnet.IPMut,
 	httpReg aghhttp.RegisterFunc,
 	tlsConf *tlsConfigSettings,
@@ -144,6 +154,7 @@ func initDNSServer(
 		DHCPServer:  dhcpSrv,
 		EtcHosts:    Context.etcHosts,
 		LocalDomain: config.DHCP.LocalDomainName,
+		Ruleset:     ruleset,
 	})
 	defer func() {
 		if err != nil {
@@ -254,7 +265,7 @@ func newServerConfig(
 		ServeHTTP3:             dnsConf.ServeHTTP3,
 		UseHTTP3Upstreams:      dnsConf.UseHTTP3Upstreams,
 		ServePlainDNS:          dnsConf.ServePlainDNS,
-		ServiceType:            config.ServiceType, // 从全局配置中获取 ServiceType 设置
+		ServiceType:            config.ServiceType,
 	}
 
 	var initialAddresses []netip.Addr

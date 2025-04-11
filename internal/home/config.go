@@ -16,6 +16,7 @@ import (
 	"github.com/AdGuardPrivate/AdGuardPrivate/internal/dnsforward"
 	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering"
 	"github.com/AdGuardPrivate/AdGuardPrivate/internal/querylog"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/ruleset"
 	"github.com/AdGuardPrivate/AdGuardPrivate/internal/schedule"
 	"github.com/AdGuardPrivate/AdGuardPrivate/internal/stats"
 	"github.com/AdguardTeam/dnsproxy/fastip"
@@ -38,6 +39,8 @@ const (
 
 	// Default service type constants
 	defaultServiceType = "personal"
+
+	rulesetDataDir = "rulesets"
 )
 
 // logSettings are the logging settings part of the configuration file.
@@ -151,6 +154,9 @@ type configuration struct {
 
 	DHCP      *dhcpd.ServerConfig `yaml:"dhcp"`
 	Filtering *filtering.Config   `yaml:"filtering"`
+
+	// DNS shunt
+	Ruleset *ruleset.Ruleset `yaml:"ruleset"`
 
 	// Clients contains the YAML representations of the persistent clients.
 	// This field is only used for reading and writing persistent client data.
@@ -487,6 +493,7 @@ var config = &configuration{
 	SchemaVersion: configmigrate.LastSchemaVersion,
 	Theme:         ThemeAuto,
 	ServiceType:   defaultServiceType,
+	Ruleset:       &ruleset.Ruleset{},
 }
 
 // configFilePath returns the absolute path to the symlink-evaluated path to the

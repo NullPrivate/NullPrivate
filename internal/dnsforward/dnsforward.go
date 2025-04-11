@@ -22,6 +22,7 @@ import (
 	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering"
 	"github.com/AdGuardPrivate/AdGuardPrivate/internal/querylog"
 	"github.com/AdGuardPrivate/AdGuardPrivate/internal/rdns"
+	"github.com/AdGuardPrivate/AdGuardPrivate/internal/ruleset"
 	"github.com/AdGuardPrivate/AdGuardPrivate/internal/stats"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/dnsproxy/upstream"
@@ -187,6 +188,9 @@ type Server struct {
 
 	// serverLock protects Server.
 	serverLock sync.RWMutex
+
+	// ruleset
+	ruleset *ruleset.Ruleset
 }
 
 // defaultLocalDomainSuffix is the default suffix used to detect internal hosts
@@ -209,6 +213,9 @@ type DNSCreateParams struct {
 	Logger *slog.Logger
 
 	LocalDomain string
+
+	// ruleset configuration.
+	Ruleset *ruleset.Ruleset
 }
 
 // NewServer creates a new instance of the dnsforward.Server
@@ -256,6 +263,7 @@ func NewServer(p DNSCreateParams) (s *Server, err error) {
 		conf: ServerConfig{
 			ServePlainDNS: true,
 		},
+		ruleset: p.Ruleset,
 	}
 
 	s.sysResolvers, err = sysresolv.NewSystemResolvers(nil, defaultPlainDNSPort)
@@ -697,7 +705,7 @@ func (s *Server) configureAlternateUpstreams(boot upstream.Resolver) (err error)
 	altUC, err := prepareAlternateUpstreams(
 		s.conf.UpstreamAlternateDNS,
 		s.conf.UpstreamAlternateRulesets,
-		"", // Use default rulesets dir
+		s.ruleset.BaseDir,
 		opts,
 	)
 	if err != nil {

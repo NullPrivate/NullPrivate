@@ -24,16 +24,97 @@ dns:
   ratelimit_whitelist: []
   refuse_any: true
   upstream_dns:
-    - 223.5.5.5
+    - '#[/aliyun.com/alibaba.com/alicdn.com/aliyuncs.com/]tls://dns.alidns.com'
+    - '#[/ecs.cn-hongkong.aliyuncs.com/]h3://doh.jqknono.com/dns-query'
+    - '#tls://one.one.one.one'
+    - '#https://one.one.one.one/dns-query'
+    - '#https://dns.google/dns-query'
+    - '#h3://gg.adguardprivate.com/dns-query'
+    - '#h3://cf.adguardprivate.com/dns-query'
+    - '#tls://home.public3.adguardprivate.com'
+    - '#h3://public3.adguardprivate.com/dns-query/home'
+    - '#tls://dot.pub'
+    - '#tls://dns.alidns.com'
+    - '#tls://dns.google'
+    - '#tls://one.one.one.one'
+    - '# Google'
+    - '#https://dns.google/dns-query'
+    - '#tls://dns.google'
+    - '#tls://dns64.dns.google'
+    - '#tls://8.8.8.8'
+    - '#tls://8.8.4.4'
+    - '#tls://[2001:4860:4860::8888]'
+    - '#tls://[2001:4860:4860::8844]'
+    - '#tls://[2001:4860:4860::64]'
+    - '#tls://[2001:4860:4860::6464]'
+    - '# Opendns'
+    - '#https://doh.opendns.com/dns-query'
+    - '# Cloudflare'
+    - '#https://one.one.one.one/dns-query'
+    - '#tls://one.one.one.one'
+    - '#tls://dns64.cloudflare-dns.com'
+    - '#tls://1.1.1.1'
+    - '#tls://1.0.0.1'
+    - '#tls://[2606:4700:4700::1111]'
+    - '#tls://[2606:4700:4700::1001]'
+    - '#tls://[2606:4700:4700::64]'
+    - '#tls://[2606:4700:4700::6400]'
+    - '#https://1.1.1.1/dns-query'
+    - '#https://1.0.0.1/dns-query'
+    - '# ali'
+    - '#tls://223.5.5.5'
+    - '#tls://223.6.6.6'
+    - '#tls://dns.alidns.com'
+    - h3://dns.alidns.com/dns-query
+    - '#https://140291.alidns.com/dns-query'
+    - '#tls://140291.alidns.com'
+    - '#223.5.5.5'
+    - '#223.6.6.6'
+    - '#2400:3200::1'
+    - '#2400:3200:baba::1'
+    - '# tencent'
+    - '#tls://1.12.12.12'
+    - '#tls://120.53.53.53'
+    - '#tls://dot.pub'
+    - '#https://doh.pub/dns-query'
+    - '#https://1.12.12.12/dns-query'
+    - '#https://120.53.53.53/dns-query'
+    - '#tls://dot-9e62e277.dot.pub'
+    - '#https://doh-9e62e277.doh.pub/dns-query'
+    - '#119.29.29.29'
+    - '#2402:4e00::'
+    - '#opendns'
+    - '#208.67.220.123'
+    - '#208.67.220.220'
+    - '#norton'
+    - '#199.85.126.10'
+    - '#199.85.127.10'
   upstream_dns_file: ""
   bootstrap_dns:
     - 223.5.5.5
   fallback_dns:
     - 223.6.6.6
   upstream_alternate_dns:
-    - h3://doh.jqknono.com/dns-query
+    - https://doh.jqknono.com/dns-query
+    - '#h3://gg.adguardprivate.com/dns-query'
+    - '#h3://cf.adguardprivate.com/dns-query'
+    - '# Google'
+    - '#tls://8.8.8.8'
+    - '#tls://8.8.4.4'
+    - '#tls://[2001:4860:4860::8888]'
+    - '#tls://[2001:4860:4860::8844]'
+    - '#tls://[2001:4860:4860::64]'
+    - '#tls://[2001:4860:4860::6464]'
+    - ""
+    - '# Cloudflare'
+    - '#tls://1.1.1.1'
+    - '#tls://1.0.0.1'
+    - tls://[2606:4700:4700::1111]
+    - tls://[2606:4700:4700::1001]
+    - '#tls://[2606:4700:4700::64]'
+    - '#tls://[2606:4700:4700::6400]'
   upstream_alternate_rulesets:
-    - https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/gfw.txt
+    - http://192.168.31.9:33004/config/gfwlist.txt
   upstream_mode: load_balance
   fastest_timeout: 1s
   allowed_clients: []
@@ -170,6 +251,7 @@ filtering:
   protection_enabled: true
   service_urls:
     - https://hostlistsregistry.adguardprivate.com/assets/services.zh-cn.json
+ruleset: null
 clients:
   runtime_sources:
     whois: false
