@@ -249,7 +249,7 @@
   "edit_allowlist": "Toelatingslijst bewerken",
   "edit_blocklist": "Blokkeerlijst beheren",
   "edit_table_action": "Bewerk",
-  "edns_cs_desc": "De EDNS Client Subnet-optie (ECS) toevoegen aan upstream-verzoeken en de waarden die door de clients zijn verzonden registreren in het querylogboek.",
+  "edns_cs_desc": "Voeg de EDNS Client Subnet (ECS)-optie toe aan upstream-verzoeken en log de waarde die de client heeft verzonden. Wanneer AdGuardPrivate op een externe server draait, moet u een aangepast lokaal IP-adres gebruiken, anders zal het IP-adres dat met het upstream-verzoek wordt verzonden, het geografische IP-adres van de server zijn.",
   "edns_enable": "EDNS client subnet inschakelen",
   "edns_use_custom_ip": "Aangepast IP-adres gebruiken voor EDNS",
   "edns_use_custom_ip_desc": "Toestaan om aangepast IP-adres voor EDNS te gebruiken",

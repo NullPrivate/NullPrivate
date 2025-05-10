@@ -249,7 +249,7 @@
   "edit_allowlist": "허용 목록 수정",
   "edit_blocklist": "차단 목록 수정",
   "edit_table_action": "편집",
-  "edns_cs_desc": "업스트림 요청에 EDNS 클라이언트 서브넷 옵션(ECS)을 추가하고 쿼리 로그에 클라이언트가 보낸 값을 기록합니다.",
+  "edns_cs_desc": "AdGuardPrivate를 원격 서버에서 실행할 때는 사용자 지정 로컬 IP를 사용해야 하며, 그렇지 않으면 업스트림 요청에 포함된 IP가 서버의 지리적 IP가 됩니다. 쿼리 로그에 클라이언트가 보낸 값을 기록하고 EDNS 클라이언트 서브넷(ECS) 옵션을 업스트림 요청에 추가하십시오.",
   "edns_enable": "EDNS 클라이언트 서브넷 활성화",
   "edns_use_custom_ip": "EDNS에 사용자 지정 IP 사용",
   "edns_use_custom_ip_desc": "EDNS에 사용자 지정 IP 사용하도록 허용합니다.",

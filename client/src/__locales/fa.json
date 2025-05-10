@@ -199,7 +199,7 @@
   "edit_allowlist": "ویرایش لیست مجاز",
   "edit_blocklist": "ویرایش لیست سیاه",
   "edit_table_action": "ويرايش",
-  "edns_cs_desc": "اگر فعال باشد،AdGuard Private زیرشبکه های کلاینت ها را به سرورهای DNS می فرستد.",
+  "edns_cs_desc": "گزینه EDNS Client Subnet (ECS) را به درخواست‌های upstream اضافه کنید و مقدار ارسالی از سوی مشتری را در لاگ‌های درخواست ثبت کنید. هنگامی که AdGuardPrivate روی یک سرور راه‌دور اجرا می‌شود، باید از یک IP محلی سفارشی استفاده کنید، در غیر این صورت IP ارسالی در درخواست upstream، IP جغرافیایی سرور خواهد بود.",
   "edns_enable": "فعالسازی زیرشبکه کلاینت EDNS",
   "elapsed": "سپری شده",
   "empty_response_status": "خالی",

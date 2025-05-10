@@ -249,7 +249,7 @@
   "edit_allowlist": "Uredi listu dozvoljenih",
   "edit_blocklist": "Uredi blok listu",
   "edit_table_action": "Izmeni",
-  "edns_cs_desc": "Dodajte opciju podmreži EDNS klijenta (ECS) uzvodnim zahtevima i evidentirajte vrednosti koje klijenti šalju u evidenciji upita.",
+  "edns_cs_desc": "Додајте опцију EDNS Client Subnet (ECS) у захтеве према горњим серверима и бележите вредност коју је клијент послао. Када се AdGuardPrivate покреne на удаљеном серверу, морате користити прилагођену локалну IP адресу, у супротном ће IP адреса послата уз захтев према горњим серверима бити географска IP адреса сервера.",
   "edns_enable": "Uključi EDNS Client Subnet",
   "edns_use_custom_ip": "Koristi prilagođeni IP za EDNS",
   "edns_use_custom_ip_desc": "Dozvoli korišćenje prilagođenog IP-a za EDNS",

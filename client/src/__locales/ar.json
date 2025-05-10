@@ -249,7 +249,7 @@
   "edit_allowlist": "تحرير قائمة السماح",
   "edit_blocklist": "تحرير قائمة الحظر",
   "edit_table_action": "تحرير",
-  "edns_cs_desc": "أضف EDNS الشبكة الفرعية للعميل (ECS) إلى الطلبات الأولية وقم بتسجيل القيم المرسلة من قبل العملاء في سجل الاستعلام.",
+  "edns_cs_desc": "قم بإضافة خيار EDNS Client Subnet (ECS) إلى طلبات upstream وسجل القيمة المرسلة من العميل في سجل الاستعلام. عند تشغيل AdGuardPrivate على خادم بعيد، يجب استخدام IP محلي مخصص، وإلا فإن IP المرسل في طلب upstream سيكون IP الجغرافي للخادم.",
   "edns_enable": "فعل EDNS client subnet",
   "edns_use_custom_ip": "استخدام IP مخصص لـ EDNS",
   "edns_use_custom_ip_desc": "السماح باستخدام IP مخصص لـ EDNS",

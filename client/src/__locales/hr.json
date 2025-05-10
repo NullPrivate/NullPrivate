@@ -249,7 +249,7 @@
   "edit_allowlist": "Uredi popis dopuštenih",
   "edit_blocklist": "Uredi popis nedopuštenih",
   "edit_table_action": "Uredi",
-  "edns_cs_desc": "Dodajte opciju EDNS klijentske podmreže (ECS) uzvodnim zahtjevima i zabilježite vrijednosti koje su klijenti poslali u dnevnik upita.",
+  "edns_cs_desc": "Dodajte opciju EDNS Client Subnet (ECS) u upstream zahtjeve i zabilježite vrijednost koju je poslao klijent. Kada se AdGuardPrivate izvodi na udaljenom serveru, morate koristiti prilagođenu lokalnu IP adresu, u suprotnom će IP adresa poslana uz upstream zahtjev biti geografska IP adresa servera.",
   "edns_enable": "Omogući podmrežu klijenta EDNS-a",
   "edns_use_custom_ip": "Koristi prilagođeni IP za EDNS",
   "edns_use_custom_ip_desc": "Dopusti korištenje prilagođenog IP-a za EDNS",

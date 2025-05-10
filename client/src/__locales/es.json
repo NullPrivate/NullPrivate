@@ -249,7 +249,7 @@
   "edit_allowlist": "Editar lista de permitido",
   "edit_blocklist": "Editar lista de bloqueo",
   "edit_table_action": "Editar",
-  "edns_cs_desc": "Añade la opción subred de cliente EDNS (ECS) a las peticiones del DNS de subida y registra los valores enviados por los clientes en el registro de consultas.",
+  "edns_cs_desc": "Añada la opción EDNS Client Subnet (ECS) a las solicitudes upstream y registre el valor enviado por el cliente. Cuando AdGuardPrivate se ejecuta en un servidor remoto, debe usar una IP local personalizada, de lo contrario la IP enviada con la solicitud upstream será la IP geográfica del servidor.",
   "edns_enable": "Habilitar subred de cliente EDNS",
   "edns_use_custom_ip": "Usar IP personalizada para EDNS",
   "edns_use_custom_ip_desc": "Permitir el uso de IP personalizadas para EDNS",

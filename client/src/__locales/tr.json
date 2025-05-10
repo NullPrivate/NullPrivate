@@ -249,7 +249,7 @@
   "edit_allowlist": "İzin listesini düzenle",
   "edit_blocklist": "Engel listesini düzenle",
   "edit_table_action": "Düzenle",
-  "edns_cs_desc": "Kaynak yönü isteklerine EDNS İstemci Alt Ağı seçeneğini (ECS) ekleyin ve istemciler tarafından gönderilen değerleri sorgu günlüğüne kaydedin.",
+  "edns_cs_desc": "EDNS İstemci Altağı (ECS) seçeneğini upstream isteklerine ekleyin ve istemcinin gönderdiği değeri sorgu günlüklerine kaydedin. AdGuardPrivate uzak bir sunucuda çalışırken özel bir yerel IP kullanmanız gerekir, aksi takdirde upstream istekle gönderilen IP sunucunun coğrafi IP'si olacaktır.",
   "edns_enable": "EDNS istemci alt ağını etkinleştir",
   "edns_use_custom_ip": "EDNS için özel IP kullan",
   "edns_use_custom_ip_desc": "EDNS için özel IP kullanımına izin ver",

@@ -249,7 +249,7 @@
   "edit_allowlist": "Redigera frilista",
   "edit_blocklist": "Redigera blockeringslista",
   "edit_table_action": "Redigera",
-  "edns_cs_desc": "Skicka klienternas subnät till DNS servrarna.",
+  "edns_cs_desc": "Lägg till EDNS-klientens undernät (ECS) i upstream-förfrågningar och logga värdet som skickades av klienten. När AdGuardPrivate körs på en fjärrserver måste du använda en anpassad lokal IP-adress, annars kommer den IP-adress som skickas med upstream-förfrågan att vara serverns geografiska IP-adress.",
   "edns_enable": "Aktivera EDNS-klient subnät",
   "edns_use_custom_ip": "Använd anpassad IP för EDNS",
   "edns_use_custom_ip_desc": "Tillåt att använda anpassad IP för EDNS",

@@ -249,7 +249,7 @@
   "edit_allowlist": "Edit daftar putih",
   "edit_blocklist": "Edit daftar hitam",
   "edit_table_action": "Ubah",
-  "edns_cs_desc": "Tambahkan opsi EDNS Client Subnet (ECS) ke permintaan upstream dan catat nilai yang dikirim oleh klien di log kueri.",
+  "edns_cs_desc": "Tambahkan opsi EDNS Client Subnet (ECS) ke permintaan upstream dan log nilai yang dikirimkan klien. Saat AdGuardPrivate dijalankan di server jarak jauh, Anda harus menggunakan IP lokal kustom, jika tidak IP yang dikirim dengan permintaan upstream akan menjadi IP geografis server.",
   "edns_enable": "Aktifkan EDNS Klien Subnet",
   "edns_use_custom_ip": "Gunakan IP khusus untuk EDNS",
   "edns_use_custom_ip_desc": "Izinkan untuk menggunakan IP kustom untuk EDNS",

@@ -249,7 +249,7 @@
   "edit_allowlist": "Upravit seznam povolených",
   "edit_blocklist": "Upravit seznam blokovaných",
   "edit_table_action": "Upravit",
-  "edns_cs_desc": "Přidá možnost podsítě klienta EDNS (ECS) do odchozích požadavků a zaznamá hodnoty odeslané klienty do protokolu dotazů.",
+  "edns_cs_desc": "Přidejte možnost EDNS Client Subnet (ECS) do požadavků upstream a zaznamenejte hodnoty odeslané klientem do logů dotazů. Když AdGuardPrivate běží na vzdáleném serveru, musíte použít vlastní místní IP, jinak bude IP adresa odeslaná v požadavku upstream geografickou IP adresou serveru.",
   "edns_enable": "Povolit klientskou podsíť EDNS",
   "edns_use_custom_ip": "Použít vlastní IP pro EDNS",
   "edns_use_custom_ip_desc": "Povolit použití vlastní IP pro EDNS",

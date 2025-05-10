@@ -249,7 +249,7 @@
   "edit_allowlist": "Engedélyezési lista módosítása",
   "edit_blocklist": "Blokkolási lista módosítása",
   "edit_table_action": "Szerkesztés",
-  "edns_cs_desc": "Adja hozzá az EDNS Client Subnet beállítást (ECS) a felfelé irányuló kérésekhez, és naplózza a kliensek által küldött értékeket a lekérdezési naplóban.",
+  "edns_cs_desc": "Adja hozzá az EDNS Client Subnet (ECS) opciót az upstream kérésekhez, és naplózza az ügyfél által küldött értéket. Ha az AdGuardPrivate távoli szerveren fut, akkor egyéni helyi IP-t kell használni, különben az upstream kérésben szereplő IP a szerver földrajzi IP-je lesz.",
   "edns_enable": "EDNS kliens alhálózat engedélyezése",
   "edns_use_custom_ip": "Használjon egyéni IP-címet az EDNS-hez",
   "edns_use_custom_ip_desc": "Engedélyezze az egyéni IP-cím használatát az EDNS-hez",

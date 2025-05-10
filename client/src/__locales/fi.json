@@ -249,7 +249,7 @@
   "edit_allowlist": "Muokkaa sallittujen listaa",
   "edit_blocklist": "Muokkaa estolistaa",
   "edit_table_action": "Muokkaa",
-  "edns_cs_desc": "Lisää EDNS Client Subnet (ECS) -valinta ylävirran pyyntöihin ja kirjaa päätelaitteiden lähettämät arvot pyyntöhistoriaan.",
+  "edns_cs_desc": "Lisää EDNS Client Subnet (ECS) -valitsimen upstream-pyyntöihin ja kirjaa asiakkaan lähettämä arvo kyselylokeihin. Kun AdGuardPrivate toimii etäpalvelimessa, on käytettävä mukautettua paikallista IP:tä, muuten upstream-pyyntöön liitetty IP-osoite on palvelimen maantieteellinen IP-osoite.",
   "edns_enable": "Käytä EDNS-päätelaitealivekkoa",
   "edns_use_custom_ip": "Käytä omaa IP-osoitetta EDNS:lle",
   "edns_use_custom_ip_desc": "Salli oman IP-osoitteen käyttö EDNS-mekanismille.",

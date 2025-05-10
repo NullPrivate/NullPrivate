@@ -249,7 +249,7 @@
   "edit_allowlist": "Editare autorizare",
   "edit_blocklist": "Editare blocare",
   "edit_table_action": "Editare",
-  "edns_cs_desc": "Adaugă opțiunea EDNS Client Subnet (ECS) la solicitările în amonte și înregistrează valorile trimise de clienți în jurnalul de interogare.",
+  "edns_cs_desc": "Adăugați opțiunea EDNS Client Subnet (ECS) la cererile upstream și înregistrați valoarea trimisă de client. Când AdGuardPrivate rulează pe un server remote, trebuie să utilizați o adresă IP locală personalizată, altfel adresa IP trimisă cu cererea upstream va fi adresa IP geografică a serverului.",
   "edns_enable": "Activați subrețeaua de clienți EDNS",
   "edns_use_custom_ip": "Utilizați IP personalizat pentru EDNS",
   "edns_use_custom_ip_desc": "Permiteți utilizarea IP-ului personalizat pentru EDNS",

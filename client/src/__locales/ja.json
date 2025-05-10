@@ -249,7 +249,7 @@
   "edit_allowlist": "許可リストの編集",
   "edit_blocklist": "ブロックリストの編集",
   "edit_table_action": "編集する",
-  "edns_cs_desc": "アップストリームリクエストにEDNSクライアントサブネットオプション（ECS）を追加し、クライアントから送信された値をクエリログに記録します。",
+  "edns_cs_desc": "追加EDNSクライアントサブネット（ECS）オプションを上流リクエストに追加し、クライアントが送信した値をクエリログに記録します。 AdGuardPrivateをリモートサーバーで実行する場合、カスタムローカルIPを使用する必要があります。そうしないと、上流リクエストに付随するIPはサーバーの地理的位置IPになります。",
   "edns_enable": "EDNSクライアントサブネットを有効にする",
   "edns_use_custom_ip": "EDNSにカスタムIPを使用する",
   "edns_use_custom_ip_desc": "EDNS に対してカスタム IP の使用を許可します。",

@@ -249,7 +249,7 @@
   "edit_allowlist": "Chỉnh sửa danh sách cho phép",
   "edit_blocklist": "Chỉnh sửa danh sách chặn",
   "edit_table_action": "Chỉnh sửa",
-  "edns_cs_desc": "Thêm tùy chọn EDNS Client Subnet (ECS) vào các yêu cầu ngược dòng và ghi lại các giá trị được gửi bởi các máy khách trong nhật ký truy vấn.",
+  "edns_cs_desc": "Thêm tùy chọn EDNS Client Subnet (ECS) vào các yêu cầu upstream và ghi lại giá trị do máy khách gửi trong nhật ký truy vấn. Khi AdGuardPrivate chạy trên máy chủ từ xa, bạn phải sử dụng IP cục bộ tùy chỉnh, nếu không IP được gửi cùng với yêu cầu upstream sẽ là IP địa lý của máy chủ.",
   "edns_enable": "Bật mạng con EDNS Client",
   "edns_use_custom_ip": "Sử dụng địa chỉ IP tùy chỉnh cho EDNS",
   "edns_use_custom_ip_desc": "Cho phép sử dụng địa chỉ IP tùy chỉnh cho EDNS",

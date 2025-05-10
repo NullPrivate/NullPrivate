@@ -135,7 +135,7 @@
   "domain_name_table_header": "ชื่อโดเมน",
   "down": "ดับ",
   "edit_table_action": "แก้ไข",
-  "edns_cs_desc": "หากเปิดใช้งาน AdGuard Private จะส่งซับเน็ตของไคลเอนต์ไปยังเซิร์ฟเวอร์ DNS",
+  "edns_cs_desc": "เพิ่มตัวเลือก EDNS Client Subnet (ECS) ลงในคำขอ upstream และบันทึกค่าที่ส่งโดยไคลเอนต์ในบันทึกคำขอ เมื่อ AdGuardPrivate ทำงานบนเซิร์ฟเวอร์ระยะไกล คุณต้องใช้ IP ท้องถิ่นแบบกำหนดเอง มิฉะนั้น IP ที่ส่งไปกับคำขอ upstream จะเป็น IP ทางภูมิศาสตร์ของเซิร์ฟเวอร์",
   "edns_enable": "เปิดใช้งานซับเน็ตไคลเอ็นต์ EDNS",
   "empty_response_status": "ว่างเปล่า",
   "enable_protection": "เปิดใช้งานการป้องกัน",

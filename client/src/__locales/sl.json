@@ -249,7 +249,7 @@
   "edit_allowlist": "Uredi seznam dovoljenih",
   "edit_blocklist": "Uredi seznam nedovoljenih",
   "edit_table_action": "Uredi",
-  "edns_cs_desc": "Dodaj možnost podomrežja odjemalca EDNS (ECS) zahtevam v gorvodnem toku in zabeleži vrednosti, ki jih pošljejo odjemalci, v dnevnik poizvedb.",
+  "edns_cs_desc": "Dodaj možnost EDNS Client Subnet (ECS) v zahtevek navzgor in zabeleži vrednost, ki jo pošlje stranka. Ko AdGuardPrivate teče na oddaljenem strežniku, moraš uporabiti prilagojeno lokalno IP naslov, sicer bo IP, ki se pošlje s poizvedbo navzgor, geografski IP strežnika.",
   "edns_enable": "Omogoči odjemalsko podomrežje EDNS",
   "edns_use_custom_ip": "Uporabi IP po meri za EDNS",
   "edns_use_custom_ip_desc": "Dovoli uporabo naslova IP po meri za EDNS",

@@ -249,7 +249,7 @@
   "edit_allowlist": "Upraviť zoznam povolených DNS",
   "edit_blocklist": "Upraviť zoznam blokovaných DNS",
   "edit_table_action": "Upraviť",
-  "edns_cs_desc": "Pridáva možnosť EDNS Client Subnet (ECS) do upstream dopytov a zapíše hodnoty odoslané klientami do denníka dopytov.",
+  "edns_cs_desc": "Pridajte možnosť EDNS Client Subnet (ECS) do upstream požiadaviek a zaznamenajte hodnotu odoslanú klientom v logoch požiadaviek. Ak beží AdGuardPrivate na vzdialenom serveri, musíte použiť vlastnú lokálnu IP adresu, inak bude IP adresa odoslaná v upstream požiadavke geografickou IP adresou servera.",
   "edns_enable": "Povoliť klientsku podsiete EDNS",
   "edns_use_custom_ip": "Použiť vlastnú IP adresu pre EDNS",
   "edns_use_custom_ip_desc": "Povoliť používanie vlastnej IP adresy pre EDNS",

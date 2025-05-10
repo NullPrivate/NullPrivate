@@ -249,7 +249,7 @@
   "edit_allowlist": "Hvidlisteredigering",
   "edit_blocklist": "Sortlisteredigering",
   "edit_table_action": "Redigér",
-  "edns_cs_desc": "Tilføj indstillingen EDNS Client Subnet (ECS) til upstream-forespørgsler og log de af klienterne sendte værdier i forespørgselsloggen.",
+  "edns_cs_desc": "Tilføj EDNS Client Subnet (ECS)-valgmuligheden til upstream-forspørgsler og logg klientens sendte værdi. Når AdGuardPrivate kører på en fjernserver, skal du bruge en tilpasset lokal IP-adresse, ellers vil den IP-adresse, der sendes med upstream-forspørgslen, være serverens geografiske IP-adresse.",
   "edns_enable": "Aktivér EDNS-klientundernet",
   "edns_use_custom_ip": "Brug tilpasset IP til EDNS",
   "edns_use_custom_ip_desc": "Tillad brug af tilpasset IP til EDNS",

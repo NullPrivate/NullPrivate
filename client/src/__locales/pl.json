@@ -249,7 +249,7 @@
   "edit_allowlist": "Edytuj listę dozwolonych",
   "edit_blocklist": "Edytuj listę zablokowanych",
   "edit_table_action": "Edytuj",
-  "edns_cs_desc": "Dodaj opcję podsieci klienta EDNS (ECS) do żądań nadrzędnych i rejestruj wartości wysyłane przez klientów w dzienniku zapytań.",
+  "edns_cs_desc": "Dodaj opcję EDNS Client Subnet (ECS) do zapytań upstream i zapisz wartość wysłaną przez klienta w logach zapytań. Gdy AdGuardPrivate działa na zdalnym serwerze, należy użyć niestandardowego lokalnego adresu IP, w przeciwnym razie adres IP wysłany w zapytaniu upstream będzie geograficznym adresem IP serwera.",
   "edns_enable": "Włącz podsieć klienta EDNS",
   "edns_use_custom_ip": "Użyj niestandardowego adresu IP dla EDNS",
   "edns_use_custom_ip_desc": "Zezwól na użycie niestandardowego adresu IP dla EDNS",

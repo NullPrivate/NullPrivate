@@ -249,7 +249,7 @@
   "edit_allowlist": "編輯白名單",
   "edit_blocklist": "編輯黑名單",
   "edit_table_action": "編輯",
-  "edns_cs_desc": "傳送用戶端的子網路給 DNS 伺服器。",
+  "edns_cs_desc": "當 AdGuardPrivate 在遠端伺服器上執行時，必須使用自訂本機 IP，否則向上游請求所攜帶的 IP 將會是伺服器的地理定位 IP。在上游請求中加入 EDNS 客戶端子網（ECS）選項，並在查詢日誌中記錄用戶端發送的數值。",
   "edns_enable": "啟用 EDNS Client Subnet",
   "edns_use_custom_ip": "使用自訂 EDNS IP",
   "edns_use_custom_ip_desc": "允許使用自訂 EDNS IP",

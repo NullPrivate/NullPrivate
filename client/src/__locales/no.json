@@ -220,7 +220,7 @@
   "edit_allowlist": "Rediger hviteliste",
   "edit_blocklist": "Rediger blokkeringsliste",
   "edit_table_action": "Rediger",
-  "edns_cs_desc": "Hvis det er skrudd på, vil AdGuard Private sende klientenes undernett til DNS-tjenerne.",
+  "edns_cs_desc": "Legg til EDNS Client Subnet (ECS)-valg til upstream-førespurnader og logg verdien klienten sendte. Når AdGuardPrivate køyrer på ein fjernserver, må du bruke ein tilpassa lokal IP-adresse, elles vil den IP-en som vert send med upstream-førespurnaden vere serveren sin geografiske IP-adresse.",
   "edns_enable": "Aktiver EDNS-klientundernett",
   "elapsed": "Utløpt",
   "empty_response_status": "Tomt innhold",
