@@ -17,15 +17,13 @@ To set up a test environment for DHCP server you will need:
 
 ### Configure Virtual Box
 
-   ### Configure Virtual Box
+1. Install Virtual Box and run the following command to create a Host-Only network:
 
     ```sh
     VBoxManage hostonlyif create
     ```
 
-     ```sh
-     $ VBoxManage hostonlyif create
-     ```
+    You can check its status by `ip a` command.
 
     You can also set up Host-Only network using Virtual Box menu in *File → Host Network Manager.*
 
@@ -35,11 +33,9 @@ To set up a test environment for DHCP server you will need:
 
 4. To see the current IP addresses on client OS you can use `ip a` command on Linux or `ipconfig` on Windows.
 
- 4.  To see the current IP addresses on client OS you can use `ip a` command on
-     Linux or `ipconfig` on Windows.
+5. To force the client OS to request an IP from DHCP server again, you can use `dhclient` on Linux or `ipconfig /release` on Windows.
 
- 5.  To force the client OS to request an IP from DHCP server again, you can
-     use `dhclient` on Linux or `ipconfig /release` on Windows.
+### Configure server
 
 1. Edit server configuration file `AdGuardHome.yaml`, for example:
 
@@ -69,7 +65,7 @@ To set up a test environment for DHCP server you will need:
     ./AdGuardHome -v
     ```
 
-     There should be a message in log which shows that DHCP server is ready:
+    There should be a message in log which shows that DHCP server is ready:
 
     ```none
     [info] dhcpv4: listening

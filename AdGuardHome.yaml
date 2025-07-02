@@ -113,7 +113,7 @@ dns:
     - '#tls://[2606:4700:4700::64]'
     - '#tls://[2606:4700:4700::6400]'
   upstream_alternate_rulesets:
-    - http://192.168.31.9:33004/config/gfwlist.txt1
+    - https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/gfw.txt
   upstream_mode: load_balance
   fastest_timeout: 1s
   allowed_clients: []

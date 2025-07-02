@@ -60,7 +60,6 @@ const Form = ({ initialValues, onSubmit }: FormProps) => {
     const dispatch = useDispatch();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const serviceType = useSelector((state: RootState) => state.service_type);
-    const shouldShowLocalPtr = serviceType !== 'personal' && serviceType !== 'family';
 
     const {
         control,
@@ -222,7 +221,7 @@ const Form = ({ initialValues, onSubmit }: FormProps) => {
                     />
                 </div>
 
-                {shouldShowLocalPtr && (
+                {serviceType !== 'personal' && serviceType !== 'family' && (
                     <>
                         <div className="col-12">
                             <hr />

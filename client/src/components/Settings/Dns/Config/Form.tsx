@@ -222,7 +222,7 @@ const Form = ({ processing, initialValues, onSubmit, serviceType }: Props) => {
                                 render={({ field, fieldState }) => (
                                     <Textarea
                                         {...field}
-                                        data-testid="dns_config_whitelist"
+                                        data-testid="dns_config_subnet_ipv6"
                                         label={t('rate_limit_whitelist')}
                                         desc={t('rate_limit_whitelist_desc')}
                                         error={fieldState.error?.message}

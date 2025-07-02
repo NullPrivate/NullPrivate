@@ -22,8 +22,8 @@ import (
 	"github.com/AdguardTeam/AdGuardHome/internal/filtering"
 	"github.com/AdguardTeam/AdGuardHome/internal/querylog"
 	"github.com/AdguardTeam/AdGuardHome/internal/rdns"
-	"github.com/AdguardTeam/AdGuardHome/internal/stats"
 	"github.com/AdguardTeam/AdGuardHome/internal/ruleset"
+	"github.com/AdguardTeam/AdGuardHome/internal/stats"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/dnsproxy/upstream"
 	"github.com/AdguardTeam/golibs/cache"
@@ -590,7 +590,7 @@ func limitDomainMaps(upsConf *proxy.UpstreamConfig) {
 	}
 
 	for _, currentMap := range mapsToLimit {
-		if *currentMap == nil || len(*currentMap) <= maxDomainUpstreams {
+		if len(*currentMap) <= maxDomainUpstreams {
 			continue
 		}
 
@@ -695,6 +695,12 @@ func (s *Server) prepareUpstreamSettings(boot upstream.Resolver) (err error) {
 		EDNSClientSubnetEnabled: s.conf.EDNSClientSubnet.Enabled,
 		UseHTTP3Upstreams:       s.conf.UseHTTP3Upstreams,
 	})
+
+	// Process alternate DNS settings if configured
+	err = s.configureAlternateUpstreams(boot)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
