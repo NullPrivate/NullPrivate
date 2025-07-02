@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghos"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/c2h5oh/datasize"
@@ -156,7 +156,7 @@ func (l *queryLog) periodicRotate(ctx context.Context) {
 	// rotating log files.  It's smaller of any available rotation interval to
 	// increase time accuracy.
 	//
-	// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/3823.
+	// See https://github.com/AdguardTeam/AdGuardHome/issues/3823.
 	const rotationCheckIvl = 1 * time.Hour
 
 	rotations := time.NewTicker(rotationCheckIvl)

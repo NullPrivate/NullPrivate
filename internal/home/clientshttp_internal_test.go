@@ -13,10 +13,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/client"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/schedule"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/whois"
+	"github.com/AdguardTeam/AdGuardHome/internal/client"
+	"github.com/AdguardTeam/AdGuardHome/internal/filtering"
+	"github.com/AdguardTeam/AdGuardHome/internal/schedule"
+	"github.com/AdguardTeam/AdGuardHome/internal/whois"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -153,7 +153,7 @@ func TestClientsContainer_HandleAddClient(t *testing.T) {
 	clientTwo := newPersistentClientWithIDs(t, "client2", []string{testClientIP2})
 
 	clientEmptyID := newPersistentClient("empty_client_id")
-	clientEmptyID.ClientIDs = []string{""}
+	clientEmptyID.ClientIDs = []client.ClientID{""}
 
 	testCases := []struct {
 		name       string
@@ -278,7 +278,7 @@ func TestClientsContainer_HandleUpdateClient(t *testing.T) {
 	clientModified := newPersistentClientWithIDs(t, "client2", []string{testClientIP2})
 
 	clientEmptyID := newPersistentClient("empty_client_id")
-	clientEmptyID.ClientIDs = []string{""}
+	clientEmptyID.ClientIDs = []client.ClientID{""}
 
 	testCases := []struct {
 		name       string

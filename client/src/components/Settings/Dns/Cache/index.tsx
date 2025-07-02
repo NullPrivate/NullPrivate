@@ -13,11 +13,10 @@ import { RootState } from '../../../../initialState';
 const CacheConfig = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const {
-        cache_size, cache_ttl_max, cache_ttl_min, cache_optimistic } = useSelector(
-            (state: RootState) => state.dnsConfig,
-            shallowEqual,
-        );
+    const { cache_size, cache_ttl_max, cache_ttl_min, cache_optimistic } = useSelector(
+        (state: RootState) => state.dnsConfig,
+        shallowEqual,
+    );
 
     const handleFormSubmit = (values: any) => {
         const completedFields = replaceEmptyStringsWithZeroes(values);

@@ -1,7 +1,6 @@
 package dnsforward
 
 import (
-	"cmp"
 	"context"
 	"encoding/binary"
 	"net"
@@ -9,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering"
+	"github.com/AdguardTeam/AdGuardHome/internal/filtering"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/netutil"
@@ -247,9 +246,9 @@ func (s *Server) makeDDRResponse(req *dns.Msg) (resp *dns.Msg) {
 
 	// TODO(e.burkov):  Think about storing the FQDN version of the server's
 	// name somewhere.
-	domainName := dns.Fqdn(s.conf.ServerName)
+	domainName := dns.Fqdn(s.conf.TLSConf.ServerName)
 
-	for _, addr := range s.conf.HTTPSListenAddrs {
+	for _, addr := range s.conf.TLSConf.HTTPSListenAddrs {
 		values := []dns.SVCBKeyValue{
 			&dns.SVCBAlpn{Alpn: []string{"h2"}},
 			&dns.SVCBPort{Port: uint16(addr.Port)},
@@ -266,11 +265,11 @@ func (s *Server) makeDDRResponse(req *dns.Msg) (resp *dns.Msg) {
 		resp.Answer = append(resp.Answer, ans)
 	}
 
-	if s.conf.hasIPAddrs {
+	if s.hasIPAddrs {
 		// Only add DNS-over-TLS resolvers in case the certificate contains IP
 		// addresses.
 		//
-		// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/4927.
+		// See https://github.com/AdguardTeam/AdGuardHome/issues/4927.
 		for _, addr := range s.dnsProxy.TLSListenAddr {
 			values := []dns.SVCBKeyValue{
 				&dns.SVCBAlpn{Alpn: []string{"dot"}},
@@ -405,7 +404,7 @@ func (s *Server) processDHCPAddrs(dctx *dnsContext) (rc resultCode) {
 			Name:   q.Name,
 			Rrtype: dns.TypePTR,
 			// TODO(e.burkov):  Use [dhcpsvc.Lease.Expiry].  See
-			// https://github.com/AdGuardPrivate/AdGuardPrivate/issues/3932.
+			// https://github.com/AdguardTeam/AdGuardHome/issues/3932.
 			Ttl:   s.dnsFilter.BlockedResponseTTL(),
 			Class: dns.ClassINET,
 		},
@@ -577,17 +576,14 @@ func (s *Server) setCustomUpstream(pctx *proxy.DNSContext, clientID string) {
 		return
 	}
 
-	// Use the ClientID first, since it has a higher priority.
-	id := cmp.Or(clientID, pctx.Addr.Addr().String())
-	upsConf, err := s.conf.ClientsContainer.UpstreamConfigByID(id, s.bootstrap)
-	if err != nil {
-		log.Error("dnsforward: getting custom upstreams for client %s: %s", id, err)
-
-		return
-	}
-
+	cliAddr := pctx.Addr.Addr()
+	upsConf := s.conf.ClientsContainer.CustomUpstreamConfig(clientID, cliAddr)
 	if upsConf != nil {
-		log.Debug("dnsforward: using custom upstreams for client %s", id)
+		log.Debug(
+			"dnsforward: using custom upstreams for client with ip %s and clientid %q",
+			cliAddr,
+			clientID,
+		)
 
 		pctx.CustomUpstreamConfig = upsConf
 	}

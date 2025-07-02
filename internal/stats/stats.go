@@ -13,13 +13,14 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghnet"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghhttp"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghnet"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghos"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/timeutil"
 	"go.etcd.io/bbolt"
+	bbolterrors "go.etcd.io/bbolt/errors"
 )
 
 // checkInterval returns true if days is valid to be used as statistics
@@ -389,7 +390,7 @@ func (s *StatsCtx) openDB() (err error) {
 	if err != nil {
 		if err.Error() == "invalid argument" {
 			const lines = `AdGuard Home cannot be initialized due to an incompatible file system.
-Please read the explanation here: https://github.com/AdGuardPrivate/AdGuardPrivate/wiki/Getting-Started#limitations`
+Please read the explanation here: https://github.com/AdguardTeam/AdGuardHome/wiki/Getting-Started#limitations`
 
 			// TODO(s.chzhen):  Use passed context.
 			slogutil.PrintLines(
@@ -469,7 +470,7 @@ func (s *StatsCtx) flushDB(id, limit uint32, ptr *unit) (cont bool, sleepFor tim
 		// TODO(e.burkov):  Improve the algorithm of deleting the oldest bucket
 		// to avoid the error.
 		lvl := slog.LevelDebug
-		if !errors.Is(delErr, bbolt.ErrBucketNotFound) {
+		if !errors.Is(delErr, bbolterrors.ErrBucketNotFound) {
 			isCommitable = false
 			lvl = slog.LevelError
 		}

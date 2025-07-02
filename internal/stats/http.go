@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghalg"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghnet"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghalg"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghhttp"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghnet"
 	"github.com/AdguardTeam/golibs/timeutil"
 )
 

@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering/rulelist"
+	"github.com/AdguardTeam/AdGuardHome/internal/filtering/rulelist"
 	"github.com/AdguardTeam/golibs/netutil/urlutil"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/stretchr/testify/assert"
@@ -50,13 +50,10 @@ func TestFilter_Refresh(t *testing.T) {
 	}}
 
 	for _, tc := range testCases {
-		tc := tc // 捕获循环变量
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			// 每个子测试使用独立的 UID
 			uid := rulelist.MustNewUID()
-
 			f, err := rulelist.NewFilter(&rulelist.FilterConfig{
 				URL:         tc.url,
 				Name:        tc.name,

@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/next/configmgr"
+	"github.com/AdguardTeam/AdGuardHome/internal/next/configmgr"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/osutil"

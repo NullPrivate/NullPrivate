@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghtest"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/client"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/whois"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghtest"
+	"github.com/AdguardTeam/AdGuardHome/internal/client"
+	"github.com/AdguardTeam/AdGuardHome/internal/whois"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/netutil"

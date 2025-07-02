@@ -34,7 +34,7 @@ func Unsupported(op string) (err error) {
 
 // SetRlimit sets user-specified limit of how many fd's we can use.
 //
-// See https://github.com/AdGuardPrivate/AdGuardPrivate/internal/issues/659.
+// See https://github.com/AdguardTeam/AdGuardHome/internal/issues/659.
 func SetRlimit(val uint64) (err error) {
 	return setRlimit(val)
 }
@@ -72,7 +72,7 @@ func PIDByCommand(command string, except ...int) (pid int, err error) {
 	// Don't use -C flag here since it's a feature of linux's ps
 	// implementation.  Use POSIX-compatible flags instead.
 	//
-	// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/3457.
+	// See https://github.com/AdguardTeam/AdGuardHome/issues/3457.
 	cmd := exec.Command("ps", "-A", "-o", "pid=", "-o", "comm=")
 
 	var stdout io.ReadCloser

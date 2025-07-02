@@ -17,13 +17,13 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghnet"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/client"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/querylog"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/rdns"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/ruleset"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/stats"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghnet"
+	"github.com/AdguardTeam/AdGuardHome/internal/client"
+	"github.com/AdguardTeam/AdGuardHome/internal/filtering"
+	"github.com/AdguardTeam/AdGuardHome/internal/querylog"
+	"github.com/AdguardTeam/AdGuardHome/internal/rdns"
+	"github.com/AdguardTeam/AdGuardHome/internal/stats"
+	"github.com/AdguardTeam/AdGuardHome/internal/ruleset"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/dnsproxy/upstream"
 	"github.com/AdguardTeam/golibs/cache"
@@ -104,15 +104,25 @@ type SystemResolvers interface {
 //
 // The zero Server is empty and ready for use.
 type Server struct {
-	// dnsProxy is the DNS proxy for forwarding client's DNS requests.
-	dnsProxy *proxy.Proxy
+	// addrProc, if not nil, is used to process clients' IP addresses with rDNS,
+	// WHOIS, etc.
+	addrProc client.AddressProcessor
 
-	// dnsFilter is the DNS filter for filtering client's DNS requests and
-	// responses.
-	dnsFilter *filtering.DNSFilter
+	// bootstrap is the resolver for upstreams' hostnames.
+	bootstrap upstream.Resolver
+
+	// clientIDCache is a temporary storage for ClientIDs that were extracted
+	// during the BeforeRequestHandler stage.
+	clientIDCache cache.Cache
 
 	// dhcpServer is the DHCP server for accessing lease data.
 	dhcpServer DHCP
+
+	// etcHosts contains the current data from the system's hosts files.
+	etcHosts upstream.Resolver
+
+	// privateNets is the configured set of IP networks considered private.
+	privateNets netutil.SubnetSet
 
 	// queryLog is the query log for client's DNS requests, responses and
 	// filtering results.
@@ -121,37 +131,43 @@ type Server struct {
 	// stats is the statistics collector for client's DNS usage data.
 	stats stats.Interface
 
+	// sysResolvers used to fetch system resolvers to use by default for private
+	// PTR resolving.
+	sysResolvers SystemResolvers
+
 	// access drops disallowed clients.
 	access *accessManager
+
+	// anonymizer masks the client's IP addresses if needed.
+	anonymizer *aghnet.IPMut
 
 	// baseLogger is used to create loggers for other entities.  It should not
 	// have a prefix and must not be nil.
 	baseLogger *slog.Logger
 
-	// localDomainSuffix is the suffix used to detect internal hosts.  It
-	// must be a valid domain name plus dots on each side.
-	localDomainSuffix string
+	// dnsFilter is the DNS filter for filtering client's DNS requests and
+	// responses.
+	dnsFilter *filtering.DNSFilter
+
+	// dnsProxy is the DNS proxy for forwarding client's DNS requests.
+	dnsProxy *proxy.Proxy
+
+	// internalProxy resolves internal requests from the application itself.  It
+	// isn't started and so no listen ports are required.
+	internalProxy *proxy.Proxy
 
 	// ipset processes DNS requests using ipset data.  It must not be nil after
 	// initialization.  See [newIpsetHandler].
 	ipset *ipsetHandler
 
-	// privateNets is the configured set of IP networks considered private.
-	privateNets netutil.SubnetSet
+	// dns64Pref is the NAT64 prefix used for DNS64 response mapping.  The major
+	// part of DNS64 happens inside the [proxy] package, but there still are
+	// some places where response mapping is needed (e.g. DHCP).
+	dns64Pref netip.Prefix
 
-	// addrProc, if not nil, is used to process clients' IP addresses with rDNS,
-	// WHOIS, etc.
-	addrProc client.AddressProcessor
-
-	// sysResolvers used to fetch system resolvers to use by default for private
-	// PTR resolving.
-	sysResolvers SystemResolvers
-
-	// etcHosts contains the current data from the system's hosts files.
-	etcHosts upstream.Resolver
-
-	// bootstrap is the resolver for upstreams' hostnames.
-	bootstrap upstream.Resolver
+	// localDomainSuffix is the suffix used to detect internal hosts.  It
+	// must be a valid domain name plus dots on each side.
+	localDomainSuffix string
 
 	// bootResolvers are the resolvers that should be used for
 	// bootstrapping along with [etcHosts].
@@ -160,34 +176,26 @@ type Server struct {
 	// [upstream.Resolver] interface.
 	bootResolvers []*upstream.UpstreamResolver
 
-	// dns64Pref is the NAT64 prefix used for DNS64 response mapping.  The major
-	// part of DNS64 happens inside the [proxy] package, but there still are
-	// some places where response mapping is needed (e.g. DHCP).
-	dns64Pref netip.Prefix
-
-	// anonymizer masks the client's IP addresses if needed.
-	anonymizer *aghnet.IPMut
-
-	// clientIDCache is a temporary storage for ClientIDs that were extracted
-	// during the BeforeRequestHandler stage.
-	clientIDCache cache.Cache
-
-	// internalProxy resolves internal requests from the application itself.  It
-	// isn't started and so no listen ports are required.
-	internalProxy *proxy.Proxy
-
-	// isRunning is true if the DNS server is running.
-	isRunning bool
-
-	// protectionUpdateInProgress is used to make sure that only one goroutine
-	// updating the protection configuration after a pause is running at a time.
-	protectionUpdateInProgress atomic.Bool
+	// dnsNames are the DNS names from certificate (SAN) or CN value from
+	// Subject.
+	dnsNames []string
 
 	// conf is the current configuration of the server.
 	conf ServerConfig
 
 	// serverLock protects Server.
 	serverLock sync.RWMutex
+
+	// protectionUpdateInProgress is used to make sure that only one goroutine
+	// updating the protection configuration after a pause is running at a time.
+	protectionUpdateInProgress atomic.Bool
+
+	// isRunning is true if the DNS server is running.
+	isRunning bool
+
+	// hasIPAddrs is set during the certificate parsing and is true if the
+	// configured certificate contains at least a single IP address.
+	hasIPAddrs bool
 
 	// ruleset
 	ruleset *ruleset.Ruleset
@@ -337,6 +345,14 @@ func (s *Server) AddrProcConfig() (c *client.DefaultAddrProcConfig) {
 	}
 }
 
+// UpstreamTimeout returns the current upstream timeout configuration.
+func (s *Server) UpstreamTimeout() (t time.Duration) {
+	s.serverLock.RLock()
+	defer s.serverLock.RUnlock()
+
+	return s.conf.UpstreamTimeout
+}
+
 // Resolve gets IP addresses by host name from an upstream server.  No
 // request/response filtering is performed.  Query log and Stats are not
 // updated.  This method may be called before [Server.Start].
@@ -432,7 +448,7 @@ func hostFromPTR(resp *dns.Msg) (host string, ttl time.Duration, err error) {
 		// Respect zero TTL records since some DNS servers use it to
 		// locally-resolved addresses.
 		//
-		// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/6046.
+		// See https://github.com/AdguardTeam/AdGuardHome/issues/6046.
 		if ptr.Hdr.Ttl >= ttlSec {
 			host = ptr.Ptr
 			ttlSec = ptr.Hdr.Ttl
@@ -492,7 +508,7 @@ func (s *Server) Prepare(conf *ServerConfig) (err error) {
 
 	err = s.prepareInternalDNS()
 	if err != nil {
-		// Don't wrap the error since it's informative enough as is.
+		// Don't wrap the error, because it's informative enough as is.
 		return err
 	}
 
@@ -646,43 +662,40 @@ func limitUpstreamsInMaps(maps []*map[string][]upstream.Upstream, maxCount int) 
 // prepareUpstreamSettings sets upstream DNS server settings.
 func (s *Server) prepareUpstreamSettings(boot upstream.Resolver) (err error) {
 	// Load upstreams either from the file, or from the settings
-	upstreams, err := s.conf.loadUpstreams()
+	var upstreams []string
+	upstreams, err = s.conf.loadUpstreams()
 	if err != nil {
 		return fmt.Errorf("loading upstreams: %w", err)
 	}
 
-	// Configure the main upstream servers
-	err = s.configureMainUpstreams(upstreams, boot)
-	if err != nil {
-		return err
-	}
-
-	// Process alternate DNS settings if configured
-	err = s.configureAlternateUpstreams(boot)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// configureMainUpstreams sets up the primary upstream DNS servers
-func (s *Server) configureMainUpstreams(upstreams []string, boot upstream.Resolver) (err error) {
-	opts := &upstream.Options{
+	uc, err := newUpstreamConfig(upstreams, defaultDNS, &upstream.Options{
 		Bootstrap:    boot,
 		Timeout:      s.conf.UpstreamTimeout,
-		HTTPVersions: UpstreamHTTPVersions(s.conf.UseHTTP3Upstreams),
+		HTTPVersions: aghnet.UpstreamHTTPVersions(s.conf.UseHTTP3Upstreams),
 		PreferIPv6:   s.conf.BootstrapPreferIPv6,
+		// Use a customized set of RootCAs, because Go's default mechanism of
+		// loading TLS roots does not always work properly on some routers so we're
+		// loading roots manually and pass it here.
+		//
+		// See [aghtls.SystemRootCAs].
+		//
+		// TODO(a.garipov): Investigate if that's true.
 		RootCAs:      s.conf.TLSv12Roots,
 		CipherSuites: s.conf.TLSCiphers,
-	}
-
-	uc, err := newUpstreamConfig(upstreams, defaultDNS, opts)
+	})
 	if err != nil {
 		return fmt.Errorf("preparing upstream config: %w", err)
 	}
 
 	s.conf.UpstreamConfig = uc
+	s.conf.ClientsContainer.UpdateCommonUpstreamConfig(&client.CommonUpstreamConfig{
+		Bootstrap:               boot,
+		UpstreamTimeout:         s.conf.UpstreamTimeout,
+		BootstrapPreferIPv6:     s.conf.BootstrapPreferIPv6,
+		EDNSClientSubnetEnabled: s.conf.EDNSClientSubnet.Enabled,
+		UseHTTP3Upstreams:       s.conf.UseHTTP3Upstreams,
+	})
+
 	return nil
 }
 
@@ -696,7 +709,7 @@ func (s *Server) configureAlternateUpstreams(boot upstream.Resolver) (err error)
 	opts := &upstream.Options{
 		Bootstrap:    boot,
 		Timeout:      s.conf.UpstreamTimeout,
-		HTTPVersions: UpstreamHTTPVersions(s.conf.UseHTTP3Upstreams),
+		HTTPVersions: aghnet.UpstreamHTTPVersions(s.conf.UseHTTP3Upstreams),
 		PreferIPv6:   s.conf.BootstrapPreferIPv6,
 		RootCAs:      s.conf.TLSv12Roots,
 		CipherSuites: s.conf.TLSCiphers,
@@ -808,7 +821,7 @@ func (s *Server) prepareInternalDNS() (err error) {
 
 	bootOpts := &upstream.Options{
 		Timeout:      DefaultTimeout,
-		HTTPVersions: UpstreamHTTPVersions(s.conf.UseHTTP3Upstreams),
+		HTTPVersions: aghnet.UpstreamHTTPVersions(s.conf.UseHTTP3Upstreams),
 	}
 
 	s.bootstrap, s.bootResolvers, err = newBootstrap(s.conf.BootstrapDNS, s.etcHosts, bootOpts)
@@ -839,7 +852,7 @@ func (s *Server) prepareInternalDNS() (err error) {
 // setupFallbackDNS initializes the fallback DNS servers.
 func (s *Server) setupFallbackDNS() (uc *proxy.UpstreamConfig, err error) {
 	fallbacks := s.conf.FallbackDNS
-	fallbacks = stringutil.FilterOut(fallbacks, IsCommentOrEmpty)
+	fallbacks = stringutil.FilterOut(fallbacks, aghnet.IsCommentOrEmpty)
 	if len(fallbacks) == 0 {
 		return nil, nil
 	}
@@ -995,7 +1008,7 @@ const srvClosedErr errors.Error = "server is closed"
 // proxy returns a pointer to the current DNS proxy instance.  If p is nil, the
 // server is closing.
 //
-// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/3655.
+// See https://github.com/AdguardTeam/AdGuardHome/issues/3655.
 func (s *Server) proxy() (p *proxy.Proxy) {
 	s.serverLock.RLock()
 	defer s.serverLock.RUnlock()

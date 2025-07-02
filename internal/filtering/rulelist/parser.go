@@ -54,7 +54,7 @@ func (p *Parser) Parse(dst io.Writer, src io.Reader, buf []byte) (r *ParseResult
 	// large lines.  The buffer optimization still works for the more common
 	// case of reasonably-sized lines.
 	//
-	// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/6003.
+	// See https://github.com/AdguardTeam/AdGuardHome/issues/6003.
 	s.Buffer(buf, bufio.MaxScanTokenSize)
 
 	// Use a one-based index for lines and columns, since these errors end up in

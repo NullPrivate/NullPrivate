@@ -245,7 +245,7 @@ func (c *IPv4Config) options(ctx context.Context, l *slog.Logger) (imp, exp laye
 		// Don't set the Interface MTU because client may choose the value on
 		// their own since it's listed in the [Host Requirements RFC].  It also
 		// seems the values listed there sometimes appear obsolete, see
-		// https://github.com/AdGuardPrivate/AdGuardPrivate/issues/5281.
+		// https://github.com/AdguardTeam/AdGuardHome/issues/5281.
 		//
 		// [Host Requirements RFC]: https://datatracker.ietf.org/doc/html/rfc1122#section-3.3.3.
 

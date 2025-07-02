@@ -7,7 +7,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghos"
 	"github.com/AdguardTeam/golibs/errors"
 	"golang.org/x/sys/windows"
 )

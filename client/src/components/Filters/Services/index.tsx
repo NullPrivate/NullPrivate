@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import Form from './Form';
+import { Form } from './Form';
 
 import Card from '../../ui/Card';
 import { getBlockedServices, getAllBlockedServices, updateBlockedServices } from '../../../actions/services';
@@ -11,8 +11,8 @@ import { getBlockedServices, getAllBlockedServices, updateBlockedServices } from
 import PageTitle from '../../ui/PageTitle';
 
 import { ScheduleForm } from './ScheduleForm';
-import ServiceUrls from './ServiceUrls';
 import { RootState } from '../../../initialState';
+import ServiceUrls from './ServiceUrls';
 
 const getInitialDataForServices = (initial: any) =>
     initial
@@ -87,7 +87,8 @@ const Services = () => {
             <Card
                 title={t('schedule_services')}
                 subtitle={t('schedule_services_desc')}
-                bodyType="card-body box-body--settings">
+                bodyType="card-body box-body--settings"
+            >
                 <ScheduleForm schedule={services.list.schedule} onScheduleSubmit={handleScheduleSubmit} />
             </Card>
         </>

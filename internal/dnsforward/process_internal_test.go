@@ -3,12 +3,13 @@ package dnsforward
 import (
 	"cmp"
 	"context"
+	"crypto/tls"
 	"net"
 	"net/netip"
 	"testing"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghtest"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghtest"
+	"github.com/AdguardTeam/AdGuardHome/internal/filtering"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/dnsproxy/upstream"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
@@ -77,10 +78,12 @@ func TestServer_ProcessInitial(t *testing.T) {
 			t.Parallel()
 
 			c := ServerConfig{
+				TLSConf: &TLSConfig{},
 				Config: Config{
 					AAAADisabled:     tc.aaaaDisabled,
 					UpstreamMode:     UpstreamModeLoadBalance,
 					EDNSClientSubnet: &EDNSClientSubnet{Enabled: false},
+					ClientsContainer: EmptyClientsContainer{},
 				},
 				ServePlainDNS: true,
 			}
@@ -176,10 +179,12 @@ func TestServer_ProcessFilteringAfterResponse(t *testing.T) {
 			t.Parallel()
 
 			c := ServerConfig{
+				TLSConf: &TLSConfig{},
 				Config: Config{
 					AAAADisabled:     tc.aaaaDisabled,
 					UpstreamMode:     UpstreamModeLoadBalance,
 					EDNSClientSubnet: &EDNSClientSubnet{Enabled: false},
+					ClientsContainer: EmptyClientsContainer{},
 				},
 				ServePlainDNS: true,
 			}
@@ -314,6 +319,8 @@ func TestServer_ProcessDDRQuery(t *testing.T) {
 	}}
 
 	_, certPem, keyPem := createServerTLSConfig(t)
+	cert, err := tls.X509KeyPair(certPem, keyPem)
+	require.NoError(t, err)
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -324,20 +331,20 @@ func TestServer_ProcessDDRQuery(t *testing.T) {
 					HandleDDR:        tc.ddrEnabled,
 					UpstreamMode:     UpstreamModeLoadBalance,
 					EDNSClientSubnet: &EDNSClientSubnet{Enabled: false},
+					ClientsContainer: EmptyClientsContainer{},
 				},
-				TLSConfig: TLSConfig{
-					ServerName:           ddrTestDomainName,
-					CertificateChainData: certPem,
-					PrivateKeyData:       keyPem,
-					TLSListenAddrs:       tc.addrsDoT,
-					HTTPSListenAddrs:     tc.addrsDoH,
-					QUICListenAddrs:      tc.addrsDoQ,
+				TLSConf: &TLSConfig{
+					ServerName:       ddrTestDomainName,
+					Cert:             &cert,
+					TLSListenAddrs:   tc.addrsDoT,
+					HTTPSListenAddrs: tc.addrsDoH,
+					QUICListenAddrs:  tc.addrsDoQ,
 				},
 				ServePlainDNS: true,
 			})
 			// TODO(e.burkov):  Generate a certificate actually containing the
 			// IP addresses.
-			s.conf.hasIPAddrs = true
+			s.hasIPAddrs = true
 
 			req := createTestMessageWithType(tc.host, tc.qtype)
 
@@ -654,12 +661,14 @@ func TestServer_HandleDNSRequest_restrictLocal(t *testing.T) {
 	}, ServerConfig{
 		UDPListenAddrs: []*net.UDPAddr{{}},
 		TCPListenAddrs: []*net.TCPAddr{{}},
+		TLSConf:        &TLSConfig{},
 		// TODO(s.chzhen):  Add tests where EDNSClientSubnet.Enabled is true.
 		// Improve Config declaration for tests.
 		Config: Config{
 			UpstreamDNS:      []string{localUpsAddr},
 			UpstreamMode:     UpstreamModeLoadBalance,
 			EDNSClientSubnet: &EDNSClientSubnet{Enabled: false},
+			ClientsContainer: EmptyClientsContainer{},
 		},
 		UsePrivateRDNS:    true,
 		LocalPTRResolvers: []string{localUpsAddr},
@@ -785,9 +794,11 @@ func TestServer_ProcessUpstream_localPTR(t *testing.T) {
 			ServerConfig{
 				UDPListenAddrs: []*net.UDPAddr{{}},
 				TCPListenAddrs: []*net.TCPAddr{{}},
+				TLSConf:        &TLSConfig{},
 				Config: Config{
 					UpstreamMode:     UpstreamModeLoadBalance,
 					EDNSClientSubnet: &EDNSClientSubnet{Enabled: false},
+					ClientsContainer: EmptyClientsContainer{},
 				},
 				UsePrivateRDNS:    true,
 				LocalPTRResolvers: []string{localUpsAddr},
@@ -813,9 +824,11 @@ func TestServer_ProcessUpstream_localPTR(t *testing.T) {
 			ServerConfig{
 				UDPListenAddrs: []*net.UDPAddr{{}},
 				TCPListenAddrs: []*net.TCPAddr{{}},
+				TLSConf:        &TLSConfig{},
 				Config: Config{
 					UpstreamMode:     UpstreamModeLoadBalance,
 					EDNSClientSubnet: &EDNSClientSubnet{Enabled: false},
+					ClientsContainer: EmptyClientsContainer{},
 				},
 				UsePrivateRDNS:    false,
 				LocalPTRResolvers: []string{localUpsAddr},

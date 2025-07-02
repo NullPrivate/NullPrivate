@@ -10,7 +10,7 @@ users:
 auth_attempts: 5
 block_auth_min: 15
 http_proxy: ""
-language: en
+language: zh-cn
 theme: light
 service_type: personal
 dns:
@@ -105,7 +105,6 @@ dns:
     - '#tls://[2001:4860:4860::8844]'
     - '#tls://[2001:4860:4860::64]'
     - '#tls://[2001:4860:4860::6464]'
-    - ""
     - '# Cloudflare'
     - '#tls://1.1.1.1'
     - '#tls://1.0.0.1'
@@ -114,7 +113,7 @@ dns:
     - '#tls://[2606:4700:4700::64]'
     - '#tls://[2606:4700:4700::6400]'
   upstream_alternate_rulesets:
-    - http://192.168.31.9:33004/config/gfwlist.txt
+    - http://192.168.31.9:33004/config/gfwlist.txt1
   upstream_mode: load_balance
   fastest_timeout: 1s
   allowed_clients: []
@@ -152,6 +151,8 @@ dns:
   use_http3_upstreams: false
   serve_plain_dns: true
   hostsfile_enabled: false
+  pending_requests:
+    enabled: true
 tls:
   enabled: true
   server_name: dns.jqknono.com

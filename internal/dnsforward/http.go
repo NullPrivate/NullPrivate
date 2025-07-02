@@ -10,14 +10,16 @@ import (
 	"slices"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghhttp"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghnet"
+	"github.com/AdguardTeam/AdGuardHome/internal/filtering"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/dnsproxy/upstream"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/stringutil"
+	"github.com/AdguardTeam/golibs/validate"
 )
 
 // jsonDNSConfig is the JSON representation of the DNS server configuration.
@@ -38,7 +40,7 @@ type jsonDNSConfig struct {
 	// Fallbacks is the list of fallback DNS servers used when upstream DNS
 	// servers are not responding.
 	Fallbacks *[]string `json:"fallback_dns"`
-
+	
 	// UpstreamAlternateDNS is the list of alternate DNS servers for domains
 	// specified in UpstreamAlternateRulesets.
 	UpstreamAlternateDNS *[]string `json:"upstream_alternate_dns"`
@@ -60,6 +62,9 @@ type jsonDNSConfig struct {
 	// RatelimitSubnetLenIPv6 is a subnet length for IPv6 addresses used for
 	// rate limiting requests.
 	RatelimitSubnetLenIPv6 *int `json:"ratelimit_subnet_len_ipv6"`
+
+	// UpstreamTimeout is an upstream timeout in seconds.
+	UpstreamTimeout *int `json:"upstream_timeout"`
 
 	// RatelimitWhitelist is a list of IP addresses excluded from rate limiting.
 	RatelimitWhitelist *[]netip.Addr `json:"ratelimit_whitelist"`
@@ -157,6 +162,7 @@ func (s *Server) getDNSConfig() (c *jsonDNSConfig) {
 	ratelimitSubnetLenIPv4 := s.conf.RatelimitSubnetLenIPv4
 	ratelimitSubnetLenIPv6 := s.conf.RatelimitSubnetLenIPv6
 	ratelimitWhitelist := append([]netip.Addr{}, s.conf.RatelimitWhitelist...)
+	upstreamTimeout := int(s.conf.UpstreamTimeout.Seconds())
 
 	customIP := s.conf.EDNSClientSubnet.CustomIP
 	enableEDNSClientSubnet := s.conf.EDNSClientSubnet.Enabled
@@ -190,36 +196,37 @@ func (s *Server) getDNSConfig() (c *jsonDNSConfig) {
 	}
 
 	return &jsonDNSConfig{
-		Upstreams:                 &upstreams,
-		UpstreamsFile:             &upstreamFile,
-		Bootstraps:                &bootstraps,
-		Fallbacks:                 &fallbacks,
+		Upstreams:                &upstreams,
+		UpstreamsFile:            &upstreamFile,
+		Bootstraps:               &bootstraps,
+		Fallbacks:                &fallbacks,
 		UpstreamAlternateDNS:      &upstreamAlternateDNS,
 		UpstreamAlternateRulesets: &upstreamAlternateRulesets,
-		ProtectionEnabled:         &protectionEnabled,
-		BlockingMode:              &blockingMode,
-		BlockingIPv4:              blockingIPv4,
-		BlockingIPv6:              blockingIPv6,
-		Ratelimit:                 &ratelimit,
-		RatelimitSubnetLenIPv4:    &ratelimitSubnetLenIPv4,
-		RatelimitSubnetLenIPv6:    &ratelimitSubnetLenIPv6,
-		RatelimitWhitelist:        &ratelimitWhitelist,
-		EDNSCSCustomIP:            customIP,
-		EDNSCSEnabled:             &enableEDNSClientSubnet,
-		EDNSCSUseCustom:           &useCustom,
-		DNSSECEnabled:             &enableDNSSEC,
-		DisableIPv6:               &aaaaDisabled,
-		BlockedResponseTTL:        &blockedResponseTTL,
-		CacheSize:                 &cacheSize,
-		CacheMinTTL:               &cacheMinTTL,
-		CacheMaxTTL:               &cacheMaxTTL,
-		CacheOptimistic:           &cacheOptimistic,
-		UpstreamMode:              &upstreamMode,
-		ResolveClients:            &resolveClients,
-		UsePrivateRDNS:            &usePrivateRDNS,
-		LocalPTRUpstreams:         &localPTRUpstreams,
-		DefaultLocalPTRUpstreams:  defPTRUps,
-		DisabledUntil:             protectionDisabledUntil,
+		ProtectionEnabled:        &protectionEnabled,
+		BlockingMode:             &blockingMode,
+		BlockingIPv4:             blockingIPv4,
+		BlockingIPv6:             blockingIPv6,
+		Ratelimit:                &ratelimit,
+		RatelimitSubnetLenIPv4:   &ratelimitSubnetLenIPv4,
+		RatelimitSubnetLenIPv6:   &ratelimitSubnetLenIPv6,
+		RatelimitWhitelist:       &ratelimitWhitelist,
+		UpstreamTimeout:          &upstreamTimeout,
+		EDNSCSCustomIP:           customIP,
+		EDNSCSEnabled:            &enableEDNSClientSubnet,
+		EDNSCSUseCustom:          &useCustom,
+		DNSSECEnabled:            &enableDNSSEC,
+		DisableIPv6:              &aaaaDisabled,
+		BlockedResponseTTL:       &blockedResponseTTL,
+		CacheSize:                &cacheSize,
+		CacheMinTTL:              &cacheMinTTL,
+		CacheMaxTTL:              &cacheMaxTTL,
+		CacheOptimistic:          &cacheOptimistic,
+		UpstreamMode:             &upstreamMode,
+		ResolveClients:           &resolveClients,
+		UsePrivateRDNS:           &usePrivateRDNS,
+		LocalPTRUpstreams:        &localPTRUpstreams,
+		DefaultLocalPTRUpstreams: defPTRUps,
+		DisabledUntil:            protectionDisabledUntil,
 	}
 }
 
@@ -309,6 +316,12 @@ func (req *jsonDNSConfig) validate(
 	}
 
 	err = req.checkCacheTTL()
+	if err != nil {
+		// Don't wrap the error since it's informative enough as is.
+		return err
+	}
+
+	err = req.checkUpstreamTimeout()
 	if err != nil {
 		// Don't wrap the error since it's informative enough as is.
 		return err
@@ -449,6 +462,16 @@ func (req *jsonDNSConfig) checkRatelimitSubnetMaskLen() (err error) {
 	return nil
 }
 
+// checkUpstreamTimeout returns an error if the configuration of the upstream
+// timeout is invalid.
+func (req *jsonDNSConfig) checkUpstreamTimeout() (err error) {
+	if req.UpstreamTimeout == nil {
+		return nil
+	}
+
+	return validate.NoLessThan("upstream_timeout", *req.UpstreamTimeout, 1)
+}
+
 // checkInclusion returns an error if a ptr is not nil and points to value,
 // that not in the inclusive range between minN and maxN.
 func checkInclusion(ptr *int, minN, maxN int) (err error) {
@@ -474,12 +497,12 @@ func (s *Server) isEnterpriseConfigAllowed() bool {
 	return s.conf.ServiceType == "enterprise"
 }
 
-// processConfigRequest processes and validates a DNS configuration request
-func (s *Server) processConfigRequest(r *http.Request) (*jsonDNSConfig, error) {
+// handleSetConfig handles requests to the POST /control/dns_config endpoint.
+func (s *Server) handleSetConfig(w http.ResponseWriter, r *http.Request) {
 	req := &jsonDNSConfig{}
 	err := json.NewDecoder(r.Body).Decode(req)
 	if err != nil {
-		return nil, fmt.Errorf("decoding request: %w", err)
+		return
 	}
 
 	// Check service type, only allow ratelimit and cache_size changes in enterprise mode
@@ -500,23 +523,12 @@ func (s *Server) processConfigRequest(r *http.Request) (*jsonDNSConfig, error) {
 	// Get our own address set for validation
 	ourAddrs, err := s.conf.ourAddrsSet()
 	if err != nil {
-		return nil, fmt.Errorf("getting our addresses: %w", err)
+		return
 	}
 
 	// Validate the configuration
 	err = req.validate(ourAddrs, s.sysResolvers, s.privateNets)
 	if err != nil {
-		return nil, err
-	}
-
-	return req, nil
-}
-
-// handleSetConfig handles requests to the POST /control/dns_config endpoint.
-func (s *Server) handleSetConfig(w http.ResponseWriter, r *http.Request) {
-	req, err := s.processConfigRequest(r)
-	if err != nil {
-		aghhttp.Error(r, w, http.StatusBadRequest, "%s", err)
 		return
 	}
 
@@ -629,6 +641,14 @@ func (s *Server) setConfigRestartable(dc *jsonDNSConfig) (shouldRestart bool) {
 		shouldRestart = true
 	}
 
+	if dc.UpstreamTimeout != nil {
+		ut := time.Duration(*dc.UpstreamTimeout) * time.Second
+		if s.conf.UpstreamTimeout != ut {
+			s.conf.UpstreamTimeout = ut
+			shouldRestart = true
+		}
+	}
+
 	return shouldRestart
 }
 
@@ -658,7 +678,7 @@ func (s *Server) handleTestUpstreamDNS(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	req.BootstrapDNS = stringutil.FilterOut(req.BootstrapDNS, IsCommentOrEmpty)
+	req.BootstrapDNS = stringutil.FilterOut(req.BootstrapDNS, aghnet.IsCommentOrEmpty)
 
 	opts := &upstream.Options{
 		Timeout:    s.conf.UpstreamTimeout,
@@ -684,6 +704,8 @@ func (s *Server) handleTestUpstreamDNS(w http.ResponseWriter, r *http.Request) {
 // handleCacheClear is the handler for the POST /control/cache_clear HTTP API.
 func (s *Server) handleCacheClear(w http.ResponseWriter, _ *http.Request) {
 	s.dnsProxy.ClearCache()
+	s.conf.ClientsContainer.ClearUpstreamCache()
+
 	_, _ = io.WriteString(w, "OK")
 }
 
@@ -779,12 +801,9 @@ func (s *Server) registerHandlers() {
 	//
 	// See go doc net/http.ServeMux.
 	//
-	// See also https://github.com/AdGuardPrivate/AdGuardPrivate/issues/2628.
+	// See also https://github.com/AdguardTeam/AdGuardHome/issues/2628.
 	s.conf.HTTPRegister("", "/dns-query", s.handleDoH)
 	s.conf.HTTPRegister("", "/dns-query/", s.handleDoH)
-
-	// register the DDNS handler
-	s.initDDNS()
 
 	webRegistered = true
 }

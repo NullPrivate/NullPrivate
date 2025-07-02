@@ -2,7 +2,7 @@
 
 package aghnet
 
-import "github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
+import "github.com/AdguardTeam/AdGuardHome/internal/aghos"
 
 func canBindPrivilegedPorts() (can bool, err error) {
 	return aghos.HaveAdminRights()

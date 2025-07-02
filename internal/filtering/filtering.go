@@ -19,9 +19,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering/rulelist"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghhttp"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghos"
+	"github.com/AdguardTeam/AdGuardHome/internal/filtering/rulelist"
 	"github.com/AdguardTeam/golibs/container"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/hostsfile"
@@ -41,12 +41,18 @@ type ServiceEntry struct {
 }
 
 // Settings are custom filtering settings for a client.
+//
+// TODO(s.chzhen):  Move to the client package.
 type Settings struct {
 	ClientName string
 	ClientIP   netip.Addr
 	ClientTags []string
 
 	ServicesRules []ServiceEntry
+
+	// BlockedServices is the configuration of blocked services of a client.  It
+	// is nil if the client does not have any blocked services.
+	BlockedServices *BlockedServices
 
 	ProtectionEnabled   bool
 	FilteringEnabled    bool
@@ -78,6 +84,11 @@ type Config struct {
 	ParentalControlChecker Checker `yaml:"-"`
 
 	SafeSearch SafeSearch `yaml:"-"`
+
+	// ApplyClientFiltering retrieves persistent client information using the
+	// ClientID or client IP address, and applies it to the filtering settings.
+	// It must not be nil.
+	ApplyClientFiltering func(clientID string, cliAddr netip.Addr, setts *Settings) `yaml:"-"`
 
 	// BlockedServices is the configuration of blocked services.
 	// Per-client settings can override this configuration.
@@ -248,6 +259,13 @@ type DNSFilter struct {
 	// parentalControl is the parental control hash-prefix checker.
 	parentalControlChecker Checker
 
+	// applyClientFiltering retrieves persistent client information using the
+	// ClientID or client IP address, and applies it to the filtering settings.
+	//
+	// TODO(s.chzhen):  Consider finding a better approach while taking an
+	// import cycle into account.
+	applyClientFiltering func(clientID string, cliAddr netip.Addr, setts *Settings)
+
 	engineLock sync.RWMutex
 
 	// confMu protects conf.
@@ -327,7 +345,7 @@ const (
 	// TODO(a.garipov): Remove Rewritten and RewrittenAutoHosts by merging their
 	// functionality into RewrittenRule.
 	//
-	// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/2499.
+	// See https://github.com/AdguardTeam/AdGuardHome/issues/2499.
 	RewrittenRule
 )
 
@@ -662,7 +680,7 @@ func (d *DNSFilter) processRewrites(host string, qtype uint16) (res Result) {
 		} else if host == rwAns && isWildcard(rwPat) {
 			// An "*.example.com → sub.example.com" rewrite matching in a loop.
 			//
-			// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/4016.
+			// See https://github.com/AdguardTeam/AdGuardHome/issues/4016.
 
 			res.CanonName = host
 
@@ -921,10 +939,9 @@ func (d *DNSFilter) matchHost(
 	ufReq := &urlfilter.DNSRequest{
 		Hostname:         host,
 		SortedClientTags: setts.ClientTags,
-		// TODO(e.burkov): Wait for urlfilter update to pass net.IP.
-		ClientIP:   setts.ClientIP,
-		ClientName: setts.ClientName,
-		DNSType:    rrtype,
+		ClientIP:         setts.ClientIP,
+		ClientName:       setts.ClientName,
+		DNSType:          rrtype,
 	}
 
 	d.engineLock.RLock()
@@ -1005,6 +1022,7 @@ func New(c *Config, blockFilters []Filter) (d *DNSFilter, err error) {
 		refreshLock:            &sync.Mutex{},
 		safeBrowsingChecker:    c.SafeBrowsingChecker,
 		parentalControlChecker: c.ParentalControlChecker,
+		applyClientFiltering:   c.ApplyClientFiltering,
 		confMu:                 &sync.RWMutex{},
 	}
 

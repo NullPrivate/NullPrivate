@@ -10,14 +10,14 @@ import (
 
 // httpClient returns a new HTTP client that uses the AdGuard Home's own DNS
 // server for resolving hostnames.  The resulting client should not be used
-// until [Context.dnsServer] is initialized.
+// until [Context.dnsServer] is initialized.  tlsMgr must not be nil.
 //
 // TODO(a.garipov, e.burkov): This is rather messy.  Refactor.
-func httpClient() (c *http.Client) {
+func httpClient(tlsMgr *tlsManager) (c *http.Client) {
 	// Do not use Context.dnsServer.DialContext directly in the struct literal
 	// below, since Context.dnsServer may be nil when this function is called.
 	dialContext := func(ctx context.Context, network, addr string) (conn net.Conn, err error) {
-		return Context.dnsServer.DialContext(ctx, network, addr)
+		return globalContext.dnsServer.DialContext(ctx, network, addr)
 	}
 
 	return &http.Client{
@@ -27,8 +27,8 @@ func httpClient() (c *http.Client) {
 			DialContext: dialContext,
 			Proxy:       httpProxy,
 			TLSClientConfig: &tls.Config{
-				RootCAs:      Context.tlsRoots,
-				CipherSuites: Context.tlsCipherIDs,
+				RootCAs:      tlsMgr.rootCerts,
+				CipherSuites: tlsMgr.customCipherIDs,
 				MinVersion:   tls.VersionTLS12,
 			},
 		},

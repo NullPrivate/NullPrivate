@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Upstream from './Upstream';
+import AltUpstream from './AltUpstream';
 
 import Access from './Access';
 
@@ -41,6 +42,8 @@ const Dns = () => {
             ) : (
                 <>
                     <Upstream />
+
+                    <AltUpstream />
 
                     <Config />
 

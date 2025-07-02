@@ -19,7 +19,6 @@ import {
     CHECK_TIMEOUT,
     STATUS_RESPONSE,
     SETTINGS_NAMES,
-    FORM_NAME,
     MANUAL_UPDATE_LINK,
     DISABLE_PROTECTION_TIMINGS,
 } from '../helpers/constants';
@@ -87,32 +86,32 @@ export const initSettings =
             parental: {},
         },
     ) =>
-        async (dispatch: any) => {
-            dispatch(initSettingsRequest());
-            try {
-                const safebrowsingStatus = await apiClient.getSafebrowsingStatus();
-                const parentalStatus = await apiClient.getParentalStatus();
-                const safesearchStatus = await apiClient.getSafesearchStatus();
-                const { safebrowsing, parental } = settingsList;
-                const newSettingsList = {
-                    safebrowsing: {
-                        ...safebrowsing,
-                        enabled: safebrowsingStatus.enabled,
-                    },
-                    parental: {
-                        ...parental,
-                        enabled: parentalStatus.enabled,
-                    },
-                    safesearch: {
-                        ...safesearchStatus,
-                    },
-                };
-                dispatch(initSettingsSuccess({ settingsList: newSettingsList }));
-            } catch (error) {
-                dispatch(addErrorToast({ error }));
-                dispatch(initSettingsFailure());
-            }
-        };
+    async (dispatch: any) => {
+        dispatch(initSettingsRequest());
+        try {
+            const safebrowsingStatus = await apiClient.getSafebrowsingStatus();
+            const parentalStatus = await apiClient.getParentalStatus();
+            const safesearchStatus = await apiClient.getSafesearchStatus();
+            const { safebrowsing, parental } = settingsList;
+            const newSettingsList = {
+                safebrowsing: {
+                    ...safebrowsing,
+                    enabled: safebrowsingStatus.enabled,
+                },
+                parental: {
+                    ...parental,
+                    enabled: parentalStatus.enabled,
+                },
+                safesearch: {
+                    ...safesearchStatus,
+                },
+            };
+            dispatch(initSettingsSuccess({ settingsList: newSettingsList }));
+        } catch (error) {
+            dispatch(addErrorToast({ error }));
+            dispatch(initSettingsFailure());
+        }
+    };
 
 export const toggleProtectionRequest = createAction('TOGGLE_PROTECTION_REQUEST');
 export const toggleProtectionFailure = createAction('TOGGLE_PROTECTION_FAILURE');
@@ -141,18 +140,18 @@ const getDisabledMessage = (time: any) => {
 
 export const toggleProtection =
     (status: any, time = null) =>
-        async (dispatch: any) => {
-            dispatch(toggleProtectionRequest());
-            try {
-                const successMessage = status ? getDisabledMessage(time) : 'enabled_protection';
-                await apiClient.setProtection({ enabled: !status, duration: time });
-                dispatch(addSuccessToast(successMessage));
-                dispatch(toggleProtectionSuccess({ disabledDuration: time }));
-            } catch (error) {
-                dispatch(addErrorToast({ error }));
-                dispatch(toggleProtectionFailure());
-            }
-        };
+    async (dispatch: any) => {
+        dispatch(toggleProtectionRequest());
+        try {
+            const successMessage = status ? getDisabledMessage(time) : 'enabled_protection';
+            await apiClient.setProtection({ enabled: !status, duration: time });
+            dispatch(addSuccessToast(successMessage));
+            dispatch(toggleProtectionSuccess({ disabledDuration: time }));
+        } catch (error) {
+            dispatch(addErrorToast({ error }));
+            dispatch(toggleProtectionFailure());
+        }
+    };
 
 export const setDisableDurationTime = createAction('SET_DISABLED_DURATION_TIME');
 
@@ -166,27 +165,27 @@ export const getVersionSuccess = createAction('GET_VERSION_SUCCESS');
 
 export const getVersion =
     (recheck = false) =>
-        async (dispatch: any, getState: any) => {
-            dispatch(getVersionRequest());
-            try {
-                const data = await apiClient.getGlobalVersion({ recheck_now: recheck });
-                dispatch(getVersionSuccess(data));
+    async (dispatch: any, getState: any) => {
+        dispatch(getVersionRequest());
+        try {
+            const data = await apiClient.getGlobalVersion({ recheck_now: recheck });
+            dispatch(getVersionSuccess(data));
 
-                if (recheck) {
-                    const { dnsVersion } = getState().dashboard;
-                    const currentVersion = dnsVersion === 'undefined' ? 0 : dnsVersion;
+            if (recheck) {
+                const { dnsVersion } = getState().dashboard;
+                const currentVersion = dnsVersion === 'undefined' ? 0 : dnsVersion;
 
-                    if (data && !areEqualVersions(currentVersion, data.new_version)) {
-                        dispatch(addSuccessToast('updates_checked'));
-                    } else {
-                        dispatch(addSuccessToast('updates_version_equal'));
-                    }
+                if (data && !areEqualVersions(currentVersion, data.new_version)) {
+                    dispatch(addSuccessToast('updates_checked'));
+                } else {
+                    dispatch(addSuccessToast('updates_version_equal'));
                 }
-            } catch (error) {
-                dispatch(addErrorToast({ error: 'version_request_error' }));
-                dispatch(getVersionFailure());
             }
-        };
+        } catch (error) {
+            dispatch(addErrorToast({ error: 'version_request_error' }));
+            dispatch(getVersionFailure());
+        }
+    };
 
 export const getUpdateRequest = createAction('GET_UPDATE_REQUEST');
 export const getUpdateFailure = createAction('GET_UPDATE_FAILURE');
@@ -371,6 +370,7 @@ export const getTimerStatus = () => async (dispatch: any) => {
 export const testUpstreamRequest = createAction('TEST_UPSTREAM_REQUEST');
 export const testUpstreamFailure = createAction('TEST_UPSTREAM_FAILURE');
 export const testUpstreamSuccess = createAction('TEST_UPSTREAM_SUCCESS');
+
 export const testUpstream =
     ({ bootstrap_dns, upstream_dns, local_ptr_upstreams, fallback_dns, upstream_alternate_dns }: any, upstream_dns_file: any) =>
         async (dispatch: any) => {
@@ -426,10 +426,9 @@ export const testUpstream =
             }
         };
 
-export const testUpstreamWithFormValues = () => async (dispatch: any, getState: any) => {
+export const testUpstreamWithFormValues = (formValues: any) => async (dispatch: any, getState: any) => {
     const { upstream_dns_file } = getState().dnsConfig;
-    const { bootstrap_dns, upstream_dns, local_ptr_upstreams, fallback_dns, upstream_alternate_dns } =
-        getState().form[FORM_NAME.UPSTREAM].values;
+    const { bootstrap_dns, upstream_dns, local_ptr_upstreams, fallback_dns, upstream_alternate_dns } = formValues;
 
     return dispatch(
         testUpstream(
@@ -515,16 +514,15 @@ export const findActiveDhcpRequest = createAction('FIND_ACTIVE_DHCP_REQUEST');
 export const findActiveDhcpSuccess = createAction('FIND_ACTIVE_DHCP_SUCCESS');
 export const findActiveDhcpFailure = createAction('FIND_ACTIVE_DHCP_FAILURE');
 
-export const findActiveDhcp = (name: any) => async (dispatch: any, getState: any) => {
+export const findActiveDhcp = (selectedInterface: any) => async (dispatch: any, getState: any) => {
     dispatch(findActiveDhcpRequest());
     try {
         const req = {
-            interface: name,
+            interface: selectedInterface,
         };
         const activeDhcp = await apiClient.findActiveDhcp(req);
         dispatch(findActiveDhcpSuccess(activeDhcp));
         const { check, interface_name, interfaces } = getState().dhcp;
-        const selectedInterface = getState().form[FORM_NAME.DHCP_INTERFACES].values.interface_name;
         const v4 = check?.v4 ?? { static_ip: {}, other_server: {} };
         const v6 = check?.v6 ?? { other_server: {} };
 

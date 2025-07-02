@@ -129,5 +129,10 @@
                 }
             ]
         }
-    ]
+    ],
+    "go.toolsEnvVars": {
+        "GOPROXY": "https://goproxy.cn,direct",
+        "GOTOOLCHAIN": "go1.24.4"
+    },
+    "makefile.configureOnOpen": false
 }

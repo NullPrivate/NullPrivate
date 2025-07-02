@@ -52,7 +52,7 @@ go_test() {
 		"$timeout_flags" \
 		"$v_flags" \
 		"$x_flags" \
-		 ./internal/...
+		./...
 }
 
 test_reports_dir="${TEST_REPORTS_DIR:-}"

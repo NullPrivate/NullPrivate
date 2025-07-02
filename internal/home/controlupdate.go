@@ -12,10 +12,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghalg"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghnet"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/updater"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghalg"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghhttp"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghnet"
+	"github.com/AdguardTeam/AdGuardHome/internal/updater"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/osutil"
@@ -62,7 +62,7 @@ func (web *webAPI) handleVersionJSON(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = resp.setAllowedToAutoUpdate()
+	err = resp.setAllowedToAutoUpdate(web.tlsManager)
 	if err != nil {
 		// Don't wrap the error, because it's informative enough as is.
 		aghhttp.Error(r, w, http.StatusInternalServerError, "%s", err)
@@ -82,7 +82,7 @@ func (web *webAPI) requestVersionInfo(
 ) (err error) {
 	updater := web.conf.updater
 	for range 3 {
-		resp.VersionInfo, err = updater.VersionInfo(recheck)
+		resp.VersionInfo, err = updater.VersionInfo(ctx, recheck)
 		if err == nil {
 			return nil
 		}
@@ -92,7 +92,7 @@ func (web *webAPI) requestVersionInfo(
 			// Temporary network error.  This case may happen while we're
 			// restarting our DNS server.  Log and sleep for some time.
 			//
-			// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/934.
+			// See https://github.com/AdguardTeam/AdGuardHome/issues/934.
 			const sleepTime = 2 * time.Second
 
 			err = fmt.Errorf("temp net error: %w; sleeping for %s and retrying", err, sleepTime)
@@ -125,7 +125,7 @@ func (web *webAPI) handleUpdate(w http.ResponseWriter, r *http.Request) {
 	// Retain the current absolute path of the executable, since the updater is
 	// likely to change the position current one to the backup directory.
 	//
-	// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/4735.
+	// See https://github.com/AdguardTeam/AdGuardHome/issues/4735.
 	execPath, err := os.Executable()
 	if err != nil {
 		aghhttp.Error(r, w, http.StatusInternalServerError, "getting path: %s", err)
@@ -133,7 +133,7 @@ func (web *webAPI) handleUpdate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = updater.Update(false)
+	err = updater.Update(r.Context(), false)
 	if err != nil {
 		aghhttp.Error(r, w, http.StatusInternalServerError, "%s", err)
 
@@ -158,17 +158,14 @@ type versionResponse struct {
 }
 
 // setAllowedToAutoUpdate sets CanAutoUpdate to true if AdGuard Home is actually
-// allowed to perform an automatic update by the OS.
-func (vr *versionResponse) setAllowedToAutoUpdate() (err error) {
+// allowed to perform an automatic update by the OS.  tlsMgr must not be nil.
+func (vr *versionResponse) setAllowedToAutoUpdate(tlsMgr *tlsManager) (err error) {
 	if vr.CanAutoUpdate != aghalg.NBTrue {
 		return nil
 	}
 
-	tlsConf := &tlsConfigSettings{}
-	Context.tls.WriteDiskConfig(tlsConf)
-
 	canUpdate := true
-	if tlsConfUsesPrivilegedPorts(tlsConf) ||
+	if tlsConfUsesPrivilegedPorts(tlsMgr.config()) ||
 		config.HTTPConfig.Address.Port() < 1024 ||
 		config.DNS.Port < 1024 {
 		canUpdate, err = aghnet.CanBindPrivilegedPorts()

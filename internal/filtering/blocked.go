@@ -10,9 +10,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering/rulelist"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/schedule"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghhttp"
+	"github.com/AdguardTeam/AdGuardHome/internal/filtering/rulelist"
+	"github.com/AdguardTeam/AdGuardHome/internal/schedule"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/urlfilter/rules"
 )
@@ -42,6 +42,7 @@ func initBlockedServices() {
 				log.Error("parsing blocked service %q rule %q: %s", s.ID, text, err)
 				continue
 			}
+
 			netRules = append(netRules, rule)
 		}
 		serviceIDs[i] = s.ID
@@ -173,10 +174,11 @@ func (d *DNSFilter) ApplyBlockedServices(setts *Settings) {
 	defer d.confMu.RUnlock()
 
 	setts.ServicesRules = []ServiceEntry{}
+
 	bsvc := d.conf.BlockedServices
 
 	// TODO(s.chzhen):  Use startTime from [dnsforward.dnsContext].
-	if bsvc != nil && !bsvc.Schedule.Contains(time.Now()) {
+	if !bsvc.Schedule.Contains(time.Now()) {
 		d.ApplyBlockedServicesList(setts, bsvc.IDs)
 	}
 }
@@ -187,6 +189,7 @@ func (d *DNSFilter) ApplyBlockedServicesList(setts *Settings, list []string) {
 		rules, ok := serviceRules[name]
 		if !ok {
 			log.Error("unknown service name: %s", name)
+
 			continue
 		}
 		setts.ServicesRules = append(setts.ServicesRules, ServiceEntry{

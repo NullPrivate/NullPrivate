@@ -13,9 +13,9 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/configmigrate"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/next/configmgr"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/version"
+	"github.com/AdguardTeam/AdGuardHome/internal/configmigrate"
+	"github.com/AdguardTeam/AdGuardHome/internal/next/configmgr"
+	"github.com/AdguardTeam/AdGuardHome/internal/version"
 	"github.com/AdguardTeam/golibs/osutil"
 )
 

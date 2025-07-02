@@ -1,12 +1,12 @@
 # A docker file for scripts/make/build-docker.sh.
 
-FROM alpine:3.18
+FROM alpine:3.21
 
 ARG BUILD_DATE
 ARG VERSION
 ARG VCS_REF
 
-LABEL\
+LABEL \
 	maintainer="AdGuard Private  <dev1@adguardprivate.com>" \
 	org.opencontainers.image.authors="AdGuard Private  <dev1@adguardprivate.com>" \
 	org.opencontainers.image.created=$BUILD_DATE \
@@ -16,6 +16,8 @@ LABEL\
 	org.opencontainers.image.revision=$VCS_REF \
 	org.opencontainers.image.source="https://github.com/AdGuardPrivate/AdGuardPrivate" \
 	org.opencontainers.image.title="AdGuard Private" \
+	org.opencontainers.image.url="https://adguardprivate.com" \
+	org.opencontainers.image.vendor="AdGuard Private" \
 	org.opencontainers.image.version=$VERSION
 
 # Update certificates.
@@ -45,8 +47,15 @@ RUN chmod +x /opt/adguardhome/AdGuardHome && \
 # 3000   : TCP, UDP : HTTP(S) (alt, incl. HTTP/3)
 # 5443   : TCP, UDP : DNSCrypt (alt)
 # 6060   : TCP      : HTTP (pprof)
-EXPOSE 53/tcp 53/udp 67/udp 68/udp 80/tcp 443/tcp 443/udp 853/tcp\
-	853/udp 3000/tcp 3000/udp 5443/tcp 5443/udp 6060/tcp
+EXPOSE 53/tcp 53/udp \
+	67/udp \
+	68/udp \
+	80/tcp \
+	443/tcp 443/udp \
+	853/tcp 853/udp \
+	3000/tcp 3000/udp \
+	5443/tcp 5443/udp \
+	6060/tcp
 
 WORKDIR /opt/adguardhome/work
 

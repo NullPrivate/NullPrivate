@@ -3,7 +3,7 @@
 package home
 
 import (
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghos"
 	"github.com/kardianos/service"
 )
 
@@ -15,8 +15,8 @@ func chooseSystem() {
 	// anything other, but the update-rc.d fix should not be applied on OpenWrt,
 	// so exclude it explicitly.
 	//
-	// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/4480 and
-	// https://github.com/AdGuardPrivate/AdGuardPrivate/issues/4677.
+	// See https://github.com/AdguardTeam/AdGuardHome/issues/4480 and
+	// https://github.com/AdguardTeam/AdGuardHome/issues/4677.
 	if sys.String() == "unix-systemv" && !aghos.IsOpenWrt() {
 		service.ChooseSystem(sysvSystem{System: sys})
 	}

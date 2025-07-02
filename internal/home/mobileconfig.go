@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"path"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/dnsforward"
+	"github.com/AdguardTeam/AdGuardHome/internal/client"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/httphdr"
 	"github.com/AdguardTeam/golibs/log"
@@ -37,7 +37,7 @@ type dnsSettings struct {
 	//
 	// TODO(a.garipov): Allow users to set this.
 	//
-	// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/3607.
+	// See https://github.com/AdguardTeam/AdGuardHome/issues/3607.
 	ServerAddresses []net.IP `plist:",omitempty"`
 }
 
@@ -151,7 +151,7 @@ func handleMobileConfig(w http.ResponseWriter, r *http.Request, dnsp string) {
 
 	clientID := q.Get("client_id")
 	if clientID != "" {
-		err = dnsforward.ValidateClientID(clientID)
+		err = client.ValidateClientID(clientID)
 		if err != nil {
 			respondJSONError(w, http.StatusBadRequest, err.Error())
 

@@ -10,8 +10,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/version"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghos"
+	"github.com/AdguardTeam/AdGuardHome/internal/version"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/netutil/urlutil"
@@ -36,6 +36,7 @@ type program struct {
 	signals       chan os.Signal
 	done          chan struct{}
 	opts          options
+	sigHdlr       *signalHandler
 }
 
 // type check
@@ -47,7 +48,7 @@ func (p *program) Start(_ service.Service) (err error) {
 	args := p.opts
 	args.runningAsService = true
 
-	go run(args, p.clientBuildFS, p.done)
+	go run(args, p.clientBuildFS, p.done, p.sigHdlr)
 
 	return nil
 }
@@ -204,6 +205,7 @@ func handleServiceControlAction(
 	clientBuildFS fs.FS,
 	signals chan os.Signal,
 	done chan struct{},
+	sigHdlr *signalHandler,
 ) {
 	// Call chooseSystem explicitly to introduce OpenBSD support for service
 	// package.  It's a noop for other GOOS values.
@@ -244,6 +246,7 @@ func handleServiceControlAction(
 		signals:       signals,
 		done:          done,
 		opts:          runOpts,
+		sigHdlr:       sigHdlr,
 	}, svcConfig)
 	if err != nil {
 		log.Fatalf("service: initializing service: %s", err)
@@ -336,7 +339,7 @@ AdGuard Home is successfully installed and will automatically start on boot.
 There are a few more things that must be configured before you can use it.
 Click on the link below and follow the Installation Wizard steps to finish setup.
 AdGuard Home is now available at the following addresses:`)
-		printHTTPAddresses(urlutil.SchemeHTTP)
+		printHTTPAddresses(urlutil.SchemeHTTP, nil)
 	}
 }
 
@@ -596,7 +599,7 @@ exit 0
 `
 
 // OpenWrt procd init script
-// https://github.com/AdGuardPrivate/AdGuardPrivate/internal/issues/1386
+// https://github.com/AdguardTeam/AdGuardHome/internal/issues/1386
 const openWrtScript = `#!/bin/sh /etc/rc.common
 
 USE_PROCD=1
