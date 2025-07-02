@@ -678,7 +678,6 @@
     "save_config": "[TO TRANSLATE] Save configuration",
     "schedule_add": "[TO TRANSLATE] Add schedule",
     "schedule_current_timezone": "[TO TRANSLATE] Current time zone: {{value}}",
-    "schedule_desc": "[TO TRANSLATE] Set inactivity periods for blocked services",
     "schedule_edit": "[TO TRANSLATE] Edit schedule",
     "schedule_from": "[TO TRANSLATE] From",
     "schedule_invalid_select": "[TO TRANSLATE] Start time must be before end time",

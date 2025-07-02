@@ -719,7 +719,6 @@
     "schedule_services": "Cho phép truy cập dịch vụ trong thời gian này",
     "schedule_services_desc": "Định cấu hình lịch trình cho phép của hệ thống chống nghiện",
     "schedule_services_desc_client": "Định cấu hình lịch tạm dừng của bộ lọc chặn dịch vụ cho máy khách này",
-    "schedule_desc": "Đặt khoảng thời gian không hoạt động cho các dịch vụ bị chặn",
     "schedule_invalid_select": "Thời gian bắt đầu phải trước thời gian kết thúc",
     "schedule_select_days": "Chọn ngày",
     "schedule_timezone": "Chọn múi giờ",

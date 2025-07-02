@@ -719,7 +719,6 @@
     "schedule_services": "Permitir acesso ao serviço durante este período",
     "schedule_services_desc": "Configurar o cronograma de permissão do sistema anti-vício",
     "schedule_services_desc_client": "Configure o agendamento de pausa do filtro de bloqueio de serviço para este cliente",
-    "schedule_desc": "Defina períodos de inatividade para serviços bloqueados",
     "schedule_invalid_select": "O horário de início deve ser antes do horário de término",
     "schedule_select_days": "Selecione os dias",
     "schedule_timezone": "Selecione um fuso horário",

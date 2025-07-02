@@ -120,8 +120,8 @@ def create_nested_dict_ordered(flat_dict, key_order):
     
     return nested
 
-def merge_translations(original_data, new_translations):
-    """将新翻译合并到原数据中，保留原数据中不在新翻译中的key"""
+def merge_translations(original_data, new_translations, table_keys):
+    """将新翻译合并到原数据中，删除不在表格中的key"""
     def set_nested_value(obj, path, value):
         """在嵌套字典中设置值"""
         parts = path.split('.')
@@ -132,18 +132,56 @@ def merge_translations(original_data, new_translations):
             current = current[part]
         current[parts[-1]] = value
     
+    def delete_nested_value(obj, path):
+        """删除嵌套字典中的值"""
+        parts = path.split('.')
+        current = obj
+        for part in parts[:-1]:
+            if part not in current:
+                return  # 路径不存在，无需删除
+            current = current[part]
+        if parts[-1] in current:
+            del current[parts[-1]]
+    
+    def clean_empty_dicts(obj):
+        """递归清理空的字典"""
+        if not isinstance(obj, dict):
+            return obj
+        
+        # 先递归清理子字典
+        for key, value in list(obj.items()):
+            if isinstance(value, dict):
+                cleaned_value = clean_empty_dicts(value)
+                if not cleaned_value:  # 如果子字典为空，删除它
+                    del obj[key]
+                else:
+                    obj[key] = cleaned_value
+        
+        return obj
+    
     # 复制原数据
     merged_data = json.loads(json.dumps(original_data))  # 深拷贝
+    
+    # 获取原数据中的所有key
+    original_keys = set(get_all_keys(original_data))
+    
+    # 删除不在表格中的key
+    keys_to_delete = original_keys - set(table_keys)
+    for key in keys_to_delete:
+        delete_nested_value(merged_data, key)
     
     # 更新新翻译中的值
     for key, value in new_translations.items():
         if value:  # 只更新非空值
             set_nested_value(merged_data, key, value)
     
+    # 清理空的字典
+    merged_data = clean_empty_dicts(merged_data)
+    
     return merged_data
 
-def save_language_files(translations, output_dir, target_languages=None):
-    """保存各个语言的JSON文件，保持原有的key顺序，合并而不是覆盖"""
+def save_language_files(translations, output_dir, table_keys, target_languages=None):
+    """保存各个语言的JSON文件，保持原有的key顺序，合并而不是覆盖，删除不在表格中的key"""
     os.makedirs(output_dir, exist_ok=True)
     
     saved_count = 0
@@ -159,17 +197,23 @@ def save_language_files(translations, output_dir, target_languages=None):
         try:
             with open(output_file, 'r', encoding='utf-8') as f:
                 original_data = json.load(f)
-            print(f"Loaded existing {lang}.json ({len(get_all_keys(original_data))} existing keys)")
+            original_key_count = len(get_all_keys(original_data))
+            print(f"Loaded existing {lang}.json ({original_key_count} existing keys)")
         except (FileNotFoundError, json.JSONDecodeError) as e:
             print(f"Could not load existing {lang}.json: {e}")
             # 如果无法读取原文件，使用空字典
             original_data = {}
+            original_key_count = 0
         
         # 合并翻译
-        merged_data = merge_translations(original_data, trans)
+        merged_data = merge_translations(original_data, trans, table_keys)
         updated_keys = len([k for k, v in trans.items() if v])  # 统计非空的更新
+        final_key_count = len(get_all_keys(merged_data))
+        deleted_keys = original_key_count - final_key_count + updated_keys
         
         print(f"Merging {updated_keys} translations into {lang}.json")
+        if deleted_keys > 0:
+            print(f"Deleted {deleted_keys} keys not found in table")
         
         # 保存为JSON文件
         with open(output_file, 'w', encoding='utf-8') as f:
@@ -217,7 +261,16 @@ def main():
         print("Processing all languages found in the table")
     
     languages, translations = parse_markdown_table(input_file)
-    saved_count = save_language_files(translations, output_dir, args.languages)
+    
+    # 获取表格中的所有key
+    table_keys = set()
+    for lang_translations in translations.values():
+        table_keys.update(lang_translations.keys())
+    table_keys = list(table_keys)
+    
+    print(f"Found {len(table_keys)} unique keys in table")
+    
+    saved_count = save_language_files(translations, output_dir, table_keys, args.languages)
     
     if args.languages:
         total_languages = len([lang for lang in languages if lang in args.languages])

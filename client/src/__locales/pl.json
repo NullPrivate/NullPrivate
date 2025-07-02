@@ -719,7 +719,6 @@
     "schedule_services": "Zezwól na dostęp do usługi w tym czasie",
     "schedule_services_desc": "Skonfiguruj harmonogram pozwoleń systemu przeciwdziałania uzależnieniom",
     "schedule_services_desc_client": "Ustawianie harmonogramu wstrzymywania filtru blokowania serwisów dla tego klienta",
-    "schedule_desc": "Ustawianie okresów bezczynności dla zablokowanych serwisów",
     "schedule_invalid_select": "Czas rozpoczęcia musi być przed czasem zakończenia",
     "schedule_select_days": "Wybierz dni",
     "schedule_timezone": "Wybierz strefę czasową",

@@ -719,7 +719,6 @@
     "schedule_services": "Tillad adgang til tjenesten i dette tidsrum",
     "schedule_services_desc": "Konfigurer tidsplan for tilladelse af anti-afhængighedssystem",
     "schedule_services_desc_client": "Opsæt pauseringstidsplan for det tjenesteblokerende filter for denne klient",
-    "schedule_desc": "Sæt inaktivitetsperioder for blokerede tjenester",
     "schedule_invalid_select": "Starttidspunkt skal være før sluttidspunkt",
     "schedule_select_days": "Vælg dage",
     "schedule_timezone": "Vælg tidszone",

@@ -719,7 +719,6 @@
     "schedule_services": "この時間中はサービスへのアクセスを許可",
     "schedule_services_desc": "ゲーム依存防止システムの許可スケジュールを設定する",
     "schedule_services_desc_client": "このクライアントに対するサービスブロックフィルタの一時停止スケジュールを設定できます。",
-    "schedule_desc": "ブロックされたサービスの非アクティブ期間を設定できます。",
     "schedule_invalid_select": "開始時間は終了時間より前である必要があります",
     "schedule_select_days": "曜日を選択",
     "schedule_timezone": "タイムゾーンを選択",

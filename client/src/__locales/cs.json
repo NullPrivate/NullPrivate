@@ -719,7 +719,6 @@
     "schedule_services": "Povolit přístup ke službě během této doby",
     "schedule_services_desc": "Konfigurovat plán povolení pro systém proti závislosti",
     "schedule_services_desc_client": "Konfigurace plánu pozastavení filtru blokování služeb pro tohoto klienta",
-    "schedule_desc": "Nastavení doby nečinnosti pro blokované služby",
     "schedule_invalid_select": "Čas zahájení musí být před časem ukončení",
     "schedule_select_days": "Vyberte dny",
     "schedule_timezone": "Vyberte časové pásmo",

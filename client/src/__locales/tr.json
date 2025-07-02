@@ -719,7 +719,6 @@
     "schedule_services": "Bu süre boyunca hizmete erişime izin ver",
     "schedule_services_desc": "Bağımlılık karşıtı sistemin izin takvimini yapılandırın",
     "schedule_services_desc_client": "Bu istemci için hizmet engelleme filtresinin duraklatma planını yapılandırın",
-    "schedule_desc": "Engellenen hizmetler için hareketsizlik sürelerini ayarlayın",
     "schedule_invalid_select": "Başlangıç zamanı, bitiş zamanından önce olmalıdır",
     "schedule_select_days": "Günleri seçin",
     "schedule_timezone": "Saat dilimi seçin",

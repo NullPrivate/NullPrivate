@@ -719,7 +719,6 @@
     "schedule_services": "Permitir el acceso al servicio durante este tiempo",
     "schedule_services_desc": "Configurar el horario de permiso del sistema anti-adicción",
     "schedule_services_desc_client": "Configurar el horario programado de pausa del bloqueo de servicio filtrado para este cliente",
-    "schedule_desc": "Establecer periodos de inactividad para servicios bloqueados",
     "schedule_invalid_select": "El tiempo de inicio debe de ir antes del tiempo de finalización",
     "schedule_select_days": "Selecciona los dias",
     "schedule_timezone": "Selecciona una zona horaria",

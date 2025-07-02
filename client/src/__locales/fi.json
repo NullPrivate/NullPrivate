@@ -719,7 +719,6 @@
     "schedule_services": "Salli palveluiden käyttö tänä aikana",
     "schedule_services_desc": "Määritä riippuvuuden vastaisen järjestelmän sallimisaikataulu",
     "schedule_services_desc_client": "Määritä palvelunestosuodattimen pysäytysajoitus tälle päätteelle.",
-    "schedule_desc": "Aseta estettujen palveluiden käyttämättömyysjaksot",
     "schedule_invalid_select": "Aloitusaika on oltava ennen lopetusaikaa",
     "schedule_select_days": "Valitse päivät",
     "schedule_timezone": "Valitse aikavyöhyke",

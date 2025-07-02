@@ -719,7 +719,6 @@
     "schedule_services": "Izinkan akses ke layanan selama waktu ini",
     "schedule_services_desc": "Konfigurasikan jadwal izin sistem anti-kecanduan",
     "schedule_services_desc_client": "Mengonfigurasi jadwal jeda filter pemblokiran layanan untuk klien ini",
-    "schedule_desc": "Tetapkan periode tidak aktif untuk layanan yang diblokir",
     "schedule_invalid_select": "Waktu mulai harus sebelum waktu akhir",
     "schedule_select_days": "Pilih hari",
     "schedule_timezone": "Pilih zona waktu",

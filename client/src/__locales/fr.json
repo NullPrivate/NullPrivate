@@ -719,7 +719,6 @@
     "schedule_services": "Autoriser l'accès au service pendant cette période",
     "schedule_services_desc": "Configurer le planning d'autorisation du système anti-dépendance",
     "schedule_services_desc_client": "Configurez l'horaire de pauses du filtre de blocage de services pour ce client",
-    "schedule_desc": "Définissez les périodes d'inactivité pour les services bloqués",
     "schedule_invalid_select": "Le temps du début doit précéder le temps de la fin",
     "schedule_select_days": "Sélectionnez les jours",
     "schedule_timezone": "Sélectionnez un fuseau horaire",

@@ -719,7 +719,6 @@
     "schedule_services": "Erlauben Sie den Zugriff auf den Dienst während dieser Zeit",
     "schedule_services_desc": "Zeitplan für die Erlaubnis des Anti-Sucht-Systems konfigurieren",
     "schedule_services_desc_client": "Konfigurieren Sie den Pausenplan des Dienstblockierungsfilters für diesen Client",
-    "schedule_desc": "Inaktivitätszeiträume für blockierte Dienste festlegen",
     "schedule_invalid_select": "Die Startzeit muss vor der Endzeit liegen",
     "schedule_select_days": "Tage auswählen",
     "schedule_timezone": "Wählen Sie eine Zeitzone",

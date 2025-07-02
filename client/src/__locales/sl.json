@@ -719,7 +719,6 @@
     "schedule_services": "Dovoli dostop do storitve v tem času",
     "schedule_services_desc": "Nastavite urnik dovoljenj sistema proti zasvojenosti",
     "schedule_services_desc_client": "Nastavite rokovnik premora filtra za onemogočanje storitev za tega odjemalca",
-    "schedule_desc": "Nastavite obdobja nedejavnosti onemogočenih storitev",
     "schedule_invalid_select": "Začetni čas mora biti pred končnim časom",
     "schedule_select_days": "Izberite dneve",
     "schedule_timezone": "Izberite časovni pas",

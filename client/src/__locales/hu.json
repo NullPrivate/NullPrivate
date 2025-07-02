@@ -719,7 +719,6 @@
     "schedule_services": "Szolgáltatás elérésének engedélyezése ebben az időszakban",
     "schedule_services_desc": "Az függőség elleni rendszer engedélyezési ütemezésének beállítása",
     "schedule_services_desc_client": "Állítsa be a szolgáltatásblokkoló szűrő szüneteltetési ütemezését ehhez az ügyfélhez",
-    "schedule_desc": "Inaktivitási időszakok beállítása a blokkolt szolgáltatásokhoz",
     "schedule_invalid_select": "A kezdési időpontnak a befejezési időpont előtt kell lennie",
     "schedule_select_days": "Napok kiválasztása",
     "schedule_timezone": "Válasszon időzónát",

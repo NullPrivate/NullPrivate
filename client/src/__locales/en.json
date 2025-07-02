@@ -719,7 +719,6 @@
     "schedule_services": "Allow access to service during this time",
     "schedule_services_desc": "Configure the allowance schedule of anti-addiction system",
     "schedule_services_desc_client": "Configure the pause schedule of the service-blocking filter for this client",
-    "schedule_desc": "Set inactivity periods for blocked services",
     "schedule_invalid_select": "Start time must be before end time",
     "schedule_select_days": "Select days",
     "schedule_timezone": "Select a time zone",

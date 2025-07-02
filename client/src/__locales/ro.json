@@ -719,7 +719,6 @@
     "schedule_services": "Permiteți accesul la serviciu în acest timp",
     "schedule_services_desc": "Configurați programul de permisiune al sistemului anti-dependență",
     "schedule_services_desc_client": "Configurați programul de pauză al filtrului de blocare a serviciului pentru acest client",
-    "schedule_desc": "Setați perioade de inactivitate pentru serviciile blocate",
     "schedule_invalid_select": "Ora de început trebuie să fie înaintea orei de sfârșit",
     "schedule_select_days": "Selectați zile",
     "schedule_timezone": "Selectați un fus orar",

@@ -12,7 +12,7 @@ block_auth_min: 15
 http_proxy: ""
 language: zh-cn
 theme: light
-service_type: personal
+service_type: enterprise
 dns:
   bind_hosts:
     - 0.0.0.0
@@ -260,7 +260,37 @@ clients:
     rdns: false
     dhcp: false
     hosts: false
-  persistent: []
+  persistent:
+    - safe_search:
+        enabled: false
+        bing: true
+        duckduckgo: true
+        ecosia: true
+        google: true
+        pixabay: true
+        yandex: true
+        youtube: true
+      blocked_services:
+        schedule:
+          time_zone: Local
+        ids: []
+      name: "123"
+      ids:
+        - "456"
+        - "789"
+      tags:
+        - device_audio
+      upstreams: []
+      uid: 0197ca3f-0a6c-7d07-b117-4546e20823d6
+      upstreams_cache_size: 4096
+      upstreams_cache_enabled: true
+      use_global_settings: true
+      filtering_enabled: false
+      parental_enabled: false
+      safebrowsing_enabled: false
+      use_global_blocked_services: true
+      ignore_querylog: false
+      ignore_statistics: false
 log:
   enabled: true
   file: ""

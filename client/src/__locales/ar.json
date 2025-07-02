@@ -712,7 +712,6 @@
     "schedule_services": "السماح بالوصول إلى الخدمة خلال هذا الوقت",
     "schedule_services_desc": "تكوين جدول زمني للسماح لإستخدام مُبطئ الإدمان",
     "schedule_services_desc_client": "تهيئة جدول إيقاف فلتر خدمة الحظر لهذا العميل",
-    "schedule_desc": "تعيين فترات عدم النشاط للخدمات المحظورة",
     "schedule_invalid_select": "يجب أن يكون وقت البَدْء قبل وقت الانتهاء",
     "schedule_select_days": "اختر الأيام",
     "schedule_timezone": "قم باختيار منطقة زمنية",

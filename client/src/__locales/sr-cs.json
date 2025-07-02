@@ -719,7 +719,6 @@
     "schedule_services": "Dozvoli pristup servisu tokom ovog vremena",
     "schedule_services_desc": "Podešavanje rasporeda dozvola sistema protiv zavisnosti",
     "schedule_services_desc_client": "Konfigurišite raspored pauziranja filtera za blokiranje usluga za ovog klijenta",
-    "schedule_desc": "Podešavanje perioda neaktivnosti za blokirane usluge",
     "schedule_invalid_select": "Vreme početka mora biti pre vremena završetka",
     "schedule_select_days": "Izaberite dane",
     "schedule_timezone": "Izaberite vremensku zonu",

@@ -719,7 +719,6 @@
     "schedule_services": "Sta toegang tot service toe tijdens deze tijd",
     "schedule_services_desc": "De toegestane planning van het anti-verslavingssysteem configureren",
     "schedule_services_desc_client": "Het pauzeschema van het serviceblokkeringsfilter voor deze client configureren",
-    "schedule_desc": "Inactiviteitsperioden instellen voor geblokkeerde services",
     "schedule_invalid_select": "Begintijd moet vóór eindtijd liggen",
     "schedule_select_days": "Selecteer dagen",
     "schedule_timezone": "Selecteer een tijdzone",

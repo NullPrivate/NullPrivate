@@ -719,7 +719,6 @@
     "schedule_services": "이 시간 동안 서비스 접근 허용",
     "schedule_services_desc": "중독 방지 시스템의 허용 일정 구성",
     "schedule_services_desc_client": "이 클라이언트에 대한 서비스 차단 필터의 일시 중지 일정을 구성하세요.",
-    "schedule_desc": "차단된 서비스에 대한 비활성 기간을 설정하세요.",
     "schedule_invalid_select": "시작 시간은 종료 시간 이전이어야 합니다.",
     "schedule_select_days": "요일 선택",
     "schedule_timezone": "표준 시간대 선택",

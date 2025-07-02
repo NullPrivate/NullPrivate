@@ -719,7 +719,6 @@
     "schedule_services": "Tillåt åtkomst till tjänsten under denna tid",
     "schedule_services_desc": "Konfigurera tillåtelsetidtabellen för anti-beroendesystem",
     "schedule_services_desc_client": "Konfigurera pausschemat för det tjänsteblockerande filtret för den här klienten",
-    "schedule_desc": "Ange inaktivitetsperioder för blockerade tjänster",
     "schedule_invalid_select": "Starttid måste vara före sluttid",
     "schedule_select_days": "Välj dagar",
     "schedule_timezone": "Välj en tidszon",

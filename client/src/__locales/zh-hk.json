@@ -711,7 +711,6 @@
     "schedule_services": "在此期間允許使用服務",
     "schedule_services_desc": "配置防沉迷的允許使用時間表",
     "schedule_services_desc_client": "針對此用戶端，設定服務阻擋的暫停排程",
-    "schedule_desc": "設定已封鎖服務的閒置時段",
     "schedule_invalid_select": "開始時間必須在結束時間之前",
     "schedule_select_days": "選擇天數",
     "schedule_timezone": "選擇時區",
