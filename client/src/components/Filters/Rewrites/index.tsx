@@ -157,6 +157,27 @@ class Rewrites extends Component<RewritesProps, RewritesState> {
                                     <Trans>ddns_script_macos</Trans>
                                 </button>
                             </div>
+                            
+                            {/* Script execution instructions */}
+                            <div className="mt-4">
+                                <h5><Trans>ddns_script_instructions</Trans></h5>
+                                <p className="text-muted"><Trans>ddns_script_instructions_desc</Trans></p>
+
+                                <h6 className="mt-3"><Trans>ddns_script_windows</Trans></h6>
+                                <p className="text-muted"><Trans>ddns_script_windows_note</Trans></p>
+                                <pre><code>
+                                    {'Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process\n' 
+                                        + '.\\ddns-script.ps1'}
+                                </code></pre>
+
+                                <h6 className="mt-3"><Trans>ddns_script_linux</Trans> / <Trans>ddns_script_macos</Trans></h6>
+                                <p className="text-muted"><Trans>ddns_script_unix_note</Trans></p>
+                                <pre><code>
+                                    {'chmod +x ddns-script.sh\n' 
+                                        + './ddns-script.sh'}
+                                </code></pre>
+                            </div>
+                            
                         </div>
 
                         <Modal

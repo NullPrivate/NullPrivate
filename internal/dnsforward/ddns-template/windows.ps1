@@ -65,32 +65,17 @@ function Check-Params {
     }
 
     # Check authentication
-    if (([string]::IsNullOrEmpty($username) -or $username -eq "{{username}}") -or 
-        ([string]::IsNullOrEmpty($password) -or $password -eq "{{password}}")) {
-        if ([string]::IsNullOrEmpty($cookies) -or $cookies -eq "{{cookies}}") {
-            Write-Host "Error: Authentication is required (either username/password or cookies)" -ForegroundColor Red
-            $missing = $true
-        }
+    if ([string]::IsNullOrEmpty($username) -and 
+        [string]::IsNullOrEmpty($password) -and 
+        [string]::IsNullOrEmpty($cookies)) {
+        Write-Host "Error: Authentication is required (either username/password or cookies)" -ForegroundColor Red
+        $missing = $true
     }
 
     # Show usage if any essential parameter is missing
     if ($missing) {
         Write-Host ""
         Show-Usage
-    }
-}
-
-# Check authentication method
-function Check-Auth {
-    if (([string]::IsNullOrEmpty($username) -or $username -eq "{{username}}") -or 
-        ([string]::IsNullOrEmpty($password) -or $password -eq "{{password}}")) {
-        if ([string]::IsNullOrEmpty($cookies) -or $cookies -eq "{{cookies}}") {
-            Write-Host "Error: No authentication method available." -ForegroundColor Red
-            Write-Host "Please provide either username/password or cookies." -ForegroundColor Red
-            Show-Usage
-        } else {
-            Write-Host "Warning: Using cookies for authentication. Username/password is recommended as cookies may expire." -ForegroundColor Yellow
-        }
     }
 }
 
@@ -319,9 +304,6 @@ function Start-DDNSUpdate {
     # Check if all essential parameters are provided
     Check-Params
 
-    # Check authentication method
-    Check-Auth
-    
     # Update IPv4 record if enabled
     if ($enable_ipv4) {
         Write-ColorOutput "`nUpdating IPv4 record" "Cyan"
