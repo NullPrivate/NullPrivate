@@ -29,7 +29,7 @@ class Rewrites extends Component<RewritesProps, RewritesState> {
     constructor(props: RewritesProps) {
         super(props);
         this.state = {
-            ddnsDomain: '',
+            ddnsDomain: 'nas.home',
         };
     }
 

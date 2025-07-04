@@ -40,7 +40,7 @@ type jsonDNSConfig struct {
 	// Fallbacks is the list of fallback DNS servers used when upstream DNS
 	// servers are not responding.
 	Fallbacks *[]string `json:"fallback_dns"`
-	
+
 	// UpstreamAlternateDNS is the list of alternate DNS servers for domains
 	// specified in UpstreamAlternateRulesets.
 	UpstreamAlternateDNS *[]string `json:"upstream_alternate_dns"`
@@ -196,37 +196,37 @@ func (s *Server) getDNSConfig() (c *jsonDNSConfig) {
 	}
 
 	return &jsonDNSConfig{
-		Upstreams:                &upstreams,
-		UpstreamsFile:            &upstreamFile,
-		Bootstraps:               &bootstraps,
-		Fallbacks:                &fallbacks,
+		Upstreams:                 &upstreams,
+		UpstreamsFile:             &upstreamFile,
+		Bootstraps:                &bootstraps,
+		Fallbacks:                 &fallbacks,
 		UpstreamAlternateDNS:      &upstreamAlternateDNS,
 		UpstreamAlternateRulesets: &upstreamAlternateRulesets,
-		ProtectionEnabled:        &protectionEnabled,
-		BlockingMode:             &blockingMode,
-		BlockingIPv4:             blockingIPv4,
-		BlockingIPv6:             blockingIPv6,
-		Ratelimit:                &ratelimit,
-		RatelimitSubnetLenIPv4:   &ratelimitSubnetLenIPv4,
-		RatelimitSubnetLenIPv6:   &ratelimitSubnetLenIPv6,
-		RatelimitWhitelist:       &ratelimitWhitelist,
-		UpstreamTimeout:          &upstreamTimeout,
-		EDNSCSCustomIP:           customIP,
-		EDNSCSEnabled:            &enableEDNSClientSubnet,
-		EDNSCSUseCustom:          &useCustom,
-		DNSSECEnabled:            &enableDNSSEC,
-		DisableIPv6:              &aaaaDisabled,
-		BlockedResponseTTL:       &blockedResponseTTL,
-		CacheSize:                &cacheSize,
-		CacheMinTTL:              &cacheMinTTL,
-		CacheMaxTTL:              &cacheMaxTTL,
-		CacheOptimistic:          &cacheOptimistic,
-		UpstreamMode:             &upstreamMode,
-		ResolveClients:           &resolveClients,
-		UsePrivateRDNS:           &usePrivateRDNS,
-		LocalPTRUpstreams:        &localPTRUpstreams,
-		DefaultLocalPTRUpstreams: defPTRUps,
-		DisabledUntil:            protectionDisabledUntil,
+		ProtectionEnabled:         &protectionEnabled,
+		BlockingMode:              &blockingMode,
+		BlockingIPv4:              blockingIPv4,
+		BlockingIPv6:              blockingIPv6,
+		Ratelimit:                 &ratelimit,
+		RatelimitSubnetLenIPv4:    &ratelimitSubnetLenIPv4,
+		RatelimitSubnetLenIPv6:    &ratelimitSubnetLenIPv6,
+		RatelimitWhitelist:        &ratelimitWhitelist,
+		UpstreamTimeout:           &upstreamTimeout,
+		EDNSCSCustomIP:            customIP,
+		EDNSCSEnabled:             &enableEDNSClientSubnet,
+		EDNSCSUseCustom:           &useCustom,
+		DNSSECEnabled:             &enableDNSSEC,
+		DisableIPv6:               &aaaaDisabled,
+		BlockedResponseTTL:        &blockedResponseTTL,
+		CacheSize:                 &cacheSize,
+		CacheMinTTL:               &cacheMinTTL,
+		CacheMaxTTL:               &cacheMaxTTL,
+		CacheOptimistic:           &cacheOptimistic,
+		UpstreamMode:              &upstreamMode,
+		ResolveClients:            &resolveClients,
+		UsePrivateRDNS:            &usePrivateRDNS,
+		LocalPTRUpstreams:         &localPTRUpstreams,
+		DefaultLocalPTRUpstreams:  defPTRUps,
+		DisabledUntil:             protectionDisabledUntil,
 	}
 }
 
@@ -804,6 +804,8 @@ func (s *Server) registerHandlers() {
 	// See also https://github.com/AdguardTeam/AdGuardHome/issues/2628.
 	s.conf.HTTPRegister("", "/dns-query", s.handleDoH)
 	s.conf.HTTPRegister("", "/dns-query/", s.handleDoH)
+
+	s.initDDNS()
 
 	webRegistered = true
 }
