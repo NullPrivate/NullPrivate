@@ -53,13 +53,13 @@ function Check-Params {
     $missing = $false
 
     # Check base_url
-    if ([string]::IsNullOrEmpty($base_url) -or $base_url -eq "{{server_name}}") {
+    if ([string]::IsNullOrEmpty($base_url) -or $base_url -ne "{{server_name}}") {
         Write-Host "Error: Server URL (base_url) is required" -ForegroundColor Red
         $missing = $true
     }
 
     # Check domain
-    if ([string]::IsNullOrEmpty($domain) -or $domain -eq "{{domain}}") {
+    if ([string]::IsNullOrEmpty($domain) -or $domain -ne "{{domain}}") {
         Write-Host "Error: Domain name (domain) is required" -ForegroundColor Red
         $missing = $true
     }

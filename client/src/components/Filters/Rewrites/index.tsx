@@ -166,7 +166,7 @@ class Rewrites extends Component<RewritesProps, RewritesState> {
                                 <h6 className="mt-3"><Trans>ddns_script_windows</Trans></h6>
                                 <p className="text-muted"><Trans>ddns_script_windows_note</Trans></p>
                                 <pre><code>
-                                    {'Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process\n' 
+                                    {'Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process\n' 
                                         + '.\\ddns-script.ps1'}
                                 </code></pre>
 

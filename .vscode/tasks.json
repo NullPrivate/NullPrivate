@@ -2,182 +2,186 @@
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
     "version": "2.0.0",
+    "inputs": [
+        {
+            "id": "version",
+            "description": "Please enter the version number (e.g., v1.3.0)",
+            "default": "v1.3.0",
+            "type": "promptString"
+        }
+    ],
     "tasks": [
+        // ==================== Development Build ====================
         {
-            "label": "(Dprecate)customize build init",
+            "label": "Dev: Build Frontend",
             "type": "shell",
-            "command": "bash customize-init.sh"
+            "command": "make js-build VERBOSE=2",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": ["$tsc"]
         },
         {
-            "label": "(Dprecate)simple build",
-            "type": "shell",
-            "command": "bash customize-build.sh"
-        },
-        {
-            "label": "3.0 build front",
-            "type": "shell",
-            "command": "make js-build"
-        },
-        {
-            "label": "3.1 build release",
-            "type": "shell",
-            "command": "make build-release VERBOSE=2 CHANNEL='development' VERSION='v1.2.0' ARCH='amd64 arm64' OS='linux' SIGN='0' FRONTEND_PREBUILT='1'"
-        },
-        {
-            "label": "3.2 docker build dev",
-            "type": "shell",
-            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='adguardprivate' DOCKER_OUTPUT='type=docker,name=adguardprivate:dev,push=false'"
-        },
-        {
-            "label": "3.3 docker run dev",
-            "type": "shell",
-            "command": "docker run --rm --name AdGuardPrivatev -p 50000:3000 -p 50001:80 -p 50002:443 -p 50003:853 -p 50004:53/udp -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf adguardprivate:dev"
-        },
-        {
-            "label": "3.4 push to aliyuncs/adguardprivate/adguardprivate:dev",
-            "type": "shell",
-            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:dev,push=true'",
-            "dependsOn": [
-                "3.0 build front",
-                "3.1 build release",
-            ],
-        },
-        {
-            "label": "3.5 push to aliyuncs/adguardprivate/adguardprivate:v1.2.0",
-            "type": "shell",
-            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='v1.2.0' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:v1.2.0,push=true'",
-            "dependsOn": [
-                "3.0 build front",
-                "3.1 build release",
-            ],
-        },
-        {
-            "label": "3.6 push to aliyuncs/adguardprivate/adguardprivate:latest",
-            "type": "shell",
-            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest,push=true'",
-            "dependsOn": [
-                "3.0 build front",
-                "3.1 build release",
-            ],
-        },
-        {
-            "label": "git commit no verified",
-            "type": "shell",
-            "command": "git commit --no-verify -m 'adguardprivate commit'"
-        },
-        {
-            "label": "2.1 docker build dev",
-            "type": "shell",
-            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64' DOCKER_IMAGE_NAME='adguardprivate-dev' DOCKER_OUTPUT='type=docker,dest=./dist/docker/AdGuardPrivate_linux_amd64_.tar' VERBOSE=2"
-        },
-        {
-            "label": "2.2 docker load dev",
-            "type": "shell",
-            "command": "docker load -i ./dist/docker/AdGuardPrivate_linux_amd64_.tar && IMAGE_ID=$(docker images -q --filter \"dangling=true\" | head -n 1) && docker tag $IMAGE_ID adguardprivate-dev:dev && echo \"Loaded and tagged image $IMAGE_ID as adguardprivate-dev\""
-        },
-        {
-            "label": "2.3 docker run dev",
-            "type": "shell",
-            "command": "docker run --rm --name AdGuardPrivate-dev -p 50000:3000 -p 50001:80 -p 50002:443 -p 50003:853 -p 50004:53/udp -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf adguardprivate-dev:dev"
-        },
-        {
-            "label": "1.0 build",
-            "type": "shell",
-            "command": "make build VERBOSE=2 "
-        },
-        {
-            "label": "1.1 build front",
-            "type": "shell",
-            "command": "make js-build-dev VERBOSE=2 ",
-            "problemMatcher": [
-                "$tsc"
-            ]
-        },
-        {
-            "label": "1.2 build AdGuardPrivate",
+            "label": "Dev: Build Backend",
             "type": "shell",
             "command": "make go-build VERBOSE=2 CHANNEL='development' ARCH='amd64' OS='linux' SIGN='0'",
-            "problemMatcher": [
-                "$go"
-            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
+            },
+            "problemMatcher": ["$go"]
         },
         {
-            "label": "1.3 quick build",
+            "label": "Dev: Quick Build",
             "type": "shell",
-            "command": "make quick-build VERBOSE=2 "
+            "command": "make quick-build VERBOSE=2"
         },
         {
-            "label": "1.4 run AdGuardPrivate",
+            "label": "Dev: Full Build",
+            "type": "shell",
+            "command": "make build VERBOSE=2"
+        },
+        {
+            "label": "Dev: Run AdGuardPrivate",
             "type": "shell",
             "command": "./AdGuardPrivate -c ../AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose",
             "problemMatcher": []
         },
+        
+        // ==================== Release Build ====================
         {
-            "label": "Debug: tools/q",
+            "label": "Release: Build Release",
             "type": "shell",
-            "command": "./tools/q -s 127.0.0.1:34027 -t A -w -q google.com"
+            "command": "make build-release VERBOSE=2 CHANNEL='development' VERSION='${input:version}' ARCH='amd64 arm64' OS='linux' SIGN='0' FRONTEND_PREBUILT='1'"
+        },
+        
+        // ==================== Docker Operations ====================
+        {
+            "label": "Docker: Build Dev Image",
+            "type": "shell",
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='adguardprivate' DOCKER_OUTPUT='type=docker,name=adguardprivate:dev,push=false'"
         },
         {
-            "label": "4.1 push to aliyuncs/adguardprivate/adguardprivate:base",
+            "label": "Docker: Run Dev Container",
+            "type": "shell",
+            "command": "docker run --rm --name AdGuardPrivatev -p 50000:3000 -p 50001:80 -p 50002:443 -p 50003:853 -p 50004:53/udp -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf adguardprivate:dev"
+        },
+        {
+            "label": "Docker: Build Dev Image (Legacy)",
+            "type": "shell",
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64' DOCKER_IMAGE_NAME='adguardprivate-dev' DOCKER_OUTPUT='type=docker,dest=./dist/docker/AdGuardPrivate_linux_amd64_.tar' VERBOSE=2"
+        },
+        {
+            "label": "Docker: Load Dev Image (Legacy)",
+            "type": "shell",
+            "command": "docker load -i ./dist/docker/AdGuardPrivate_linux_amd64_.tar && IMAGE_ID=$(docker images -q --filter \"dangling=true\" | head -n 1) && docker tag $IMAGE_ID adguardprivate-dev:dev && echo \"Loaded and tagged image $IMAGE_ID as adguardprivate-dev\""
+        },
+        {
+            "label": "Docker: Run Dev Container (Legacy)",
+            "type": "shell",
+            "command": "docker run --rm --name AdGuardPrivate-dev -p 50000:3000 -p 50001:80 -p 50002:443 -p 50003:853 -p 50004:53/udp -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf adguardprivate-dev:dev"
+        },
+        {
+            "label": "Docker: Update Dist Files",
+            "type": "shell",
+            "command": "mkdir -p dist/docker && cp -f dist/AdGuardPrivate_linux_amd64/AdGuardPrivate/AdGuardPrivate dist/docker/AdGuardPrivate_linux_amd64_ && cp -f dist/AdGuardPrivate_linux_arm64/AdGuardPrivate/AdGuardPrivate dist/docker/AdGuardPrivate_linux_arm64_"
+        },
+        
+        // ==================== Release & Deploy ====================
+        {
+            "label": "Deploy: Push Base Image to Aliyun",
             "type": "shell",
             "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.base -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:base . --push"
         },
         {
-            "label": "4.2 update dist docker",
+            "label": "Deploy Dev: Push Dev to Aliyun (Full)",
             "type": "shell",
-            "command": "cp -f dist/AdGuardPrivate_linux_amd64/AdGuardPrivate/AdGuardPrivate dist/docker/AdGuardPrivate_linux_amd64_ && cp -f dist/AdGuardPrivate_linux_arm64/AdGuardPrivate/AdGuardPrivate dist/docker/AdGuardPrivate_linux_arm64_"
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:dev,push=true'",
+            "dependsOn": [
+                "Dev: Build Frontend",
+                "Release: Build Release",
+            ]
         },
         {
-            "label": "4.3 push to aliyuncs/adguardprivate/adguardprivate:dev",
+            "label": "Deploy Dev: Push Dev to Aliyun (Quick)",
             "type": "shell",
             "command": "docker buildx build --platform linux/amd64 -f docker/Dockerfile.quick -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:dev . --push",
             "dependsOrder": "sequence",
             "dependsOn": [
-                "3.0 build front",
-                "3.1 build release",
-                "4.2 update dist docker"
+                // "Dev: Build Frontend",
+                // "Release: Build Release"
             ],
-            "problemMatcher": [
-                "$go",
-                "$tsc"
+            "problemMatcher": ["$go", "$tsc"]
+        },
+        {
+            "label": "Deploy: Push Version to Aliyun (Full)",
+            "type": "shell",
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='${input:version}' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:${input:version},push=true'",
+            "dependsOn": [
+                "Dev: Build Frontend",
+                "Release: Build Release"
             ]
         },
         {
-            "label": "4.4 push to aliyuncs/adguardprivate/adguardprivate:latest",
+            "label": "Deploy: Push Latest to Aliyun (Full)",
             "type": "shell",
-            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.quick -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:v1.2.0 -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest . --push",
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest,push=true'",
+            "dependsOn": [
+                "Dev: Build Frontend",
+                "Release: Build Release"
+            ]
+        },
+        {
+            "label": "Deploy: Push Latest to Aliyun (Quick)",
+            "type": "shell",
+            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.quick -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:${input:version} -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest . --push",
             "dependsOrder": "sequence",
             "dependsOn": [
-                "3.0 build front",
-                "3.1 build release",
-                "4.2 update dist docker"
+                "Dev: Build Frontend",
+                "Release: Build Release",
+                "Docker: Update Dist Files"
             ],
-            "problemMatcher": [
-                "$go",
-                "$tsc"
-            ]
+            "problemMatcher": ["$go", "$tsc"]
         },
         {
-            "label": "4.5 push to docker.io/adguardprivate/adguardprivate:latest",
+            "label": "Deploy: Push to Docker Hub",
             "type": "shell",
-            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.quick -t docker.io/adguardprivate/adguardprivate:v1.2.0 -t docker.io/adguardprivate/adguardprivate:latest . --push",
+            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.quick -t docker.io/adguardprivate/adguardprivate:${input:version} -t docker.io/adguardprivate/adguardprivate:latest . --push",
             "dependsOrder": "sequence",
             "dependsOn": [
-                "3.0 build front",
-                "3.1 build release",
-                "4.2 update dist docker"
+                "Dev: Build Frontend",
+                "Release: Build Release",
+                "Docker: Update Dist Files"
             ],
-            "problemMatcher": [
-                "$go",
-                "$tsc"
-            ]
+            "problemMatcher": ["$go", "$tsc"]
+        },
+        
+        // ==================== Tools & Testing ====================
+        {
+            "label": "Tools: DNS Query Test",
+            "type": "shell",
+            "command": "./tools/q -s 127.0.0.1:34027 -t A -w -q google.com"
         },
         {
-            "label": "i18n: Convert from table to json",
+            "label": "Tools: Run Tests",
+            "type": "shell",
+            "command": "VERBOSE=2 && bash ./scripts/make/go-test.sh"
+        },
+        {
+            "label": "Tools: Format Code (gofumpt)",
+            "type": "shell",
+            "command": "gofumpt --extra -e -l ."
+        },
+        {
+            "label": "Tools: Git Commit (No Verify)",
+            "type": "shell",
+            "command": "git commit --no-verify -m 'adguardprivate commit'"
+        },
+        
+        // ==================== Internationalization ====================
+        {
+            "label": "i18n: Convert Table to JSON",
             "type": "shell",
             "command": "cd ./scripts/i18n && ./table_to_i18n.py",
             "group": "none",
@@ -188,7 +192,7 @@
             "problemMatcher": []
         },
         {
-            "label": "i18n: Convert from json to table",
+            "label": "i18n: Convert JSON to Table",
             "type": "shell",
             "command": "cd ./scripts/i18n && ./i18n_to_table.py",
             "group": "none",
@@ -198,15 +202,17 @@
             },
             "problemMatcher": []
         },
+        
+        // ==================== Deprecated ====================
         {
-            "label": "Test",
+            "label": "[DEPRECATED] Customize Build Init",
             "type": "shell",
-            "command": "VERBOSE=2 && bash ./scripts/make/go-test.sh"
+            "command": "bash customize-init.sh"
         },
         {
-            "label": "run gofumpt",
+            "label": "[DEPRECATED] Simple Build",
             "type": "shell",
-            "command": "gofumpt --extra -e -l .",
+            "command": "bash customize-build.sh"
         }
     ]
 }

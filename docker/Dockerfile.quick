@@ -5,8 +5,10 @@ ARG TARGETOS
 ARG TARGETVARIANT
 
 COPY --chown=nobody:nogroup\
-	./dist/docker/AdGuardPrivate_${TARGETOS}_${TARGETARCH}_${TARGETVARIANT}\
+	./dist/AdGuardPrivate_${TARGETOS}_${TARGETARCH}/AdGuardPrivate/AdGuardPrivate \
 	/opt/adguardhome/AdGuardHome
+
+# COPY --chown=nobody:nogroup ./build/static /opt/adguardhome/build/static
 
 RUN chmod +x /opt/adguardhome/AdGuardHome && \
 	setcap 'cap_net_bind_service=+eip' /opt/adguardhome/AdGuardHome
