@@ -20,6 +20,8 @@ const Upstream = () => {
         local_ptr_upstreams,
         use_private_ptr_resolvers,
         upstream_timeout,
+        upstream_alternate_rulesets,
+        upstream_alternate_dns,
     } = useSelector((state: RootState) => state.dnsConfig, shallowEqual);
 
     const upstream_dns_file = useSelector((state: RootState) => state.dnsConfig.upstream_dns_file);
@@ -34,6 +36,8 @@ const Upstream = () => {
             local_ptr_upstreams,
             use_private_ptr_resolvers,
             upstream_timeout,
+            upstream_alternate_rulesets,
+            upstream_alternate_dns,
         } = values;
 
         const dnsConfig = {
@@ -44,7 +48,9 @@ const Upstream = () => {
             local_ptr_upstreams,
             use_private_ptr_resolvers,
             upstream_timeout,
+            upstream_alternate_rulesets,
             ...(upstream_dns_file ? null : { upstream_dns }),
+            ...(upstream_dns_file ? null : { upstream_alternate_dns }),
         };
 
         dispatch(setDnsConfig(dnsConfig));
@@ -53,6 +59,10 @@ const Upstream = () => {
     const upstreamDns = upstream_dns_file
         ? t('upstream_dns_configured_in_file', { path: upstream_dns_file })
         : upstream_dns;
+
+    const upstreamAlternateDns = upstream_dns_file
+        ? t('upstream_dns_configured_in_file', { path: upstream_alternate_dns })
+        : upstream_alternate_dns;
 
     return (
         <Card title={t('upstream_dns')} bodyType="card-body box-body--settings">
@@ -68,6 +78,8 @@ const Upstream = () => {
                             local_ptr_upstreams,
                             use_private_ptr_resolvers,
                             upstream_timeout,
+                            upstream_alternate_rulesets,
+                            upstream_alternate_dns: upstreamAlternateDns,
                         }}
                         onSubmit={handleSubmit}
                     />

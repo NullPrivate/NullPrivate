@@ -30,6 +30,8 @@ type FormData = {
     use_private_ptr_resolvers: boolean;
     resolve_clients: boolean;
     upstream_timeout: number;
+    upstream_alternate_rulesets: string;
+    upstream_alternate_dns: string;
 };
 
 type FormProps = {
@@ -77,10 +79,13 @@ const Form = ({ initialValues, onSubmit }: FormProps) => {
             use_private_ptr_resolvers: initialValues?.use_private_ptr_resolvers || false,
             resolve_clients: initialValues?.resolve_clients || false,
             upstream_timeout: initialValues?.upstream_timeout || 0,
+            upstream_alternate_rulesets: initialValues?.upstream_alternate_rulesets || '',
+            upstream_alternate_dns: initialValues?.upstream_alternate_dns || '',
         },
     });
 
     const upstream_dns = watch('upstream_dns');
+    const upstream_alternate_dns = watch('upstream_alternate_dns');
     const processingTestUpstream = useSelector((state: RootState) => state.settings.processingTestUpstream);
     const processingSetConfig = useSelector((state: RootState) => state.dnsConfig.processingSetConfig);
     const defaultLocalPtrUpstreams = useSelector((state: RootState) => state.dnsConfig.default_local_ptr_upstreams);
@@ -92,6 +97,7 @@ const Form = ({ initialValues, onSubmit }: FormProps) => {
             upstream_dns: watch('upstream_dns'),
             local_ptr_upstreams: watch('local_ptr_upstreams'),
             fallback_dns: watch('fallback_dns'),
+            upstream_alternate_dns: watch('upstream_alternate_dns'),
         };
         dispatch(testUpstreamWithFormValues(formValues));
     };
@@ -212,6 +218,59 @@ const Form = ({ initialValues, onSubmit }: FormProps) => {
                                 placeholder={t('bootstrap_dns')}
                                 wrapperClassName="mb-0"
                                 disabled={processingSetConfig}
+                                onBlur={(e) => {
+                                    const value = removeEmptyLines(e.target.value);
+                                    field.onChange(value);
+                                }}
+                            />
+                        )}
+                    />
+                </div>
+
+                {/* Alternate upstream section */}
+                <div className="col-12 mb-2">
+                    <label className="form__label form__label--with-desc" htmlFor="upstream_alternate_rulesets">
+                        <Trans>upstream_alternate_rulesets_title</Trans>
+                    </label>
+                    <div className="form__desc form__desc--top">
+                        <Trans>upstream_alternate_rulesets_desc</Trans>
+                    </div>
+                    <Controller
+                        name="upstream_alternate_rulesets"
+                        control={control}
+                        render={({ field }) => (
+                            <Textarea
+                                {...field}
+                                id="upstream_alternate_rulesets"
+                                className="form-control form-control--textarea form-control--textarea-small font-monospace"
+                                placeholder={t('upstream_alternate_rulesets_placeholder')} 
+                                disabled={processingSetConfig}
+                                onBlur={(e) => {
+                                    const value = removeEmptyLines(e.target.value);
+                                    field.onChange(value);
+                                }}
+                            />
+                        )}
+                    />
+                </div>
+
+                <div className="col-12">
+                    <label className="form__label form__label--with-desc" htmlFor="upstream_alternate_dns">
+                        <Trans>upstream_alternate_dns_title</Trans>
+                    </label>
+                    <div className="form__desc form__desc--top">
+                        <Trans>upstream_alternate_dns_desc</Trans>
+                    </div>
+                    <Controller
+                        name="upstream_alternate_dns"
+                        control={control}
+                        render={({ field }) => (
+                            <Textarea
+                                {...field}
+                                id="upstream_alternate_dns"
+                                className="form-control form-control--textarea form-control--textarea-small font-monospace"
+                                placeholder={t('upstream_alternate_dns_placeholder')}
+                                disabled={processingSetConfig || processingTestUpstream}
                                 onBlur={(e) => {
                                     const value = removeEmptyLines(e.target.value);
                                     field.onChange(value);
