@@ -109,8 +109,8 @@
             "command": "docker buildx build --platform linux/amd64 -f docker/Dockerfile.quick -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:dev . --push",
             "dependsOrder": "sequence",
             "dependsOn": [
-                // "Dev: Build Frontend",
-                // "Release: Build Release"
+                "Dev: Build Frontend",
+                "Release: Build Release"
             ],
             "problemMatcher": ["$go", "$tsc"]
         },
