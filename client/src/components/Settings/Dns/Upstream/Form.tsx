@@ -196,7 +196,7 @@ const Form = ({ initialValues, onSubmit }: FormProps) => {
                     />
                 </div>
 
-                {serviceType !== 'personal' && serviceType !== 'family' && (
+                {serviceType !== 'personal' && (
                     <>
                 <div className="col-12">
                     <hr />

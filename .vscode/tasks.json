@@ -20,7 +20,9 @@
                 "kind": "build",
                 "isDefault": false
             },
-            "problemMatcher": ["$tsc"]
+            "problemMatcher": [
+                "$tsc"
+            ]
         },
         {
             "label": "Dev: Build Backend",
@@ -30,7 +32,9 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": ["$go"]
+            "problemMatcher": [
+                "$go"
+            ]
         },
         {
             "label": "Dev: Quick Build",
@@ -48,14 +52,12 @@
             "command": "./AdGuardPrivate -c ../AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose",
             "problemMatcher": []
         },
-        
         // ==================== Release Build ====================
         {
             "label": "Release: Build Release",
             "type": "shell",
             "command": "make build-release VERBOSE=2 CHANNEL='development' VERSION='${input:version}' ARCH='amd64 arm64' OS='linux' SIGN='0' FRONTEND_PREBUILT='1'"
         },
-        
         // ==================== Docker Operations ====================
         {
             "label": "Docker: Build Dev Image",
@@ -87,7 +89,6 @@
             "type": "shell",
             "command": "mkdir -p dist/docker && cp -f dist/AdGuardPrivate_linux_amd64/AdGuardPrivate/AdGuardPrivate dist/docker/AdGuardPrivate_linux_amd64_ && cp -f dist/AdGuardPrivate_linux_arm64/AdGuardPrivate/AdGuardPrivate dist/docker/AdGuardPrivate_linux_arm64_"
         },
-        
         // ==================== Release & Deploy ====================
         {
             "label": "Deploy: Push Base Image to Aliyun",
@@ -110,9 +111,13 @@
             "dependsOrder": "sequence",
             "dependsOn": [
                 "Dev: Build Frontend",
-                "Release: Build Release"
+                "Dev: Build Backend",
+                "Docker: Update Dist Files"
             ],
-            "problemMatcher": ["$go", "$tsc"]
+            "problemMatcher": [
+                "$go",
+                "$tsc"
+            ]
         },
         {
             "label": "Deploy: Push Version to Aliyun (Full)",
@@ -121,6 +126,21 @@
             "dependsOn": [
                 "Dev: Build Frontend",
                 "Release: Build Release"
+            ]
+        },
+        {
+            "label": "Deploy: Push Version to Aliyun (Quick)",
+            "type": "shell",
+            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.quick -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:${input:version} . --push",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Dev: Build Frontend",
+                "Release: Build Release",
+                "Docker: Update Dist Files"
+            ],
+            "problemMatcher": [
+                "$go",
+                "$tsc"
             ]
         },
         {
@@ -135,14 +155,17 @@
         {
             "label": "Deploy: Push Latest to Aliyun (Quick)",
             "type": "shell",
-            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.quick -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:${input:version} -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest . --push",
+            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.quick -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest . --push",
             "dependsOrder": "sequence",
             "dependsOn": [
                 "Dev: Build Frontend",
                 "Release: Build Release",
                 "Docker: Update Dist Files"
             ],
-            "problemMatcher": ["$go", "$tsc"]
+            "problemMatcher": [
+                "$go",
+                "$tsc"
+            ]
         },
         {
             "label": "Deploy: Push to Docker Hub",
@@ -154,9 +177,11 @@
                 "Release: Build Release",
                 "Docker: Update Dist Files"
             ],
-            "problemMatcher": ["$go", "$tsc"]
+            "problemMatcher": [
+                "$go",
+                "$tsc"
+            ]
         },
-        
         // ==================== Tools & Testing ====================
         {
             "label": "Tools: DNS Query Test",
@@ -178,7 +203,6 @@
             "type": "shell",
             "command": "git commit --no-verify -m 'adguardprivate commit'"
         },
-        
         // ==================== Internationalization ====================
         {
             "label": "i18n: Convert Table to JSON",
@@ -202,7 +226,6 @@
             },
             "problemMatcher": []
         },
-        
         // ==================== Deprecated ====================
         {
             "label": "[DEPRECATED] Customize Build Init",
