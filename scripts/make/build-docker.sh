@@ -31,9 +31,9 @@ sudo_cmd="${SUDO:-}"
 readonly sudo_cmd
 
 if [ "$CHANNEL" = "development" ] || [ "$CHANNEL" = "edge" ]; then
-    docker_platforms="linux/amd64"
+    docker_platforms="linux/amd64,linux/arm64"
 else
-    docker_platforms="\
+docker_platforms="\
 linux/386,\
 linux/amd64,\
 linux/arm/v6,\

@@ -132,4 +132,3 @@ tool (
 )
 
 replace github.com/AdguardTeam/dnsproxy => github.com/AdGuardPrivate/dnsproxy v1.75.5
-// replace github.com/AdguardTeam/dnsproxy => ../dnsproxy

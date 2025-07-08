@@ -330,7 +330,7 @@ echo "version=$version" >"./${dist}/version.txt"
 
 # Create the version.json file.
 
-version_download_url="https://static.adguardprivate.org/adguardprivate/${channel}"
+version_download_url="https://static.adguardprivate.com/adguardprivate/${channel}"
 version_json="./${dist}/version.json"
 readonly version_download_url version_json
 
@@ -356,11 +356,11 @@ echo "{
 # consequences of #5373.
 #
 # TODO(a.garipov): Remove this around fall 2023.
-echo "
-  \"download_linux_mips64\": \"${version_download_url}/AdGuardPrivate_linux_mips64_softfloat.tar.gz\",
-  \"download_linux_mips64le\": \"${version_download_url}/AdGuardPrivate_linux_mips64le_softfloat.tar.gz\",
-  \"download_linux_mipsle\": \"${version_download_url}/AdGuardPrivate_linux_mipsle_softfloat.tar.gz\",
-" >>"$version_json"
+# echo "
+#   \"download_linux_mips64\": \"${version_download_url}/AdGuardPrivate_linux_mips64_softfloat.tar.gz\",
+#   \"download_linux_mips64le\": \"${version_download_url}/AdGuardPrivate_linux_mips64le_softfloat.tar.gz\",
+#   \"download_linux_mipsle\": \"${version_download_url}/AdGuardPrivate_linux_mipsle_softfloat.tar.gz\",
+# " >>"$version_json"
 
 # Same as with checksums above, don't use ls, because files matching one of the
 # patterns may be absent.
