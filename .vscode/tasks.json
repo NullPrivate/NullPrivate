@@ -53,6 +53,11 @@
             "problemMatcher": []
         },
         // ==================== Release Build ====================
+         {
+            "label": "Release: Build Dev",
+            "type": "shell",
+            "command": "make build-release VERBOSE=2 CHANNEL='development' VERSION='v1.3.0' ARCH='amd64' OS='linux' SIGN='0' FRONTEND_PREBUILT='1'"
+        },
         {
             "label": "Release: Build Release",
             "type": "shell",
@@ -111,8 +116,8 @@
             "dependsOrder": "sequence",
             "dependsOn": [
                 "Dev: Build Frontend",
-                "Dev: Build Backend",
-                "Docker: Update Dist Files"
+                "Release: Build Dev",
+                // "Docker: Update Dist Files"
             ],
             "problemMatcher": [
                 "$go",
@@ -186,7 +191,7 @@
         {
             "label": "Tools: DNS Query Test",
             "type": "shell",
-            "command": "./tools/q -s 127.0.0.1:34027 -t A -w -q google.com"
+            "command": "./tools/q -s https://dns.jqknono.com:34025 -t A -w -q google.com"
         },
         {
             "label": "Tools: Run Tests",
