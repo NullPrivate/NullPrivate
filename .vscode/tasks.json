@@ -62,7 +62,7 @@
         {
             "label": "Release: Build Dev",
             "type": "shell",
-            "command": "make build-release VERBOSE=5 CHANNEL='development' ARCH='amd64' OS='linux' SIGN='0' FRONTEND_PREBUILT='1'"
+            "command": "make build-release VERBOSE=2 CHANNEL='development' ARCH='amd64' OS='linux' SIGN='0' FRONTEND_PREBUILT='1'"
         },
         {
             "label": "Release: Build Release",
