@@ -81,7 +81,7 @@ const FILTERS_ITEMS = [
     {
         route: FILTERS_URLS.blocked_services,
         text: 'blocked_services',
-        requiredServiceTypes: ['family', 'enterprise'],
+        requiredServiceTypes: ['personal', 'family', 'enterprise'],
     },
     {
         route: FILTERS_URLS.custom_rules,
