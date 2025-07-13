@@ -155,15 +155,8 @@
         {
             "label": "Deploy: Push Latest to Aliyun (Quick)",
             "type": "shell",
-            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.quick -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest . --push",
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "Release: Build Release",
-            ],
-            "problemMatcher": [
-                "$go",
-                "$tsc"
-            ]
+            "command": "docker pull registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:${input:version} && docker tag registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:${input:version} registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest && docker push registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest",
+            "problemMatcher": []
         },
         {
             "label": "Deploy: Push to Docker Hub",
