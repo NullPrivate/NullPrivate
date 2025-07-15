@@ -7,9 +7,9 @@ for i in {1..120}; do
     # reverse query
     # ./tools/q -s 127.0.0.1:5353 -x -t PTR -q 127.0.0.1
     # dot query
-    ./tools/q -s tls://dns.jqknono.com:8853 -t A --timeout 10s -q example.com
+    # ./tools/q -s tls://dns.jqknono.com:34026 -t A --timeout 10s -q example.com
     # doq query
-    # ./tools/q -s quic://dns.jqknono.com:8853 -t A --timeout 10s -q example.com
+    # ./tools/q -s quic://dns.jqknono.com:34027 -t A --timeout 10s -q example.com
     # doh query
-    # ./tools/q -s https://dns.jqknono.com:8443/dns-query -t A --timeout 10s -q example.com
+    ./tools/q -s https://dns.jqknono.com:34025/dns-query -t A --timeout 10s -q example.com
 done

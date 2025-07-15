@@ -28,11 +28,11 @@ export default {
             "homepage": "https://badmojr.github.io/1Hosts/",
             "source": "https://adguardteam.github.io/HostlistsRegistry/assets/filter_24.txt"
         },
-        "1hosts_mini": {
-            "name": "1Hosts (mini)",
+        "1hosts_pro": {
+            "name": "1Hosts (Pro)",
             "categoryId": "general",
             "homepage": "https://badmojr.github.io/1Hosts/",
-            "source": "https://adguardteam.github.io/HostlistsRegistry/assets/filter_38.txt"
+            "source": "https://adguardteam.github.io/HostlistsRegistry/assets/filter_64.txt"
         },
         "CHN_adrules": {
             "name": "CHN: AdRules DNS List",

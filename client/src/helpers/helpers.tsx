@@ -28,7 +28,7 @@ import {
     THEMES,
 } from './constants';
 import { LOCAL_STORAGE_KEYS, LocalStorageHelper } from './localStorageHelper';
-import { DhcpInterface } from '../initialState';
+import { DhcpInterface, InstallInterface } from '../initialState';
 
 /**
  * @param time {string} The time to format
@@ -86,9 +86,9 @@ export const normalizeLogs = (logs: any) =>
         const processResponse = (data: any) =>
             data
                 ? data.map((response: any) => {
-                    const { value, type, ttl } = response;
-                    return `${type}: ${value} (ttl=${ttl})`;
-                })
+                      const { value, type, ttl } = response;
+                      return `${type}: ${value} (ttl=${ttl})`;
+                  })
                 : [];
 
         let newRules = rules;
@@ -163,17 +163,17 @@ export const addClientInfo = (data: any, clients: any, ...params: any[]) =>
 export const normalizeFilters = (filters: any) =>
     filters
         ? filters.map((filter: any) => {
-            const { id, url, enabled, last_updated, name = 'Default name', rules_count = 0 } = filter;
+              const { id, url, enabled, last_updated, name = 'Default name', rules_count = 0 } = filter;
 
-            return {
-                id,
-                url,
-                enabled,
-                lastUpdated: last_updated,
-                name,
-                rulesCount: rules_count,
-            };
-        })
+              return {
+                  id,
+                  url,
+                  enabled,
+                  lastUpdated: last_updated,
+                  name,
+                  rulesCount: rules_count,
+              };
+          })
         : [];
 
 export const normalizeFilteringStatus = (filteringStatus: any) => {
@@ -217,9 +217,9 @@ export const getInterfaceIp = (option: any) => {
     return interfaceIP;
 };
 
-export const getIpList = (interfaces: DhcpInterface[]) =>
+export const getIpList = (interfaces: InstallInterface[]) =>
     Object.values(interfaces)
-        .reduce((acc: string[], curr: DhcpInterface) => acc.concat(curr.ip_addresses), [] as string[])
+        .reduce((acc: string[], curr: InstallInterface) => acc.concat(curr.ip_addresses), [] as string[])
         .sort();
 
 /**
@@ -315,18 +315,7 @@ export const redirectToCurrentProtocol = (values: any, httpPort = 80) => {
  * @param {string} text
  * @returns []string
  */
-export const splitByNewLine = (text: any): string[] => {
-    if (text === null || text === undefined) {
-        return [];
-    }
-
-    const stringValue = String(text);
-    if (stringValue.trim() === '') {
-        return [];
-    }
-
-    return stringValue.split('\n');
-};
+export const splitByNewLine = (text: any) => text.split('\n').filter((n: any) => n.trim());
 
 /**
  * @param {string} text
@@ -464,7 +453,7 @@ export const getParamsForClientsSearch = (data: any, param: any, additionalParam
     });
 
     return {
-        clients: Array.from(clients).map(id => ({ id })),
+        clients: Array.from(clients).map((id) => ({ id })),
     };
 };
 
@@ -479,8 +468,6 @@ export const getParamsForClientsSearch = (data: any, param: any, additionalParam
  * @param {function} [normalizeOnBlur]
  * @returns {function}
  */
-export const createOnBlurHandler = (event: any, input: any, normalizeOnBlur: any) =>
-    normalizeOnBlur ? input.onBlur(normalizeOnBlur(event.target.value)) : input.onBlur();
 
 export const checkFiltered = (reason: any) => reason.indexOf(FILTERED) === 0;
 export const checkRewrite = (reason: any) => reason === FILTERED_STATUS.REWRITE;
@@ -664,7 +651,7 @@ export const countClientsStatistics = (ids: any, autoClients: any) => {
     const cidrsCount = Object.entries(autoClients).reduce((acc: any, curr: any) => {
         const [id, count] = curr;
         if (!ipaddr.isValid(id)) {
-            return false;
+            return acc;
         }
         if (cidrs.some((cidr: any) => isIpInCidr(id, cidr))) {
             // eslint-disable-next-line no-param-reassign
@@ -681,9 +668,18 @@ export const countClientsStatistics = (ids: any, autoClients: any) => {
  * @param {function} t translate
  * @returns {string}
  */
-export const formatElapsedMs = (elapsedMs: any, t: any) => {
-    const formattedElapsedMs = parseInt(elapsedMs, 10) || parseFloat(elapsedMs).toFixed(2);
-    return `${formattedElapsedMs} ${t('milliseconds_abbreviation')}`;
+export const formatElapsedMs = (elapsedMs: string, t: (key: string) => string) => {
+    const parsedElapsedMs = parseFloat(elapsedMs);
+
+    if (Number.isNaN(parsedElapsedMs)) {
+        return elapsedMs;
+    }
+
+    const formattedValue = parsedElapsedMs < 1
+        ? parsedElapsedMs.toFixed(2)
+        : Math.floor(parsedElapsedMs).toString();
+
+    return `${formattedValue} ${t('milliseconds_abbreviation')}`;
 };
 
 /**
@@ -765,12 +761,9 @@ type NestedObject = {
     order: number;
 };
 
-export const getObjectKeysSorted = <
-    T extends Record<string, NestedObject>,
-    K extends keyof NestedObject
->(
+export const getObjectKeysSorted = <T extends Record<string, NestedObject>, K extends keyof NestedObject>(
     object: T,
-    sortKey: K
+    sortKey: K,
 ): string[] => {
     return Object.entries(object)
         .sort(([, a], [, b]) => (a[sortKey] as number) - (b[sortKey] as number))

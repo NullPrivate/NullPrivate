@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/next/websvc"
+	"github.com/AdguardTeam/AdGuardHome/internal/next/websvc"
 	"github.com/AdguardTeam/golibs/netutil/urlutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

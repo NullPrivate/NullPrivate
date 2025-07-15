@@ -3,8 +3,8 @@ package filtering
 import (
 	"testing"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghalg"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering/rulelist"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghalg"
+	"github.com/AdguardTeam/AdGuardHome/internal/filtering/rulelist"
 	"github.com/stretchr/testify/assert"
 )
 

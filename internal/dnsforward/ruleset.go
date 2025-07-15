@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/AdguardTeam/AdGuardHome/internal/aghnet"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/dnsproxy/upstream"
 	"github.com/AdguardTeam/golibs/log"
@@ -240,7 +241,7 @@ func (m *rulesetManager) parseRuleset(filename string) ([]string, error) {
 // downloadAndParseRuleset downloads and parses a single ruleset file.
 // It returns the list of domains from the ruleset or nil if there was an error.
 func (m *rulesetManager) downloadAndParseRuleset(rulesetURL string) (domains []string) {
-	if IsCommentOrEmpty(rulesetURL) {
+	if aghnet.IsCommentOrEmpty(rulesetURL) {
 		return nil
 	}
 
@@ -267,7 +268,7 @@ func prepareAlternateUpstreams(alternateDNS, alternateRulesets []string, ruleset
 		return nil, nil
 	}
 
-	alternateDNS = stringutil.FilterOut(alternateDNS, IsCommentOrEmpty)
+	alternateDNS = stringutil.FilterOut(alternateDNS, aghnet.IsCommentOrEmpty)
 	if len(alternateDNS) == 0 {
 		return nil, nil
 	}

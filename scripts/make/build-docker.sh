@@ -3,11 +3,11 @@
 verbose="${VERBOSE:-0}"
 
 if [ "$verbose" -gt '0' ]; then
-    set -x
-    debug_flags='--debug=1'
+	set -x
+	debug_flags='--debug=1'
 else
-    set +x
-    debug_flags='--debug=0'
+	set +x
+	debug_flags='--debug=0'
 fi
 readonly debug_flags
 
@@ -20,7 +20,7 @@ dist_dir="${DIST_DIR:?please set DIST_DIR}"
 readonly channel commit dist_dir
 
 if [ "${VERSION:-}" = 'v0.0.0' ] || [ "${VERSION:-}" = '' ]; then
-    version="$(sh ./scripts/make/version.sh)"
+	version="$(sh ./scripts/make/version.sh)"
 else
     version="$VERSION"
 fi
@@ -31,9 +31,9 @@ sudo_cmd="${SUDO:-}"
 readonly sudo_cmd
 
 if [ "$CHANNEL" = "development" ] || [ "$CHANNEL" = "edge" ]; then
-    docker_platforms="linux/amd64"
+    docker_platforms="linux/amd64,linux/arm64"
 else
-    docker_platforms="\
+docker_platforms="\
 linux/386,\
 linux/amd64,\
 linux/arm/v6,\
@@ -63,25 +63,25 @@ readonly docker_output
 
 case "$channel" in
 'release')
-    docker_version_tag="--tag=${docker_image_name}:${version}"
-    docker_channel_tag="--tag=${docker_image_name}:latest"
-    ;;
+	docker_version_tag="--tag=${docker_image_name}:${version}"
+	docker_channel_tag="--tag=${docker_image_name}:latest"
+	;;
 'beta')
-    docker_version_tag="--tag=${docker_image_name}:${version}"
-    docker_channel_tag="--tag=${docker_image_name}:beta"
-    ;;
+	docker_version_tag="--tag=${docker_image_name}:${version}"
+	docker_channel_tag="--tag=${docker_image_name}:beta"
+	;;
 'edge')
-    # Set the version tag to an empty string when pushing to the edge channel.
-    docker_version_tag=''
-    docker_channel_tag="--tag=${docker_image_name}:edge"
-    ;;
+	# Set the version tag to an empty string when pushing to the edge channel.
+	docker_version_tag=''
+	docker_channel_tag="--tag=${docker_image_name}:edge"
+	;;
 'development')
-    # Set both tags to an empty string for development builds.
-    docker_version_tag=''
-    docker_channel_tag=''
-    ;;
+	# Set both tags to an empty string for development builds.
+	docker_version_tag=''
+	docker_channel_tag=''
+	;;
 *)
-    echo "invalid channel '$channel', supported values are\
+	echo "invalid channel '$channel', supported values are\
 		'development', 'edge', 'beta', and 'release'" 1>&2
     exit 1
     ;;
@@ -128,11 +128,12 @@ fi
 #
 # shellcheck disable=SC2086
 $sudo_cmd docker "$debug_flags" \
-    buildx build \
-    --build-arg BUILD_DATE="$build_date" \
-    --build-arg DIST_DIR="$dist_dir" \
-    --build-arg VCS_REF="$commit" \
-    --build-arg VERSION="$version" \
-    --output "$docker_output" \
-    --platform "$docker_platforms" \
-    $docker_version_tag $docker_channel_tag -f ./docker/Dockerfile .
+	buildx build \
+	--build-arg BUILD_DATE="$build_date" \
+	--build-arg DIST_DIR="$dist_dir" \
+	--build-arg VCS_REF="$commit" \
+	--build-arg VERSION="$version" \
+	--output "$docker_output" \
+	--platform "$docker_platforms" \
+	--progress 'plain' \
+	$docker_version_tag $docker_channel_tag -f ./docker/Dockerfile .

@@ -6,11 +6,10 @@ import (
 	"net/netip"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/next/agh"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/rdns"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/whois"
-	"github.com/AdguardTeam/dnsproxy/proxy"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghos"
+	"github.com/AdguardTeam/AdGuardHome/internal/next/agh"
+	"github.com/AdguardTeam/AdGuardHome/internal/rdns"
+	"github.com/AdguardTeam/AdGuardHome/internal/whois"
 	"github.com/AdguardTeam/dnsproxy/upstream"
 	"github.com/miekg/dns"
 )
@@ -119,26 +118,6 @@ func (p *AddressUpdater) UpdateAddress(
 	info *whois.Info,
 ) {
 	p.OnUpdateAddress(ctx, ip, host, info)
-}
-
-// Package dnsforward
-
-// ClientsContainer is a fake [dnsforward.ClientsContainer] implementation for
-// tests.
-type ClientsContainer struct {
-	OnUpstreamConfigByID func(
-		id string,
-		boot upstream.Resolver,
-	) (conf *proxy.CustomUpstreamConfig, err error)
-}
-
-// UpstreamConfigByID implements the [dnsforward.ClientsContainer] interface
-// for *ClientsContainer.
-func (c *ClientsContainer) UpstreamConfigByID(
-	id string,
-	boot upstream.Resolver,
-) (conf *proxy.CustomUpstreamConfig, err error) {
-	return c.OnUpstreamConfigByID(id, boot)
 }
 
 // Package filtering

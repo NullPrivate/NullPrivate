@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghhttp"
 	"github.com/AdguardTeam/golibs/log"
 )
 
@@ -47,7 +47,7 @@ type profileJSON struct {
 
 // handleGetProfile is the handler for GET /control/profile endpoint.
 func handleGetProfile(w http.ResponseWriter, r *http.Request) {
-	u := Context.auth.getCurrentUser(r)
+	u := globalContext.auth.getCurrentUser(r)
 
 	var resp profileJSON
 	func() {

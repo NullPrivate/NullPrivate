@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghnet"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/dhcpsvc"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghnet"
+	"github.com/AdguardTeam/AdGuardHome/internal/dhcpsvc"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/netutil"

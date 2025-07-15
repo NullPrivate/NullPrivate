@@ -92,6 +92,7 @@ export const STANDARD_WEB_PORT = 80;
 export const STANDARD_HTTPS_PORT = 443;
 export const DNS_OVER_TLS_PORT = 853;
 export const DNS_OVER_QUIC_PORT = 853;
+export const MIN_PORT = 1;
 export const MAX_PORT = 65535;
 
 export const EMPTY_DATE = '0001-01-01T00:00:00Z';
@@ -210,7 +211,7 @@ export const WHOIS_ICONS = {
 
 export const DEFAULT_LOGS_FILTER = {
     search: '',
-    response_status: '',
+    response_status: 'all',
 };
 
 export const DEFAULT_LANGUAGE = 'en';
@@ -523,3 +524,12 @@ export const TIME_UNITS = {
     HOURS: 'hours',
     DAYS: 'days',
 };
+
+export const DNS_RECORD_TYPES = [
+    "A", "AAAA", "AFSDB", "APL", "CAA", "CDNSKEY", "CDS", "CERT", "CNAME",
+    "CSYNC", "DHCID", "DLV", "DNAME", "DNSKEY", "DS", "EUI48", "EUI64",
+    "HINFO", "HIP", "HTTPS", "IPSECKEY", "KEY", "KX", "LOC", "MX", "NAPTR",
+    "NS", "NSEC", "NSEC3", "NSEC3PARAM", "OPENPGPKEY", "PTR", "RP", "RRSIG",
+    "SIG", "SMIMEA", "SOA", "SRV", "SSHFP", "SVCB", "TA", "TKEY",
+    "TLSA", "TSIG", "TXT", "URI", "ZONEMD"
+];

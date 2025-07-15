@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/dnsforward"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering"
+	"github.com/AdguardTeam/AdGuardHome/internal/dnsforward"
+	"github.com/AdguardTeam/AdGuardHome/internal/filtering"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/AdguardTeam/golibs/timeutil"
 	"github.com/stretchr/testify/assert"

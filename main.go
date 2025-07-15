@@ -9,7 +9,7 @@ import (
 	// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/6758
 	_ "time/tzdata"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/home"
+	"github.com/AdguardTeam/AdGuardHome/internal/home"
 )
 
 // Embed the prebuilt client here since we strive to keep .go files inside the

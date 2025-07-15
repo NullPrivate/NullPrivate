@@ -1,9 +1,11 @@
 package home
 
 import (
+	"context"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"net/netip"
 	"path"
@@ -11,12 +13,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghhttp"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghuser"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/httphdr"
 	"github.com/AdguardTeam/golibs/log"
+	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/netutil"
+	"github.com/AdguardTeam/golibs/netutil/httputil"
 	"github.com/AdguardTeam/golibs/timeutil"
+	"github.com/AdguardTeam/golibs/validate"
 )
 
 // cookieTTL is the time-to-live of the session cookie.
@@ -47,11 +53,7 @@ func (a *Auth) newCookie(req loginJSON, addr string) (c *http.Cookie, err error)
 		rateLimiter.remove(addr)
 	}
 
-	sess, err := newSessionToken()
-	if err != nil {
-		return nil, fmt.Errorf("generating token: %w", err)
-	}
-
+	sess := newSessionToken()
 	now := time.Now().UTC()
 
 	a.addSession(sess, &session{
@@ -141,7 +143,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	// realIP cannot be used here without taking TrustedProxies into account due
 	// to security issues.
 	//
-	// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/2799.
+	// See https://github.com/AdguardTeam/AdGuardHome/issues/2799.
 	if remoteIP, err = netutil.SplitHost(r.RemoteAddr); err != nil {
 		writeErrorWithIP(
 			r,
@@ -155,7 +157,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if rateLimiter := Context.auth.rateLimiter; rateLimiter != nil {
+	if rateLimiter := globalContext.auth.rateLimiter; rateLimiter != nil {
 		if left := rateLimiter.check(remoteIP); left > 0 {
 			w.Header().Set(httphdr.RetryAfter, strconv.Itoa(int(left.Seconds())))
 			writeErrorWithIP(
@@ -176,10 +178,10 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		log.Error("auth: getting real ip from request with remote ip %s: %s", remoteIP, err)
 	}
 
-	cookie, err := Context.auth.newCookie(req, remoteIP)
+	cookie, err := globalContext.auth.newCookie(req, remoteIP)
 	if err != nil {
 		logIP := remoteIP
-		if Context.auth.trustedProxies.Contains(ip.Unmap()) {
+		if globalContext.auth.trustedProxies.Contains(ip.Unmap()) {
 			logIP = ip.String()
 		}
 
@@ -213,7 +215,7 @@ func handleLogout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	Context.auth.removeSession(c.Value)
+	globalContext.auth.removeSession(c.Value)
 
 	c = &http.Cookie{
 		Name:    sessionCookieName,
@@ -232,7 +234,7 @@ func handleLogout(w http.ResponseWriter, r *http.Request) {
 
 // RegisterAuthHandlers - register handlers
 func RegisterAuthHandlers() {
-	Context.mux.Handle("/control/login", postInstallHandler(ensureHandler(http.MethodPost, handleLogin)))
+	globalContext.mux.Handle("/control/login", postInstallHandler(ensureHandler(http.MethodPost, handleLogin)))
 	httpRegister(http.MethodGet, "/control/logout", handleLogout)
 }
 
@@ -254,13 +256,13 @@ func optionalAuthThird(w http.ResponseWriter, r *http.Request) (mustAuth bool) {
 		// Check Basic authentication.
 		user, pass, hasBasic := r.BasicAuth()
 		if hasBasic {
-			_, isAuthenticated = Context.auth.findUser(user, pass)
+			_, isAuthenticated = globalContext.auth.findUser(user, pass)
 			if !isAuthenticated {
 				log.Info("%s: invalid basic authorization value", pref)
 			}
 		}
 	} else {
-		res := Context.auth.checkSession(cookie.Value)
+		res := globalContext.auth.checkSession(cookie.Value)
 		isAuthenticated = res == checkSessionOK
 		if !isAuthenticated {
 			log.Debug("%s: invalid cookie value: %q", pref, cookie)
@@ -294,12 +296,12 @@ func optionalAuth(
 ) (wrapped func(http.ResponseWriter, *http.Request)) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		p := r.URL.Path
-		authRequired := Context.auth != nil && Context.auth.authRequired()
+		authRequired := globalContext.auth != nil && globalContext.auth.authRequired()
 		if p == "/login.html" {
 			cookie, err := r.Cookie(sessionCookieName)
 			if authRequired && err == nil {
 				// Redirect to the dashboard if already authenticated.
-				res := Context.auth.checkSession(cookie.Value)
+				res := globalContext.auth.checkSession(cookie.Value)
 				if res == checkSessionOK {
 					http.Redirect(w, r, "", http.StatusFound)
 
@@ -351,4 +353,159 @@ func (a *authHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // optionalAuthHandler returns a authentication handler.
 func optionalAuthHandler(handler http.Handler) http.Handler {
 	return &authHandler{handler}
+}
+
+const (
+	// errInvalidLogin is returned when there is an invalid login attempt.
+	errInvalidLogin errors.Error = "invalid username or password"
+)
+
+// authMiddlewareDefaultConfig is the configuration structure for the default
+// authentication middleware.
+type authMiddlewareDefaultConfig struct {
+	// logger is used for logging the operation of the middleware.  It must not
+	// be nil.
+	logger *slog.Logger
+
+	// sessions contains web user sessions.  It must not be nil.
+	sessions aghuser.SessionStorage
+
+	// users contains web user information.  It must not be nil.
+	users aghuser.DB
+}
+
+// authMiddlewareDefault is the default authentication middleware.  It searches
+// for a web client using an authentication cookie or basic auth credentials and
+// passes it with the context.
+type authMiddlewareDefault struct {
+	logger   *slog.Logger
+	sessions aghuser.SessionStorage
+	users    aghuser.DB
+}
+
+// newAuthMiddlewareDefault returns the new properly initialized
+// *authMiddlewareDefault.
+func newAuthMiddlewareDefault(c *authMiddlewareDefaultConfig) (mw *authMiddlewareDefault) {
+	return &authMiddlewareDefault{
+		logger:   c.logger,
+		sessions: c.sessions,
+		users:    c.users,
+	}
+}
+
+// type check
+var _ httputil.Middleware = (*authMiddlewareDefault)(nil)
+
+// Wrap implements the [httputil.Middleware] interface for
+// *authMiddlewareDefault.
+func (mw *authMiddlewareDefault) Wrap(h http.Handler) (wrapped http.Handler) {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		if !mw.needsAuthentication(ctx, r) {
+			h.ServeHTTP(w, r)
+
+			return
+		}
+
+		u, err := mw.userFromRequest(ctx, r)
+		if u != nil {
+			h.ServeHTTP(w, r.WithContext(withWebUser(ctx, u)))
+
+			return
+		}
+
+		if err != nil {
+			mw.logger.ErrorContext(ctx, "retrieving user from request", slogutil.KeyError, err)
+		}
+
+		w.WriteHeader(http.StatusUnauthorized)
+	})
+}
+
+// needsAuthentication returns true if the current request requires
+// authentication.
+//
+// TODO(s.chzhen):  Use the request's path.
+func (mw *authMiddlewareDefault) needsAuthentication(
+	ctx context.Context,
+	_ *http.Request,
+) (ok bool) {
+	users, err := mw.users.All(ctx)
+	if err != nil {
+		// Should not happen.
+		panic(err)
+	}
+
+	if len(users) == 0 {
+		return false
+	}
+
+	return true
+}
+
+// userFromRequest tries to retrieve a user based on the request.
+func (mw *authMiddlewareDefault) userFromRequest(
+	ctx context.Context,
+	r *http.Request,
+) (u *aghuser.User, err error) {
+	defer func() { err = errors.Annotate(err, "getting user from request: %w") }()
+
+	cookie, err := r.Cookie(sessionCookieName)
+	if err == http.ErrNoCookie {
+		return mw.userFromRequestBasicAuth(ctx, r)
+	}
+
+	sess, err := hex.DecodeString(cookie.Value)
+	if err != nil {
+		return nil, fmt.Errorf("decoding cookie: %w", err)
+	}
+
+	l := aghuser.SessionTokenLength
+
+	// TODO(a.garipov):  Add validate.Len.
+	err = validate.InRange("token length", len(sess), l, l)
+	if err != nil {
+		// Don't wrap the error because it's informative enough as is.
+		return nil, err
+	}
+
+	t := aghuser.SessionToken(sess)
+	s, err := mw.sessions.FindByToken(ctx, t)
+	if err != nil {
+		return nil, fmt.Errorf("searching session by token: %w", err)
+	}
+
+	if s == nil {
+		return nil, nil
+	}
+
+	u, err = mw.users.ByLogin(ctx, s.UserLogin)
+	if err != nil {
+		return nil, fmt.Errorf("searching user by login %q: %w", s.UserLogin, err)
+	}
+
+	return u, nil
+}
+
+// userFromRequestBasicAuth searches for a user using Basic Auth credentials.
+func (mw *authMiddlewareDefault) userFromRequestBasicAuth(
+	ctx context.Context,
+	r *http.Request,
+) (user *aghuser.User, err error) {
+	login, pass, ok := r.BasicAuth()
+	if !ok {
+		return nil, fmt.Errorf("credentials: %w", errors.ErrNoValue)
+	}
+
+	user, _ = mw.users.ByLogin(ctx, aghuser.Login(login))
+	if user == nil {
+		return nil, errInvalidLogin
+	}
+
+	ok = user.Password.Authenticate(ctx, pass)
+	if !ok {
+		return nil, errInvalidLogin
+	}
+
+	return user, nil
 }

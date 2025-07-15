@@ -8,7 +8,7 @@ import (
 	"path"
 	"sync/atomic"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghos"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/hostsfile"
 	"github.com/AdguardTeam/golibs/log"

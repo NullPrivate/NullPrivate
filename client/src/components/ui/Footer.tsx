@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 
-import { REPOSITORY, HOMEPAGE, PRIVACY_POLICY_LINK, THEMES } from '../../helpers/constants';
+import { REPOSITORY, PRIVACY_POLICY_LINK, THEMES } from '../../helpers/constants';
+import { HOMEPAGE } from '../../helpers/constants';
 import { LANGUAGES } from '../../helpers/twosky';
 import i18n from '../../i18n';
 
@@ -94,14 +95,17 @@ const Footer = () => {
             auto: {
                 desc: t('theme_auto_desc'),
                 icon: '#auto',
+                testId: 'theme_auto',
             },
             dark: {
                 desc: t('theme_dark_desc'),
                 icon: '#dark',
+                testId: 'theme_dark',
             },
             light: {
                 desc: t('theme_light_desc'),
                 icon: '#light',
+                testId: 'theme_light',
             },
         };
 
@@ -113,7 +117,9 @@ const Footer = () => {
                     type="button"
                     className="btn btn-sm btn-secondary footer__theme-button"
                     onClick={() => onThemeChange(theme)}
-                    title={content[theme].desc}>
+                    title={content[theme].desc}
+                    data-testid={content[theme].testId}
+                >
                     <svg className={cn('footer__theme-icon', { 'footer__theme-icon--active': currentValue === theme })}>
                         <use xlinkHref={content[theme].icon} />
                     </svg>

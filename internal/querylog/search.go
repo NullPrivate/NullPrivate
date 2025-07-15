@@ -129,7 +129,7 @@ func (l *queryLog) search(
 	// Resort entries on start time to partially mitigate query log looking
 	// weird on the frontend.
 	//
-	// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/2293.
+	// See https://github.com/AdguardTeam/AdGuardHome/issues/2293.
 	slices.SortStableFunc(entries, func(a, b *logEntry) (res int) {
 		return -a.Time.Compare(b.Time)
 	})

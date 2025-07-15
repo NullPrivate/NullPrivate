@@ -1,5 +1,7 @@
 import React from 'react';
 import { withTranslation, Trans } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../initialState';
 
 interface ActionsProps {
     handleAdd: (...args: unknown[]) => unknown;
@@ -8,20 +10,27 @@ interface ActionsProps {
     whitelist?: boolean;
 }
 
-const Actions = ({ handleAdd, handleRefresh, processingRefreshFilters, whitelist }: ActionsProps) => (
-    <div className="card-actions">
-        <button className="btn btn-success btn-standard mr-2 btn-large mb-2" type="submit" onClick={handleAdd}>
-            {whitelist ? <Trans>add_allowlist</Trans> : <Trans>add_blocklist</Trans>}
-        </button>
+const Actions = ({ handleAdd, handleRefresh, processingRefreshFilters, whitelist }: ActionsProps) => {
+    const serviceType = useSelector((state: RootState) => state.service_type);
+    const shouldShowCheckUpdatesBtn = serviceType !== 'personal' && serviceType !== 'family';
 
-        <button
-            className="btn btn-primary btn-standard mb-2"
-            type="submit"
-            onClick={handleRefresh}
-            disabled={processingRefreshFilters}>
-            <Trans>check_updates_btn</Trans>
-        </button>
-    </div>
-);
+    return (
+        <div className="card-actions">
+            <button className="btn btn-success btn-standard mr-2 btn-large mb-2" type="submit" onClick={handleAdd}>
+                {whitelist ? <Trans>add_allowlist</Trans> : <Trans>add_blocklist</Trans>}
+            </button>
+
+            {shouldShowCheckUpdatesBtn && (
+                <button
+                    className="btn btn-primary btn-standard mb-2"
+                    type="submit"
+                    onClick={handleRefresh}
+                    disabled={processingRefreshFilters}>
+                    <Trans>check_updates_btn</Trans>
+                </button>
+            )}
+        </div>
+    );
+};
 
 export default withTranslation()(Actions);

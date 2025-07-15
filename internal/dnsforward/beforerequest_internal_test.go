@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghtest"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghtest"
+	"github.com/AdguardTeam/AdGuardHome/internal/filtering"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/miekg/dns"
 	"github.com/stretchr/testify/assert"
@@ -121,7 +121,7 @@ func TestServer_HandleBefore_tls(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			s, _ := createTestTLS(t, TLSConfig{
+			s, _ := createTestTLS(t, &TLSConfig{
 				TLSListenAddrs: []*net.TCPAddr{{}},
 				ServerName:     tlsServerName,
 			})
@@ -259,6 +259,7 @@ func TestServer_HandleBefore_udp(t *testing.T) {
 			}, ServerConfig{
 				UDPListenAddrs: []*net.UDPAddr{{}},
 				TCPListenAddrs: []*net.TCPAddr{{}},
+				TLSConf:        &TLSConfig{},
 				Config: Config{
 					AllowedClients:    tc.allowedClients,
 					DisallowedClients: tc.disallowedClients,
@@ -266,6 +267,7 @@ func TestServer_HandleBefore_udp(t *testing.T) {
 					UpstreamDNS:       []string{localUpsAddr},
 					UpstreamMode:      UpstreamModeLoadBalance,
 					EDNSClientSubnet:  &EDNSClientSubnet{Enabled: false},
+					ClientsContainer:  EmptyClientsContainer{},
 				},
 				ServePlainDNS: true,
 			})

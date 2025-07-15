@@ -8,9 +8,9 @@ import (
 	"net/netip"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghhttp"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/next/agh"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/next/jsonpatch"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghhttp"
+	"github.com/AdguardTeam/AdGuardHome/internal/next/agh"
+	"github.com/AdguardTeam/AdGuardHome/internal/next/jsonpatch"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 )
 

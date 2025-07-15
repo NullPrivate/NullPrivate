@@ -13,8 +13,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghnet"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/next/agh"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghnet"
+	"github.com/AdguardTeam/AdGuardHome/internal/next/agh"
 
 	// TODO(a.garipov): Add a “dnsproxy proxy” package to shield us from changes
 	// and replacement of module dnsproxy.

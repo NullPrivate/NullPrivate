@@ -28,6 +28,8 @@ const Config = () => {
         processingSetConfig,
     } = useSelector((state: RootState) => state.dnsConfig, shallowEqual);
 
+    const { service_type } = useSelector((state: RootState) => state);
+
     const handleFormSubmit = (values: any) => {
         dispatch(setDnsConfig(values));
     };
@@ -53,7 +55,7 @@ const Config = () => {
                     }}
                     onSubmit={handleFormSubmit}
                     processing={processingSetConfig}
-                    dispatch={dispatch}
+                    serviceType={service_type}
                 />
             </div>
         </Card>

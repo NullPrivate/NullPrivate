@@ -8,7 +8,7 @@ import (
 // returns nil in case nothing is found so that Go' crypto/x509 can use its
 // default algorithm to find system root CA list.
 //
-// See https://github.com/AdGuardPrivate/AdGuardPrivate/issues/1311.
+// See https://github.com/AdguardTeam/AdGuardHome/issues/1311.
 func SystemRootCAs() (roots *x509.CertPool) {
 	return rootCAs()
 }

@@ -71,6 +71,12 @@ const config = {
                 exclude: /node_modules/,
                 use: {
                     loader: 'ts-loader',
+                    options: {
+                        transpileOnly: true,
+                        compilerOptions: {
+                            noEmit: false,
+                        },
+                    },
                 },
             },
         ],

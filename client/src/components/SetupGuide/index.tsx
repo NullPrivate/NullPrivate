@@ -1,51 +1,57 @@
 import React from 'react';
 import { Trans, withTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
-import Guide from '../ui/Guide';
+import { Guide } from '../ui/Guide';
 
 import Card from '../ui/Card';
 
 import PageTitle from '../ui/PageTitle';
 import './Guide.css';
 import { DashboardData } from '../../initialState';
+import { RootState } from '../../initialState';
 
 interface SetupGuideProps {
     dashboard: DashboardData;
     t: (id: string) => string;
 }
 
-const SetupGuide = ({
-    t,
-    dashboard: { dnsAddresses },
-}: SetupGuideProps) => (
-    <div className="guide">
-        <PageTitle title={t('setup_guide')} />
+const SetupGuide = ({ t, dashboard: { dnsAddresses } }: SetupGuideProps) => {
+    const serviceType = useSelector((state: RootState) => state.service_type);
+    const shouldHideAddresses = serviceType === 'personal' || serviceType === 'family';
 
-        <Card>
-            <div className="guide__title">
-                <Trans>install_devices_title</Trans>
-            </div>
+    return (
+        <div className="guide">
+            <PageTitle title={t('setup_guide')} />
 
-            <div className="guide__desc">
-                <Trans>install_devices_desc</Trans>
-
-                <div className="mt-1">
-                    <Trans>install_devices_address</Trans>:
+            <Card>
+                <div className="guide__title">
+                    <Trans>install_devices_title</Trans>
                 </div>
 
-                <div className="guide__list">
-                    {dnsAddresses.map((ip: any) => {
-                      if (ip.startsWith('https') || ip.startsWith('tls')) {
-                        return <li key={ip} className="guide__address"> {ip} </li>;
-                      }
-                      return null;
-                    })}
-                </div>
-            </div>
+                <div className="guide__desc">
+                    <Trans>install_devices_desc</Trans>
+                    {!shouldHideAddresses && (
+                        <>
+                            <div className="mt-1">
+                                <Trans>install_devices_address</Trans>:
+                            </div>
 
-            <Guide dnsAddresses={dnsAddresses} />
-        </Card>
-    </div>
-);
+                            <ul className="guide__list">
+                                {dnsAddresses.map((ip: any) => (
+                                    <li key={ip} className="guide__address">
+                                        {ip}
+                                    </li>
+                                ))}
+                            </ul>
+                        </>
+                    )}
+                </div>
+
+                <Guide dnsAddresses={dnsAddresses} />
+            </Card>
+        </div>
+    );
+};
 
 export default withTranslation()(SetupGuide);

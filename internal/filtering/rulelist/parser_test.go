@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering/rulelist"
+	"github.com/AdguardTeam/AdGuardHome/internal/filtering/rulelist"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/AdguardTeam/golibs/testutil/fakeio"
@@ -202,34 +202,30 @@ func TestParser_Parse_checksums(t *testing.T) {
 	assert.Equal(t, gotWithoutComments, gotWithComments)
 }
 
-var (
-	resSink *rulelist.ParseResult
-	errSink error
-)
-
 func BenchmarkParser_Parse(b *testing.B) {
 	dst := &bytes.Buffer{}
 	src := strings.NewReader(strings.Repeat(testRuleTextBlocked, 1000))
 	buf := make([]byte, rulelist.DefaultRuleBufSize)
 	p := rulelist.NewParser()
 
+	var res *rulelist.ParseResult
+	var err error
 	b.ReportAllocs()
-	b.ResetTimer()
-	for range b.N {
-		resSink, errSink = p.Parse(dst, src, buf)
+	for b.Loop() {
+		res, err = p.Parse(dst, src, buf)
 		dst.Reset()
 	}
 
-	require.NoError(b, errSink)
-	require.NotNil(b, resSink)
+	require.NoError(b, err)
+	require.NotNil(b, res)
 
-	// Most recent result, on a ThinkPad X13 with a Ryzen Pro 7 CPU:
+	// Most recent results:
 	//
-	//	goos: linux
+	//	goos: darwin
 	//	goarch: amd64
-	//	pkg: github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering/rulelist
-	//	cpu: AMD Ryzen 7 PRO 4750U with Radeon Graphics
-	//	BenchmarkParser_Parse-16        100000000              128.0 ns/op            48 B/op          1 allocs/op
+	//	pkg: github.com/AdguardTeam/AdGuardHome/internal/filtering/rulelist
+	//	cpu: Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz
+	//	BenchmarkParser_Parse-12    	19635926	        53.70 ns/op	      48 B/op	       1 allocs/op
 }
 
 func FuzzParser_Parse(f *testing.F) {

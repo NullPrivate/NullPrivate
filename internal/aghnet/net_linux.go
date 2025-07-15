@@ -10,7 +10,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghos"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/stringutil"

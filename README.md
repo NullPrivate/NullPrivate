@@ -80,7 +80,7 @@ You can download the binary directly from the [Releases](https://github.com/AdGu
 
 ### Use Docker Image
 
-Alternatively, you can use the Docker image available on [Docker Hub](https://hub.docker.com/repository/docker/adguardprivate/adguardprivate):
+Alternatively, you can use the Docker image available on [Docker Hub](https://hub.docker.com/r/adguardprivate/adguardprivate):
 
 ```bash
 docker run --rm --name AdGuardPrivate -p 34020:80 -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf adguardprivate/adguardprivate:latest

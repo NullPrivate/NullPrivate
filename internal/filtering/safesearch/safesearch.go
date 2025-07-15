@@ -13,8 +13,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/filtering/rulelist"
+	"github.com/AdguardTeam/AdGuardHome/internal/filtering"
+	"github.com/AdguardTeam/AdGuardHome/internal/filtering/rulelist"
 	"github.com/AdguardTeam/golibs/cache"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/urlfilter"

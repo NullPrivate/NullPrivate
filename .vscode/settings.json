@@ -82,7 +82,7 @@
                 "path": "README.md",
                 "lang": "en-us"
             },
-            "destFiles": [
+            "targetFiles": [
                 {
                     "path": "readmes/readme.zh-cn.md",
                     "lang": "zh-cn"
@@ -112,8 +112,8 @@
                     "lang": "ko-kr"
                 },
                 {
-                    "path": "readmes/readme.fr-ca.md",
-                    "lang": "fr-ca"
+                    "path": "readmes/readme.fr-fr.md",
+                    "lang": "fr-fr"
                 },
                 {
                     "path": "readmes/readme.ja-jp.md",
@@ -129,5 +129,9 @@
                 }
             ]
         }
-    ]
+    ],
+    "go.toolsEnvVars": {
+        "GOPROXY": "direct",
+        "GOTOOLCHAIN": "go1.24.4"
+    }
 }

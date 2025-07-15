@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghos"
 	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -66,7 +66,7 @@ func configureLogger(ls *logSettings) (err error) {
 
 	logFilePath := ls.File
 	if !filepath.IsAbs(logFilePath) {
-		logFilePath = filepath.Join(Context.workDir, logFilePath)
+		logFilePath = filepath.Join(globalContext.workDir, logFilePath)
 	}
 
 	log.SetOutput(&lumberjack.Logger{

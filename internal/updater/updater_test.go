@@ -10,42 +10,46 @@ import (
 	"path/filepath"
 	"runtime"
 	"testing"
+	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/updater"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/version"
+	"github.com/AdguardTeam/AdGuardHome/internal/updater"
+	"github.com/AdguardTeam/AdGuardHome/internal/version"
+	"github.com/AdguardTeam/golibs/logutil/slogutil"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func TestMain(m *testing.M) {
-	testutil.DiscardLogOutput(m)
-}
+// testTimeout is the common timeout for tests.
+const testTimeout = 1 * time.Second
+
+// testLogger is the common logger for tests.
+var testLogger = slogutil.NewDiscardLogger()
 
 func TestUpdater_Update(t *testing.T) {
 	const jsonData = `{
   "version": "v0.103.0-beta.2",
   "announcement": "AdGuard Home v0.103.0-beta.2 is now available!",
-  "announcement_url": "https://github.com/AdGuardPrivate/AdGuardPrivate/internal/releases",
+  "announcement_url": "https://github.com/AdguardTeam/AdGuardHome/internal/releases",
   "selfupdate_min_version": "v0.0",
   "download_linux_amd64": "%s"
 }`
 
-	const packagePath = "/AdGuardPrivate.tar.gz"
+	const packagePath = "/AdGuardHome.tar.gz"
 
 	wd := t.TempDir()
 
-	exePath := filepath.Join(wd, "AdGuardPrivate")
+	exePath := filepath.Join(wd, "AdGuardHome")
 	yamlPath := filepath.Join(wd, "AdGuardHome.yaml")
 	readmePath := filepath.Join(wd, "README.md")
 	licensePath := filepath.Join(wd, "LICENSE.txt")
 
-	require.NoError(t, os.WriteFile(exePath, []byte("AdGuardPrivate"), 0o755))
+	require.NoError(t, os.WriteFile(exePath, []byte("AdGuardHome"), 0o755))
 	require.NoError(t, os.WriteFile(yamlPath, []byte("AdGuardHome.yaml"), 0o644))
 	require.NoError(t, os.WriteFile(readmePath, []byte("README.md"), 0o644))
 	require.NoError(t, os.WriteFile(licensePath, []byte("LICENSE.txt"), 0o644))
 
-	pkgData, err := os.ReadFile("testdata/AdGuardPrivate_unix.tar.gz")
+	pkgData, err := os.ReadFile("testdata/AdGuardHome_unix.tar.gz")
 	require.NoError(t, err)
 
 	mux := http.NewServeMux()
@@ -73,6 +77,7 @@ func TestUpdater_Update(t *testing.T) {
 
 	u := updater.NewUpdater(&updater.Config{
 		Client:          srv.Client(),
+		Logger:          testLogger,
 		GOARCH:          "amd64",
 		GOOS:            "linux",
 		Version:         "v0.103.0",
@@ -82,10 +87,12 @@ func TestUpdater_Update(t *testing.T) {
 		VersionCheckURL: versionCheckURL,
 	})
 
-	_, err = u.VersionInfo(false)
+	ctx := testutil.ContextWithTimeout(t, testTimeout)
+	_, err = u.VersionInfo(ctx, false)
 	require.NoError(t, err)
 
-	err = u.Update(true)
+	ctx = testutil.ContextWithTimeout(t, testTimeout)
+	err = u.Update(ctx, true)
 	require.NoError(t, err)
 
 	// check backup files
@@ -124,14 +131,15 @@ func TestUpdater_Update(t *testing.T) {
 			t.Skip("skipping config check test on windows")
 		}
 
-		err = u.Update(false)
+		err = u.Update(testutil.ContextWithTimeout(t, testTimeout), false)
 		assert.NoError(t, err)
 	})
 
 	t.Run("api_fail", func(t *testing.T) {
 		srv.Close()
 
-		err = u.Update(true)
+		err = u.Update(testutil.ContextWithTimeout(t, testTimeout), true)
+
 		var urlErr *url.Error
 		assert.ErrorAs(t, err, &urlErr)
 	})

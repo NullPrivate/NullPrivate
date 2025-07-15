@@ -72,6 +72,7 @@ const FILTERS_ITEMS = [
     {
         route: FILTERS_URLS.dns_allowlists,
         text: 'dns_allowlists',
+        requiredServiceTypes: ['family','enterprise'],
     },
     {
         route: FILTERS_URLS.dns_rewrites,
@@ -80,6 +81,7 @@ const FILTERS_ITEMS = [
     {
         route: FILTERS_URLS.blocked_services,
         text: 'blocked_services',
+        requiredServiceTypes: ['personal', 'family', 'enterprise'],
     },
     {
         route: FILTERS_URLS.custom_rules,

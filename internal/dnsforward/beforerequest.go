@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghnet"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghnet"
 	"github.com/AdguardTeam/dnsproxy/proxy"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/log"
@@ -15,7 +15,7 @@ import (
 var _ proxy.BeforeRequestHandler = (*Server)(nil)
 
 // HandleBefore is the handler that is called before any other processing,
-// including logs.  It performs access checks and puts the client ID, if there
+// including logs.  It performs access checks and puts the ClientID, if there
 // is one, into the server's cache.
 //
 // TODO(d.kolyshev): Extract to separate package.
@@ -74,7 +74,7 @@ func (s *Server) clientIDFromDNSContext(pctx *proxy.DNSContext) (clientID string
 		return "", nil
 	}
 
-	hostSrvName := s.conf.ServerName
+	hostSrvName := s.conf.TLSConf.ServerName
 	if hostSrvName == "" {
 		return "", nil
 	}
@@ -87,7 +87,7 @@ func (s *Server) clientIDFromDNSContext(pctx *proxy.DNSContext) (clientID string
 	clientID, err = clientIDFromClientServerName(
 		hostSrvName,
 		cliSrvName,
-		s.conf.StrictSNICheck,
+		s.conf.TLSConf.StrictSNICheck,
 	)
 	if err != nil {
 		return "", fmt.Errorf("clientid check: %w", err)

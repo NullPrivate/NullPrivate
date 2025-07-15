@@ -7,7 +7,7 @@ import { MOBILE_CONFIG_LINKS } from '../../../helpers/constants';
 
 import Tabs from '../Tabs';
 
-import MobileConfigForm from './MobileConfigForm';
+import { MobileConfigForm } from './MobileConfigForm';
 import { RootState } from '../../../initialState';
 
 interface renderLiProps {
@@ -48,114 +48,118 @@ const getDnsPrivacyList = () => [
             {
                 label: 'setup_dns_privacy_android_1',
             },
-            // {
-            //     label: 'setup_dns_privacy_android_2',
-            //     components: [
-            //         {
-            //             key: 0,
-            //             href: 'https://link.adtidy.org/forward.html?action=android&from=ui&app=home',
-            //         },
+            /*
+            {
+                label: 'setup_dns_privacy_android_2',
+                components: [
+                    {
+                        key: 0,
+                        href: 'https://link.adtidy.org/forward.html?action=android&from=ui&app=home',
+                    },
 
-            //         <code key="1">text</code>,
-            //     ],
-            // },
-            // {
-            //     label: 'setup_dns_privacy_android_3',
-            //     components: [
-            //         {
-            //             key: 0,
-            //             href: 'https://getintra.org/',
-            //         },
+                    <code key="1">text</code>,
+                ],
+            },
+            {
+                label: 'setup_dns_privacy_android_3',
+                components: [
+                    {
+                        key: 0,
+                        href: 'https://getintra.org/',
+                    },
 
-            //         <code key="1">text</code>,
-            //     ],
-            // },
+                    <code key="1">text</code>,
+                ],
+            },
+            */
         ],
     },
-    // {
-    //     title: 'iOS',
-    //     list: [
-    //         {
-    //             label: 'setup_dns_privacy_ios_2',
-    //             components: [
-    //                 {
-    //                     key: 0,
-    //                     href: 'https://link.adtidy.org/forward.html?action=ios&from=ui&app=home',
-    //                 },
+    /*
+    {
+        title: 'iOS',
+        list: [
+            {
+                label: 'setup_dns_privacy_ios_2',
+                components: [
+                    {
+                        key: 0,
+                        href: 'https://link.adtidy.org/forward.html?action=ios&from=ui&app=home',
+                    },
 
-    //                 <code key="1">text</code>,
-    //             ],
-    //         },
-    //         {
-    //             label: 'setup_dns_privacy_ios_1',
-    //             components: [
-    //                 {
-    //                     key: 0,
-    //                     href: 'https://itunes.apple.com/app/id1452162351',
-    //                 },
+                    <code key="1">text</code>,
+                ],
+            },
+            {
+                label: 'setup_dns_privacy_ios_1',
+                components: [
+                    {
+                        key: 0,
+                        href: 'https://itunes.apple.com/app/id1452162351',
+                    },
 
-    //                 <code key="1">text</code>,
-    //                 {
-    //                     key: 2,
-    //                     href: 'https://dnscrypt.info/stamps',
-    //                 },
-    //             ],
-    //         },
-    //     ],
-    // },
-    // {
-    //     title: 'setup_dns_privacy_other_title',
-    //     list: [
-    //         {
-    //             label: 'setup_dns_privacy_other_1',
-    //         },
-    //         {
-    //             label: 'setup_dns_privacy_other_2',
-    //             components: [
-    //                 {
-    //                     key: 0,
-    //                     href: 'https://github.com/jqknono/dnsproxy',
-    //                 },
-    //             ],
-    //         },
-    //         {
-    //             href: 'https://github.com/jedisct1/dnscrypt-proxy',
-    //             label: 'setup_dns_privacy_other_3',
-    //             components: [
-    //                 {
-    //                     key: 0,
-    //                     href: 'https://github.com/jedisct1/dnscrypt-proxy',
-    //                 },
+                    <code key="1">text</code>,
+                    {
+                        key: 2,
+                        href: 'https://dnscrypt.info/stamps',
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        title: 'setup_dns_privacy_other_title',
+        list: [
+            {
+                label: 'setup_dns_privacy_other_1',
+            },
+            {
+                label: 'setup_dns_privacy_other_2',
+                components: [
+                    {
+                        key: 0,
+                        href: 'https://github.com/adguardprivate/dnsproxy',
+                    },
+                ],
+            },
+            {
+                href: 'https://github.com/jedisct1/dnscrypt-proxy',
+                label: 'setup_dns_privacy_other_3',
+                components: [
+                    {
+                        key: 0,
+                        href: 'https://github.com/jedisct1/dnscrypt-proxy',
+                    },
 
-    //                 <code key="1">text</code>,
-    //             ],
-    //         },
-    //         {
-    //             label: 'setup_dns_privacy_other_4',
-    //             components: [
-    //                 {
-    //                     key: 0,
-    //                     href: 'https://support.mozilla.org/kb/firefox-dns-over-https',
-    //                 },
+                    <code key="1">text</code>,
+                ],
+            },
+            {
+                label: 'setup_dns_privacy_other_4',
+                components: [
+                    {
+                        key: 0,
+                        href: 'https://support.mozilla.org/kb/firefox-dns-over-https',
+                    },
 
-    //                 <code key="1">text</code>,
-    //             ],
-    //         },
-    //         {
-    //             label: 'setup_dns_privacy_other_5',
-    //             components: [
-    //                 {
-    //                     key: 0,
-    //                     href: 'https://dnscrypt.info/implementations',
-    //                 },
-    //                 {
-    //                     key: 1,
-    //                     href: 'https://dnsprivacy.org/wiki/display/DP/DNS+Privacy+Clients',
-    //                 },
-    //             ],
-    //         },
-    //     ],
-    // },
+                    <code key="1">text</code>,
+                ],
+            },
+            {
+                label: 'setup_dns_privacy_other_5',
+                components: [
+                    {
+                        key: 0,
+                        href: 'https://dnscrypt.info/implementations',
+                    },
+                    {
+                        key: 1,
+                        href: 'https://dnsprivacy.org/wiki/display/DP/DNS+Privacy+Clients',
+                    },
+                ],
+            },
+        ],
+    },
+    */
 ];
 
 interface renderDnsPrivacyListProps {
@@ -179,69 +183,71 @@ const renderDnsPrivacyList = ({ title, list }: renderDnsPrivacyListProps) => (
 );
 
 const getTabs = ({ tlsAddress, httpsAddress, showDnsPrivacyNotice, serverName, portHttps, t }: any) => ({
-    // Router: {
-    //     // eslint-disable-next-line react/display-name
-    //     getTitle: () => (
-    //         <p>
-    //             <Trans>install_devices_router_desc</Trans>
-    //         </p>
-    //     ),
-    //     title: 'Router',
-    //     list: [
-    //         'install_devices_router_list_1',
-    //         'install_devices_router_list_2',
-    //         'install_devices_router_list_3',
+    /*
+    Router: {
+        // eslint-disable-next-line react/display-name
+        getTitle: () => (
+            <p>
+                <Trans>install_devices_router_desc</Trans>
+            </p>
+        ),
+        title: 'Router',
+        list: [
+            'install_devices_router_list_1',
+            'install_devices_router_list_2',
+            'install_devices_router_list_3',
 
-    //         // eslint-disable-next-line react/jsx-key
-    //         <Trans
-    //             components={[
-    //                 <a href="#dhcp" key="0">
-    //                     link
-    //                 </a>,
-    //             ]}>
-    //             install_devices_router_list_4
-    //         </Trans>,
-    //     ],
-    // },
-    // Windows: {
-    //     title: 'Windows',
-    //     list: [
-    //         'install_devices_windows_list_1',
-    //         'install_devices_windows_list_2',
-    //         'install_devices_windows_list_3',
-    //         'install_devices_windows_list_4',
-    //         'install_devices_windows_list_5',
-    //         'install_devices_windows_list_6',
-    //     ],
-    // },
-    // macOS: {
-    //     title: 'macOS',
-    //     list: [
-    //         'install_devices_macos_list_1',
-    //         'install_devices_macos_list_2',
-    //         'install_devices_macos_list_3',
-    //         'install_devices_macos_list_4',
-    //     ],
-    // },
-    // Android: {
-    //     title: 'Android',
-    //     list: [
-    //         'install_devices_android_list_1',
-    //         'install_devices_android_list_2',
-    //         'install_devices_android_list_3',
-    //         'install_devices_android_list_4',
-    //         'install_devices_android_list_5',
-    //     ],
-    // },
-    // iOS: {
-    //     title: 'iOS',
-    //     list: [
-    //         'install_devices_ios_list_1',
-    //         'install_devices_ios_list_2',
-    //         'install_devices_ios_list_3',
-    //         'install_devices_ios_list_4',
-    //     ],
-    // },
+            // eslint-disable-next-line react/jsx-key
+            <Trans
+                components={[
+                    <a href="#dhcp" key="0">
+                        link
+                    </a>,
+                ]}>
+                install_devices_router_list_4
+            </Trans>,
+        ],
+    },
+    Windows: {
+        title: 'Windows',
+        list: [
+            'install_devices_windows_list_1',
+            'install_devices_windows_list_2',
+            'install_devices_windows_list_3',
+            'install_devices_windows_list_4',
+            'install_devices_windows_list_5',
+            'install_devices_windows_list_6',
+        ],
+    },
+    macOS: {
+        title: 'macOS',
+        list: [
+            'install_devices_macos_list_1',
+            'install_devices_macos_list_2',
+            'install_devices_macos_list_3',
+            'install_devices_macos_list_4',
+        ],
+    },
+    Android: {
+        title: 'Android',
+        list: [
+            'install_devices_android_list_1',
+            'install_devices_android_list_2',
+            'install_devices_android_list_3',
+            'install_devices_android_list_4',
+            'install_devices_android_list_5',
+        ],
+    },
+    iOS: {
+        title: 'iOS',
+        list: [
+            'install_devices_ios_list_1',
+            'install_devices_ios_list_2',
+            'install_devices_ios_list_3',
+            'install_devices_ios_list_4',
+        ],
+    },
+    */
     dns_privacy: {
         title: 'dns_privacy',
         getTitle: function Title() {
@@ -348,7 +354,7 @@ interface GuideProps {
     dnsAddresses?: unknown[];
 }
 
-const Guide = ({ dnsAddresses }: GuideProps) => {
+export const Guide = ({ dnsAddresses }: GuideProps) => {
     const { t } = useTranslation();
 
     const serverName = useSelector((state: RootState) => state.encryption?.server_name);
@@ -383,5 +389,3 @@ const Guide = ({ dnsAddresses }: GuideProps) => {
 Guide.defaultProps = {
     dnsAddresses: [],
 };
-
-export default Guide;

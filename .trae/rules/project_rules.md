@@ -1,0 +1,10 @@
+- 优先增加代码, 而不是修改已有代码, 以方便从上游库合并代码
+- 修改了前端代码(./client)后, 需运行`make js-build`, 确认没有编译问题
+- 修改了后端代码(./internal)后, 需运行`make go-build`, 确认没有编译问题
+- 测试方法:
+  - 运行`./AdGuardPrivate -c ../AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose`
+  - API 测试示例: `curl http://dns.jqknono.com:34020/control/ddns/script/linux -H "Authorization: Basic anFrbm9ubzoxMjM0NTZsaQ=="`
+  - DNS 请求测试示例: 
+    - DoH: `./tools/q -s https://dns.jqknono.com:34025/dns-query -t A --timeout 10s -q example.com`
+    - DoT: `./tools/q -s tls://dns.jqknono.com:34026 -t A --timeout 10s -q example.com`
+    - DoQ: `./tools/q -s tls://dns.jqknono.com:34027 -t A --timeout 10s -q example.com`

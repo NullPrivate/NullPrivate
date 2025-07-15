@@ -11,8 +11,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghos"
-	"github.com/AdGuardPrivate/AdGuardPrivate/internal/aghrenameio"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghos"
+	"github.com/AdguardTeam/AdGuardHome/internal/aghrenameio"
 	"github.com/AdguardTeam/golibs/errors"
 	"github.com/AdguardTeam/golibs/ioutil"
 	"github.com/AdguardTeam/urlfilter/filterlist"
