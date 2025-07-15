@@ -161,7 +161,7 @@
         {
             "label": "Deploy: Push to Docker Hub",
             "type": "shell",
-            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.quick -t docker.io/adguardprivate/adguardprivate:${input:version} -t docker.io/adguardprivate/adguardprivate:latest . --push",
+            "command": "echo $DOCKER_HUB_TOKEN_ADGUARDPRIVATE | docker login --username adguardprivate --password-stdin && docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.quick -t docker.io/adguardprivate/adguardprivate:${input:version} -t docker.io/adguardprivate/adguardprivate:latest . --push",
             "dependsOrder": "sequence",
             "dependsOn": [
                 "Release: Build Release"
