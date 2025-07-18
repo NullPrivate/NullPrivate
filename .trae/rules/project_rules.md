@@ -8,3 +8,4 @@
     - DoH: `./tools/q -s https://dns.jqknono.com:34025/dns-query -t A --timeout 10s -q example.com`
     - DoT: `./tools/q -s tls://dns.jqknono.com:34026 -t A --timeout 10s -q example.com`
     - DoQ: `./tools/q -s tls://dns.jqknono.com:34027 -t A --timeout 10s -q example.com`
+- 注释使用英文.
