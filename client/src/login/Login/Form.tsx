@@ -1,4 +1,5 @@
 import React from 'react';
+import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Input } from '../../components/ui/Controls/Input';
@@ -14,11 +15,25 @@ type LoginFormProps = {
     processing: boolean;
 };
 
+// Function to extract subdomain
+const extractSubdomain = (): string => {
+    const hostname = window.location.hostname;
+    const parts = hostname.split('.');
+
+    // Check if the format is xxx.adguardprivate.com
+    if (parts.length >= 3 && parts[parts.length - 2] === 'adguardprivate' && parts[parts.length - 1] === 'com') {
+        return parts[0]; // Return the first part as subdomain
+    }
+
+    return ''; // Return empty string if format does not match
+};
+
 const Form = ({ onSubmit, processing }: LoginFormProps) => {
     const { t } = useTranslation();
     const {
         handleSubmit,
         control,
+        setValue,
         formState: { isValid },
     } = useForm<LoginFormValues>({
         mode: 'onChange',
@@ -27,6 +42,14 @@ const Form = ({ onSubmit, processing }: LoginFormProps) => {
             password: '',
         },
     });
+
+    // Auto-fill username
+    useEffect(() => {
+        const subdomain = extractSubdomain();
+        if (subdomain) {
+            setValue('username', subdomain, { shouldValidate: true });
+        }
+    }, [setValue]);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="card">
