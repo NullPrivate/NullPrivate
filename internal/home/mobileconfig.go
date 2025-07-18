@@ -150,6 +150,9 @@ func handleMobileConfig(w http.ResponseWriter, r *http.Request, dnsp string) {
 	}
 
 	clientID := q.Get("client_id")
+	if clientID == "" {
+		clientID = "default"
+	}
 	if clientID != "" {
 		err = client.ValidateClientID(clientID)
 		if err != nil {
