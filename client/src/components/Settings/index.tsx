@@ -188,7 +188,7 @@ class Settings extends Component<SettingsProps> {
                                             processing={filtering.processingSetConfig}
                                             setFiltersConfig={setFiltersConfig}
                                         />
-                                        {this.props.serviceType !== 'personal' && this.props.serviceType !== 'family' && (
+                                        {this.props.serviceType !== 'personal' && (
                                             <>
                                                 {this.renderSettings(settings.settingsList)}
                                                 {this.renderSafeSearch()}

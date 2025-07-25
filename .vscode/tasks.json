@@ -6,7 +6,7 @@
         {
             "id": "version",
             "description": "Please enter the version number (e.g., v1.3.0)",
-            "default": "v1.3.1",
+            "default": "v1.3.2",
             "type": "promptString"
         }
     ],
