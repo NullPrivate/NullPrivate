@@ -196,37 +196,38 @@ func (s *Server) getDNSConfig() (c *jsonDNSConfig) {
 	}
 
 	return &jsonDNSConfig{
-		Upstreams:                 &upstreams,
-		UpstreamsFile:             &upstreamFile,
-		Bootstraps:                &bootstraps,
-		Fallbacks:                 &fallbacks,
+		Upstreams:                &upstreams,
+		UpstreamsFile:            &upstreamFile,
+		Bootstraps:               &bootstraps,
+		Fallbacks:                &fallbacks,
+		ProtectionEnabled:        &protectionEnabled,
+		BlockingMode:             &blockingMode,
+		BlockingIPv4:             blockingIPv4,
+		BlockingIPv6:             blockingIPv6,
+		Ratelimit:                &ratelimit,
+		RatelimitSubnetLenIPv4:   &ratelimitSubnetLenIPv4,
+		RatelimitSubnetLenIPv6:   &ratelimitSubnetLenIPv6,
+		RatelimitWhitelist:       &ratelimitWhitelist,
+		UpstreamTimeout:          &upstreamTimeout,
+		EDNSCSCustomIP:           customIP,
+		EDNSCSEnabled:            &enableEDNSClientSubnet,
+		EDNSCSUseCustom:          &useCustom,
+		DNSSECEnabled:            &enableDNSSEC,
+		DisableIPv6:              &aaaaDisabled,
+		BlockedResponseTTL:       &blockedResponseTTL,
+		CacheSize:                &cacheSize,
+		CacheMinTTL:              &cacheMinTTL,
+		CacheMaxTTL:              &cacheMaxTTL,
+		CacheOptimistic:          &cacheOptimistic,
+		UpstreamMode:             &upstreamMode,
+		ResolveClients:           &resolveClients,
+		UsePrivateRDNS:           &usePrivateRDNS,
+		LocalPTRUpstreams:        &localPTRUpstreams,
+		DefaultLocalPTRUpstreams: defPTRUps,
+		DisabledUntil:            protectionDisabledUntil,
+
 		UpstreamAlternateDNS:      &upstreamAlternateDNS,
 		UpstreamAlternateRulesets: &upstreamAlternateRulesets,
-		ProtectionEnabled:         &protectionEnabled,
-		BlockingMode:              &blockingMode,
-		BlockingIPv4:              blockingIPv4,
-		BlockingIPv6:              blockingIPv6,
-		Ratelimit:                 &ratelimit,
-		RatelimitSubnetLenIPv4:    &ratelimitSubnetLenIPv4,
-		RatelimitSubnetLenIPv6:    &ratelimitSubnetLenIPv6,
-		RatelimitWhitelist:        &ratelimitWhitelist,
-		UpstreamTimeout:           &upstreamTimeout,
-		EDNSCSCustomIP:            customIP,
-		EDNSCSEnabled:             &enableEDNSClientSubnet,
-		EDNSCSUseCustom:           &useCustom,
-		DNSSECEnabled:             &enableDNSSEC,
-		DisableIPv6:               &aaaaDisabled,
-		BlockedResponseTTL:        &blockedResponseTTL,
-		CacheSize:                 &cacheSize,
-		CacheMinTTL:               &cacheMinTTL,
-		CacheMaxTTL:               &cacheMaxTTL,
-		CacheOptimistic:           &cacheOptimistic,
-		UpstreamMode:              &upstreamMode,
-		ResolveClients:            &resolveClients,
-		UsePrivateRDNS:            &usePrivateRDNS,
-		LocalPTRUpstreams:         &localPTRUpstreams,
-		DefaultLocalPTRUpstreams:  defPTRUps,
-		DisabledUntil:             protectionDisabledUntil,
 	}
 }
 
@@ -490,24 +491,19 @@ func checkInclusion(ptr *int, minN, maxN int) (err error) {
 	return nil
 }
 
-// 添加函数来决定是否允许修改特定配置
-// isEnterpriseConfigAllowed 检查当前的服务类型是否允许修改企业级配置
-func (s *Server) isEnterpriseConfigAllowed() bool {
-	// 从ServerConfig中获取服务类型
-	return s.conf.ServiceType == "enterprise"
-}
-
 // handleSetConfig handles requests to the POST /control/dns_config endpoint.
 func (s *Server) handleSetConfig(w http.ResponseWriter, r *http.Request) {
 	req := &jsonDNSConfig{}
 	err := json.NewDecoder(r.Body).Decode(req)
 	if err != nil {
+		aghhttp.Error(r, w, http.StatusBadRequest, "decoding request: %s", err)
+
 		return
 	}
 
 	// Check service type, only allow ratelimit and cache_size changes in enterprise mode
 	if req.Ratelimit != nil || req.CacheSize != nil {
-		if !s.isEnterpriseConfigAllowed() {
+		if s.conf.ServiceType != "" && s.conf.ServiceType != "enterprise" {
 			// Ignore ratelimit and cache_size modification requests if not enterprise type
 			if req.Ratelimit != nil {
 				log.Info("ignoring ratelimit change request: service_type is not enterprise")
@@ -523,12 +519,16 @@ func (s *Server) handleSetConfig(w http.ResponseWriter, r *http.Request) {
 	// Get our own address set for validation
 	ourAddrs, err := s.conf.ourAddrsSet()
 	if err != nil {
+		// TODO(e.burkov):  Put into openapi.
+		aghhttp.Error(r, w, http.StatusInternalServerError, "getting our addresses: %s", err)
+
 		return
 	}
 
-	// Validate the configuration
 	err = req.validate(ourAddrs, s.sysResolvers, s.privateNets)
 	if err != nil {
+		aghhttp.Error(r, w, http.StatusBadRequest, "%s", err)
+
 		return
 	}
 
