@@ -112,9 +112,30 @@ func (c *searchCriterion) quickMatch(
 
 		return ctDomainOrClientCaseNonStrict(c.value, c.asciiVal, clientID, name, host, ip)
 	case ctFilteringStatus:
-		// Go on, as we currently don't do quick matches against
-		// filtering statuses.
-		return true
+		// Use the FilteringStatusStr field for quick matching
+		filteringStatusStr := readJSONValue(line, `"FS":"`)
+
+		if filteringStatusStr == "" {
+			// If FilteringStatusStr is not present, fall back to the old method
+			return true
+		}
+
+		// Direct string comparison for filtering status
+		switch c.value {
+		case filteringStatusAll:
+			return true
+		case filteringStatusFiltered:
+			// Check if it's any kind of filtered status
+			return filteringStatusStr == filteringStatusBlocked ||
+				filteringStatusStr == filteringStatusBlockedParental ||
+				filteringStatusStr == filteringStatusBlockedSafebrowsing ||
+				filteringStatusStr == filteringStatusBlockedService ||
+				filteringStatusStr == filteringStatusSafeSearch ||
+				filteringStatusStr == filteringStatusRewritten
+		default:
+			// Direct match for specific filtering status
+			return filteringStatusStr == c.value
+		}
 	default:
 		return true
 	}

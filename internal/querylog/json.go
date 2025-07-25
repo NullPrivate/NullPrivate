@@ -82,6 +82,8 @@ func (l *queryLog) entryToJSON(
 		"upstream":     entry.Upstream,
 		"question":     question,
 		"rules":        resultRulesToJSONRules(entry.Result.Rules),
+
+		"filtering_status": entry.FilteringStatusStr,
 	}
 
 	if entIP.Equal(entry.IP) {
