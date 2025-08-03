@@ -40,7 +40,7 @@ const (
 	userFilterDataDir = "userfilters"
 
 	// Default service type constants
-	defaultServiceType = "personal"
+	defaultServiceType = "enterprise"
 
 	rulesetDataDir = "rulesets"
 )
