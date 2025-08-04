@@ -145,7 +145,9 @@ const Form = ({ initialValues, onSubmit }: CacheFormProps) => {
             <button
                 type="button"
                 data-testid="dns_clear"
-                className="btn btn-outline-secondary btn-standard form__button"
+                className={`btn btn-outline-secondary btn-standard ${
+                    service_type === 'enterprise' ? 'form__button' : ''
+                }`}
                 onClick={handleClearCache}>
                 {t('clear_cache')}
             </button>

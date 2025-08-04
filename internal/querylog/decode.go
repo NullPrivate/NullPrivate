@@ -95,6 +95,16 @@ var logEntryHandlers = map[string]logEntryHandler{
 
 		return err
 	},
+	"FS": func(t json.Token, ent *logEntry) error {
+		v, ok := t.(string)
+		if !ok {
+			return nil
+		}
+
+		ent.FilteringStatusStr = v
+
+		return nil
+	},
 	"Answer": func(t json.Token, ent *logEntry) error {
 		v, ok := t.(string)
 		if !ok {

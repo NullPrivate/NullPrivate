@@ -132,6 +132,12 @@ type Config struct {
 	// to DNS requests blocked by safe-browsing.
 	SafeBrowsingBlockHost string `yaml:"safebrowsing_block_host"`
 
+	// SafeBrowsingServer is the server URL for safe browsing service.
+	SafeBrowsingServer string `yaml:"safebrowsing_server"`
+
+	// ParentalServer is the server URL for parental control service.
+	ParentalServer string `yaml:"parental_server"`
+
 	Rewrites []*LegacyRewrite `yaml:"rewrites"`
 
 	// Filters are the blocking filter lists.

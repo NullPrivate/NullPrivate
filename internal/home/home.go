@@ -57,7 +57,6 @@ type homeContext struct {
 	auth       *Auth                // HTTP authentication module
 	filters    *filtering.DNSFilter // DNS filtering module
 	web        *webAPI              // Web (HTTP, HTTPS) module
-
 	ruleset    *ruleset.Ruleset     // Ruleset module
 
 	// tls contains the current configuration and state of TLS encryption.
@@ -361,14 +360,25 @@ func setupDNSFilteringConf(
 	const (
 		dnsTimeout = 3 * time.Second
 
-		sbService                 = "safe browsing"
-		defaultSafeBrowsingServer = `https://family.adguard-dns.com/dns-query`
-		sbTXTSuffix               = `sb.dns.adguard.com.`
+		sbService   = "safe browsing"
+		sbTXTSuffix = `sb.dns.adguard.com.`
 
-		pcService             = "parental control"
-		defaultParentalServer = `https://family.adguard-dns.com/dns-query`
-		pcTXTSuffix           = `pc.dns.adguard.com.`
+		pcService   = "parental control"
+		pcTXTSuffix = `pc.dns.adguard.com.`
 	)
+
+	// Use default values if configuration values are empty
+	safeBrowsingServer := conf.SafeBrowsingServer
+	if safeBrowsingServer == "" {
+		safeBrowsingServer = "https://family.adguard-dns.com/dns-query"
+		log.Info("%s: warning: empty server; using default: %q", sbService, safeBrowsingServer)
+	}
+
+	parentalServer := conf.ParentalServer
+	if parentalServer == "" {
+		parentalServer = "https://family.adguard-dns.com/dns-query"
+		log.Info("%s: warning: empty server; using default: %q", pcService, parentalServer)
+	}
 
 	conf.EtcHosts = globalContext.etcHosts
 	// TODO(s.chzhen):  Use empty interface.
@@ -400,7 +410,7 @@ func setupDNSFilteringConf(
 		},
 	}
 
-	sbUps, err := upstream.AddressToUpstream(defaultSafeBrowsingServer, upsOpts)
+	sbUps, err := upstream.AddressToUpstream(safeBrowsingServer, upsOpts)
 	if err != nil {
 		return fmt.Errorf("converting safe browsing server: %w", err)
 	}
@@ -424,7 +434,7 @@ func setupDNSFilteringConf(
 		conf.SafeBrowsingBlockHost = host
 	}
 
-	parUps, err := upstream.AddressToUpstream(defaultParentalServer, upsOpts)
+	parUps, err := upstream.AddressToUpstream(parentalServer, upsOpts)
 	if err != nil {
 		return fmt.Errorf("converting parental server: %w", err)
 	}

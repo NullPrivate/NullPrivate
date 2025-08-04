@@ -40,7 +40,7 @@ const (
 	userFilterDataDir = "userfilters"
 
 	// Default service type constants
-	defaultServiceType = "personal"
+	defaultServiceType = "enterprise"
 
 	rulesetDataDir = "rulesets"
 )
@@ -440,6 +440,8 @@ type statsConfig struct {
 const (
 	defaultSafeBrowsingBlockHost = "standard-block.dns.adguard.com"
 	defaultParentalBlockHost     = "family-block.dns.adguard.com"
+	defaultSafeBrowsingServer    = "https://family.adguard-dns.com/dns-query"
+	defaultParentalServer        = "https://family.adguard-dns.com/dns-query"
 )
 
 // config is the global configuration structure.
@@ -562,6 +564,8 @@ var config = &configuration{
 
 		ParentalBlockHost:     defaultParentalBlockHost,
 		SafeBrowsingBlockHost: defaultSafeBrowsingBlockHost,
+		SafeBrowsingServer:    defaultSafeBrowsingServer,
+		ParentalServer:        defaultParentalServer,
 	},
 	DHCP: &dhcpd.ServerConfig{
 		LocalDomainName: "lan",

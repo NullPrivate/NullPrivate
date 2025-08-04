@@ -28,12 +28,12 @@ const settingsCheckboxes: {
     {
         name: 'safebrowsing_enabled',
         placeholder: i18next.t('use_adguard_browsing_sec'),
-        requiredServiceTypes: ['enterprise'],
+        requiredServiceTypes: ['family', 'enterprise'],
     },
     {
         name: 'parental_enabled',
         placeholder: i18next.t('use_adguard_parental'),
-        requiredServiceTypes: ['enterprise'],
+        requiredServiceTypes: ['family', 'enterprise'],
     },
 ];
 
@@ -69,6 +69,9 @@ export const MainSettings = ({ safeSearchServices }: Props) => {
         return setting.requiredServiceTypes.includes(serviceType);
     });
 
+    // Check if safe search should be shown for current service type
+    const shouldShowSafeSearch = serviceType === 'family' || serviceType === 'enterprise';
+
     return (
         <div title={t('main_settings')}>
             <div className="form__label--bot form__label--bold">{t('protection_section_label')}</div>
@@ -89,7 +92,8 @@ export const MainSettings = ({ safeSearchServices }: Props) => {
                 </div>
             ))}
 
-            {/* 
+            {shouldShowSafeSearch && (
+                <>
             <div className="form__group">
                 <Controller
                     name="safe_search.enabled"
@@ -123,7 +127,9 @@ export const MainSettings = ({ safeSearchServices }: Props) => {
                     </div>
                 ))}
             </div>
-            */}
+                </>
+            )}
+
             <div className="form__label--bold form__label--top form__label--bot">
                 {t('log_and_stats_section_label')}
             </div>

@@ -6,7 +6,7 @@
         {
             "id": "version",
             "description": "Please enter the version number (e.g., v1.3.0)",
-            "default": "v1.3.0",
+            "default": "v1.3.2",
             "type": "promptString"
         }
     ],
@@ -173,9 +173,24 @@
         },
         // ==================== Tools & Testing ====================
         {
-            "label": "Tools: DNS Query Test",
+            "label": "Tools: DNS Query Test: Normal Query",
+            "type": "shell",
+            "command": "./tools/q -s https://dns.jqknono.com:34025 -t A -w -q baidu.com"
+        },
+        {
+            "label": "Tools: DNS Query Test: Alternate Query",
             "type": "shell",
             "command": "./tools/q -s https://dns.jqknono.com:34025 -t A -w -q google.com"
+        },
+        {
+            "label": "Tools: DNS Query Test: Blocked by Parental Control",
+            "type": "shell",
+            "command": "./tools/q -s https://dns.jqknono.com:34025 -t A -w -q pornhub.com"
+        },
+        {
+            "label": "Tools: DNS Query Test: Blocked Threats",
+            "type": "shell",
+            "command": "./tools/q -s https://dns.jqknono.com:34025 -t A -w -q malware.wicar.org"
         },
         {
             "label": "Tools: Run Tests",
