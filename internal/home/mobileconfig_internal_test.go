@@ -54,7 +54,7 @@ func TestHandleMobileConfigDoH(t *testing.T) {
 		require.NotNil(t, s)
 
 		assert.Empty(t, s.ServerName)
-		assert.Equal(t, "https://example.org/dns-query", s.ServerURL)
+		assert.Equal(t, "https://example.org/dns-query/default", s.ServerURL)
 	})
 
 	t.Run("error_no_host", func(t *testing.T) {
@@ -120,7 +120,7 @@ func TestHandleMobileConfigDoT(t *testing.T) {
 		s := mc.PayloadContent[0].DNSSettings
 		require.NotNil(t, s)
 
-		assert.Equal(t, "example.org", s.ServerName)
+		assert.Equal(t, "default.example.org", s.ServerName)
 		assert.Empty(t, s.ServerURL)
 	})
 

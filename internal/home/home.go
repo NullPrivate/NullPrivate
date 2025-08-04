@@ -45,7 +45,6 @@ import (
 
 // Global context
 type homeContext struct {
-	debug bool // Debug mode flag
 	// Modules
 	// --
 

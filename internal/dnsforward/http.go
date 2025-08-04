@@ -501,32 +501,9 @@ func (s *Server) handleSetConfig(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Check service type, only allow ratelimit and cache_size changes in enterprise mode
-	if req.Ratelimit != nil || req.CacheSize != nil {
-		if s.conf.ServiceType != "" && s.conf.ServiceType != "enterprise" {
-			// Ignore ratelimit and cache_size modification requests if not enterprise type
-			if req.Ratelimit != nil {
-				log.Info("ignoring ratelimit change request: service_type is not enterprise")
-				req.Ratelimit = nil
-			}
-			if req.CacheSize != nil {
-				log.Info("ignoring cache_size change request: service_type is not enterprise")
-				req.CacheSize = nil
-			}
-		}
-	}
+	s.checkServiceType(req)
 
-	// Get our own address set for validation
-	ourAddrs, err := s.conf.ourAddrsSet()
-	if err != nil {
-		// TODO(e.burkov):  Put into openapi.
-		aghhttp.Error(r, w, http.StatusInternalServerError, "getting our addresses: %s", err)
-
-		return
-	}
-
-	err = req.validate(ourAddrs, s.sysResolvers, s.privateNets)
-	if err != nil {
+	if err = s.validateSetConfig(req); err != nil {
 		aghhttp.Error(r, w, http.StatusBadRequest, "%s", err)
 
 		return
@@ -541,6 +518,37 @@ func (s *Server) handleSetConfig(w http.ResponseWriter, r *http.Request) {
 			aghhttp.Error(r, w, http.StatusInternalServerError, "%s", err)
 		}
 	}
+}
+
+// checkServiceType checks the service type and modifies the request if necessary.
+func (s *Server) checkServiceType(req *jsonDNSConfig) {
+	if req.Ratelimit == nil && req.CacheSize == nil {
+		return
+	}
+
+	if s.conf.ServiceType != "" && s.conf.ServiceType != "enterprise" {
+		// Ignore ratelimit and cache_size modification requests if not enterprise type
+		if req.Ratelimit != nil {
+			log.Info("ignoring ratelimit change request: service_type is not enterprise")
+			req.Ratelimit = nil
+		}
+		if req.CacheSize != nil {
+			log.Info("ignoring cache_size change request: service_type is not enterprise")
+			req.CacheSize = nil
+		}
+	}
+}
+
+// validateSetConfig validates the configuration from a set request.
+func (s *Server) validateSetConfig(req *jsonDNSConfig) (err error) {
+	// Get our own address set for validation
+	ourAddrs, err := s.conf.ourAddrsSet()
+	if err != nil {
+		// TODO(e.burkov):  Put into openapi.
+		return fmt.Errorf("getting our addresses: %w", err)
+	}
+
+	return req.validate(ourAddrs, s.sysResolvers, s.privateNets)
 }
 
 // setConfig sets the server parameters.  shouldRestart is true if the server

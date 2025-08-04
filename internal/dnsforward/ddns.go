@@ -72,17 +72,47 @@ func (s *Server) handleDDNSMacOSScript(w http.ResponseWriter, r *http.Request) {
 }
 
 // handleDDNSScript is a generic method for handling DDNS script download
-func (s *Server) handleDDNSScript(w http.ResponseWriter, r *http.Request, templateFileName, downloadFileName, contentType string) {
-	// Get domain from URL parameter first, fallback to server name if not provided
-	domain := r.URL.Query().Get("domain")
+func (s *Server) handleDDNSScript(
+	w http.ResponseWriter,
+	r *http.Request,
+	templateFileName,
+	downloadFileName,
+	contentType string,
+) {
+	domain := getDDNSDomain(r)
+	server := getDDNSServer(r)
+	cookies := getDDNSCookies(r)
+
+	// Prepare template data - using uppercase field names
+	data := ddnsTemplateData{
+		ServerName: server,
+		Username:   "", // User will fill in themselves
+		Password:   "", // User will fill in themselves
+		Domain:     domain,
+		Cookies:    cookies, // Add obtained cookie
+	}
+
+	err := executeDDNSTemplate(w, r, templateFileName, downloadFileName, contentType, data)
+	if err != nil {
+		log.Error("Failed to execute DDNS script template: %v", err)
+		// Cannot send error since we've already started writing the response
+	}
+}
+
+// getDDNSDomain determines the domain for the DDNS script.
+func getDDNSDomain(r *http.Request) (domain string) {
+	domain = r.URL.Query().Get("domain")
 	if domain == "" {
 		domain = "nas.home"
 		log.Debug("Using server name as DDNS domain: %s", domain)
 	} else {
 		log.Debug("Using provided DDNS domain: %s", domain)
 	}
+	return domain
+}
 
-	// Get server address (including protocol prefix)
+// getDDNSServer determines the server address for the DDNS script.
+func getDDNSServer(r *http.Request) (server string) {
 	host := r.Host
 	scheme := "http"
 	if r.TLS != nil {
@@ -92,42 +122,42 @@ func (s *Server) handleDDNSScript(w http.ResponseWriter, r *http.Request, templa
 	if forwarded := r.Header.Get("X-Forwarded-Proto"); forwarded != "" {
 		scheme = forwarded
 	}
-	server := fmt.Sprintf("%s://%s", scheme, host)
+	return fmt.Sprintf("%s://%s", scheme, host)
+}
 
-	// Get cookie
-	var cookieStr string
-	cookies := r.Cookies()
+// getDDNSCookies extracts the agh_session cookie from the request.
+func getDDNSCookies(r *http.Request) (cookieStr string) {
 	var cookieParts []string
-	for _, cookie := range cookies {
+	for _, cookie := range r.Cookies() {
 		if cookie.Name == "agh_session" {
 			cookieParts = append(cookieParts, fmt.Sprintf("%s=%s", cookie.Name, cookie.Value))
 		}
 	}
 	cookieStr = strings.Join(cookieParts, "; ")
 
-	// Log
 	if cookieStr != "" {
 		log.Debug("DDNS: Found cookie: %s", cookieStr)
 	} else {
 		log.Debug("DDNS: agh_session cookie not found")
 	}
+	return cookieStr
+}
 
-	// Prepare template data - using uppercase field names
-	data := ddnsTemplateData{
-		ServerName: server,
-		Username:   "", // User will fill in themselves
-		Password:   "", // User will fill in themselves
-		Domain:     domain,
-		Cookies:    cookieStr, // Add obtained cookie
-	}
-
+// executeDDNSTemplate reads, parses, and executes the DDNS script template.
+func executeDDNSTemplate(
+	w http.ResponseWriter,
+	r *http.Request,
+	templateFileName,
+	downloadFileName,
+	contentType string,
+	data ddnsTemplateData,
+) (err error) {
 	// Read template file
 	templatePath := fmt.Sprintf("%s/%s", ddnsTemplateDirPath, templateFileName)
 	tmplContent, err := fs.ReadFile(ddnsTemplates, templatePath)
 	if err != nil {
-		log.Error("Failed to read DDNS script template: %v", err)
 		aghhttp.Error(r, w, http.StatusInternalServerError, errMsgDDNSNoTemplate)
-		return
+		return fmt.Errorf("reading template: %w", err)
 	}
 
 	// Create template function map
@@ -143,9 +173,8 @@ func (s *Server) handleDDNSScript(w http.ResponseWriter, r *http.Request, templa
 	// Parse template using function map
 	tmpl, err := template.New("ddns_script").Funcs(funcMap).Parse(string(tmplContent))
 	if err != nil {
-		log.Error("Failed to parse DDNS script template: %v", err)
 		aghhttp.Error(r, w, http.StatusInternalServerError, errMsgDDNSGeneric)
-		return
+		return fmt.Errorf("parsing template: %w", err)
 	}
 
 	// Set response headers
@@ -155,10 +184,10 @@ func (s *Server) handleDDNSScript(w http.ResponseWriter, r *http.Request, templa
 	// Render template to response
 	err = tmpl.Execute(w, nil) // Using nil as data since we use function map
 	if err != nil {
-		log.Error("Failed to generate DDNS script: %v", err)
-		// Cannot send error since we've already started writing the response
-		return
+		return fmt.Errorf("executing template: %w", err)
 	}
+
+	return nil
 }
 
 // Initialize DDNS handlers

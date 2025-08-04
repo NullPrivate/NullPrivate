@@ -1101,6 +1101,8 @@
       "cache_ttl_max": 0,
       "cache_optimistic": false,
       "resolve_clients": false,
+      "upstream_alternate_dns": [],
+      "upstream_alternate_rulesets": [],
       "use_private_ptr_resolvers": false,
       "local_ptr_upstreams": [],
       "edns_cs_use_custom": false,

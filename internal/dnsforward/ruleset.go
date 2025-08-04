@@ -136,32 +136,34 @@ func (m *rulesetManager) makeRequest(client *http.Client, rawURL string) (*http.
 }
 
 // saveRulesetToFile saves the ruleset content to a file.
-func (m *rulesetManager) saveRulesetToFile(content io.Reader, filename string) (string, error) {
+func (m *rulesetManager) saveRulesetToFile(content io.Reader, filename string) (res string, err error) {
 	f, err := os.OpenFile(filepath.Clean(filename), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o600)
 	if err != nil {
 		return "", fmt.Errorf("creating ruleset file: %w", err)
 	}
-
-	// Use defer with named return values to ensure file closure
-	defer func() {
-		if closeErr := f.Close(); closeErr != nil && err == nil {
-			err = fmt.Errorf("closing ruleset file: %w", closeErr)
-		}
-
-		if err != nil {
-			if removeErr := os.Remove(filepath.Clean(filename)); removeErr != nil {
-				log.Error("dnsforward: failed to remove incomplete ruleset file %s: %s", filename, removeErr)
-			} else {
-				log.Debug("dnsforward: removed incomplete ruleset file %s, error: %s", filename, err)
-			}
-		}
-	}()
+	defer m.cleanupIncompleteFile(f, filename, &err)
 
 	if _, err = io.Copy(f, content); err != nil {
 		return "", fmt.Errorf("writing ruleset file: %w", err)
 	}
 
 	return filename, nil
+}
+
+// cleanupIncompleteFile closes the file and removes it if there was an error.
+func (m *rulesetManager) cleanupIncompleteFile(f *os.File, filename string, opErr *error) {
+	closeErr := f.Close()
+	if *opErr == nil && closeErr != nil {
+		*opErr = fmt.Errorf("closing ruleset file: %w", closeErr)
+	}
+
+	if *opErr != nil {
+		if removeErr := os.Remove(filepath.Clean(filename)); removeErr != nil {
+			log.Error("dnsforward: failed to remove incomplete ruleset file %s: %s", filename, removeErr)
+		} else {
+			log.Debug("dnsforward: removed incomplete ruleset file %s, error: %s", filename, *opErr)
+		}
+	}
 }
 
 // filenameFromURL generates a safe filename from a URL.
