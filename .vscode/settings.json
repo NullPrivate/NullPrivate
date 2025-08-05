@@ -129,9 +129,5 @@
                 }
             ]
         }
-    ],
-    "go.toolsEnvVars": {
-        "GOPROXY": "direct",
-        "GOTOOLCHAIN": "go1.24.4"
-    }
+    ]
 }
