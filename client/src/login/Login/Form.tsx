@@ -1,5 +1,4 @@
-import React from 'react';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Input } from '../../components/ui/Controls/Input';
@@ -17,7 +16,7 @@ type LoginFormProps = {
 
 // Function to extract subdomain
 const extractSubdomain = (): string => {
-    const hostname = window.location.hostname;
+    const {hostname} = window.location;
     const parts = hostname.split('.');
 
     // Check if the format is xxx.adguardprivate.com

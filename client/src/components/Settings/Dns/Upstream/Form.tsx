@@ -85,7 +85,6 @@ const Form = ({ initialValues, onSubmit }: FormProps) => {
     });
 
     const upstream_dns = watch('upstream_dns');
-    const upstream_alternate_dns = watch('upstream_alternate_dns');
     const processingTestUpstream = useSelector((state: RootState) => state.settings.processingTestUpstream);
     const processingSetConfig = useSelector((state: RootState) => state.dnsConfig.processingSetConfig);
     const defaultLocalPtrUpstreams = useSelector((state: RootState) => state.dnsConfig.default_local_ptr_upstreams);

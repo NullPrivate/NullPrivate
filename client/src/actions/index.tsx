@@ -372,7 +372,10 @@ export const testUpstreamFailure = createAction('TEST_UPSTREAM_FAILURE');
 export const testUpstreamSuccess = createAction('TEST_UPSTREAM_SUCCESS');
 
 export const testUpstream =
-    ({ bootstrap_dns, upstream_dns, local_ptr_upstreams, fallback_dns, upstream_alternate_dns }: any, upstream_dns_file: any) =>
+    (
+        { bootstrap_dns, upstream_dns, local_ptr_upstreams, fallback_dns, upstream_alternate_dns }: any,
+        upstream_dns_file: any,
+    ) =>
         async (dispatch: any) => {
             dispatch(testUpstreamRequest());
             try {

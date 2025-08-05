@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { withTranslation } from 'react-i18next';
 
 import i18next from 'i18next';
+import { useSelector } from 'react-redux';
 import StatsConfig from './StatsConfig';
 
 import LogsConfig from './LogsConfig';
@@ -18,9 +19,7 @@ import Card from '../ui/Card';
 
 import { getObjectKeysSorted, captitalizeWords } from '../../helpers/helpers';
 import './Settings.css';
-import { SettingsData } from '../../initialState';
-import { RootState } from '../../initialState';
-import { useSelector } from 'react-redux';
+import { SettingsData , RootState } from '../../initialState';
 
 const ORDER_KEY = 'order';
 

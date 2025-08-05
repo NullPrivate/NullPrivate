@@ -14,10 +14,10 @@ export const Logo = memo(({ className }: Props) => {
             </defs>
             <g fillRule="evenodd">
                 {/* Logo Text */}
-                <text x="50" y="15" fill="#1a73e8" alignment-baseline="auto" font-weight="900" 
-                    font-family="Arial, sans-serif" letterSpacing="0em" text-anchor="start">ADGUARD</text>
-                <text x="50" y="35" fill="#5f6368" alignment-baseline="auto" font-weight="700" 
-                    font-family="Arial, sans-serif" letterSpacing="0em" text-anchor="start">Private</text>
+                <text x="50" y="15" fill="#1a73e8" alignmentBaseline="auto" fontWeight="900" 
+                    fontFamily="Arial, sans-serif" letterSpacing="0em" textAnchor="start">ADGUARD</text>
+                <text x="50" y="35" fill="#5f6368" alignmentBaseline="auto" fontWeight="700" 
+                    fontFamily="Arial, sans-serif" letterSpacing="0em" textAnchor="start">Private</text>
                 
                 {/* Colorful Overlapping Circles */}
                 <g clipPath="url(#circleMask)">
@@ -31,8 +31,8 @@ export const Logo = memo(({ className }: Props) => {
                 </g>
                 
                 {/* AP Text */}
-                <text x="20" y="21" fill="#fff" alignment-baseline="middle" font-weight="900"
-                    font-family="Arial, sans-serif" letterSpacing="0em" text-anchor="middle">AP</text>
+                <text x="20" y="21" fill="#fff" alignmentBaseline="middle" fontWeight="900"
+                    fontFamily="Arial, sans-serif" letterSpacing="0em" textAnchor="middle">AP</text>
             </g>
         </svg>
     );

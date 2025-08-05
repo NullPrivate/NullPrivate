@@ -8,8 +8,7 @@ import Card from '../ui/Card';
 
 import PageTitle from '../ui/PageTitle';
 import './Guide.css';
-import { DashboardData } from '../../initialState';
-import { RootState } from '../../initialState';
+import { DashboardData , RootState } from '../../initialState';
 
 interface SetupGuideProps {
     dashboard: DashboardData;

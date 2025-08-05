@@ -26,8 +26,7 @@ import { getLogsUrlParams, setHtmlLangAttr, setUITheme } from '../../helpers/hel
 
 import Header from '../Header';
 
-import { changeLanguage, getDnsStatus, getTimerStatus } from '../../actions';
-import { getServiceType } from '../../actions';
+import { changeLanguage, getDnsStatus, getTimerStatus , getServiceType } from '../../actions';
 
 import Dashboard from '../../containers/Dashboard';
 import SetupGuide from '../../containers/SetupGuide';
