@@ -311,7 +311,7 @@
     "form_enter_rate_limit": "Masukkan batas nilai",
     "rate_limit": "Batas nilai",
     "edns_enable": "Aktifkan EDNS Klien Subnet",
-    "edns_cs_desc": "Tambahkan opsi EDNS Client Subnet (ECS) ke permintaan upstream dan log nilai yang dikirimkan klien. Saat AdGuardPrivate dijalankan di server jarak jauh, Anda harus menggunakan IP lokal kustom, jika tidak IP yang dikirim dengan permintaan upstream akan menjadi IP geografis server.",
+    "edns_cs_desc": "Tambahkan opsi EDNS Client Subnet (ECS) ke permintaan upstream dan log nilai yang dikirimkan klien. Saat NullPrivate dijalankan di server jarak jauh, Anda harus menggunakan IP lokal kustom, jika tidak IP yang dikirim dengan permintaan upstream akan menjadi IP geografis server.",
     "edns_use_custom_ip": "Gunakan IP khusus untuk EDNS",
     "edns_use_custom_ip_desc": "Izinkan untuk menggunakan IP kustom untuk EDNS",
     "rate_limit_desc": "Jumlah permintaan per detik yang diperbolehkan untuk satu klien. Atur ke 0 untuk tidak terbatas.",

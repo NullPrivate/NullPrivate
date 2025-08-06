@@ -1,6 +1,6 @@
-# AdGuardPrivate
+# NullPrivate
 
-AdGuardPrivate es una bifurcación de _AdGuardHome_, diseñada para proporcionar una versión alojada en SaaS con características mejoradas y personalización. Se aloja en [AdGuard Private](https://adguardprivate.com).
+NullPrivate es una bifurcación de _AdGuardHome_, diseñada para proporcionar una versión alojada en SaaS con características mejoradas y personalización. Se aloja en [AdGuard Private](https://nullprivate.com).
 
 ## Características clave
 
@@ -39,7 +39,7 @@ AdGuardPrivate es una bifurcación de _AdGuardHome_, diseñada para proporcionar
 8. **Enfoque en la privacidad**
    - No recopila estadísticas de uso ni envía datos a menos que se configure explícitamente.
 
-### Nuevas características de AdGuardPrivate
+### Nuevas características de NullPrivate
 
 1. **Enrutamiento DNS con listas de reglas**
 
@@ -64,22 +64,22 @@ AdGuardPrivate es una bifurcación de _AdGuardHome_, diseñada para proporcionar
    - Mantenimiento automático de certificados.
    - Conexiones de red optimizadas.
 
-Para la documentación detallada, visita: [Documentación de AdGuardPrivate](https://adguardprivate.com/docs/)
+Para la documentación detallada, visita: [Documentación de NullPrivate](https://nullprivate.com/docs/)
 
 ## Cómo usar
 
 ### Descargar el binario
 
-Puedes descargar el binario directamente desde la página de [Releases](https://github.com/AdGuardPrivate/AdGuardPrivate/releases). Una vez descargado, sigue estos pasos para ejecutarlo:
+Puedes descargar el binario directamente desde la página de [Releases](https://github.com/NullPrivate/NullPrivate/releases). Una vez descargado, sigue estos pasos para ejecutarlo:
 
 ```bash
-./AdGuardPrivate -c ./AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose
+./NullPrivate -c ./AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose
 ```
 
 ### Usar la imagen de Docker
 
-Alternativamente, puedes usar la imagen de Docker disponible en [Docker Hub](https://hub.docker.com/repository/docker/adguardprivate/adguardprivate):
+Alternativamente, puedes usar la imagen de Docker disponible en [Docker Hub](https://hub.docker.com/repository/docker/nullprivate/nullprivate):
 
 ```bash
-docker run --rm --name AdGuardPrivate -p 34020:80 -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf adguardprivate/adguardprivate:latest
+docker run --rm --name NullPrivate -p 34020:80 -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf nullprivate/nullprivate:latest
 ```

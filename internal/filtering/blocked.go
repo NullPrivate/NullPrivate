@@ -56,9 +56,9 @@ func initBlockedServices() {
 // It is called when the DNSFilter is created.
 func (d *DNSFilter) initServiceLoader(ctx context.Context) {
 	if len(d.conf.ServiceURLs) == 0 {
-		// d.conf.ServiceURLs = []string{"https://www.adguardprivate.com/services/i18n/zh-cn.json"}
-		// d.conf.ServiceURLs = []string{"https://hostlistsregistry.adguardprivate.com/assets/services.en-us.json"}
-		d.conf.ServiceURLs = []string{"https://hostlistsregistry.adguardprivate.com/assets/services.zh-cn.json"}
+		// d.conf.ServiceURLs = []string{"https://www.nullprivate.com/services/i18n/zh-cn.json"}
+		// d.conf.ServiceURLs = []string{"https://hostlistsregistry.nullprivate.com/assets/services.en-us.json"}
+		d.conf.ServiceURLs = []string{"https://hostlistsregistry.nullprivate.com/assets/services.zh-cn.json"}
 	}
 
 	logger := slog.Default()
@@ -379,7 +379,7 @@ func (d *DNSFilter) handleServiceURLsSet(w http.ResponseWriter, r *http.Request)
 
 	if len(data.ServiceURLs) == 0 {
 		// Use default value
-		data.ServiceURLs = []string{"https://hostlistsregistry.adguardprivate.com/assets/services.json"}
+		data.ServiceURLs = []string{"https://hostlistsregistry.nullprivate.com/assets/services.json"}
 	}
 
 	func() {

@@ -311,7 +311,7 @@
     "form_enter_rate_limit": "Unesite ograničenje",
     "rate_limit": "Ograničenje",
     "edns_enable": "Omogući podmrežu klijenta EDNS-a",
-    "edns_cs_desc": "Dodajte opciju EDNS Client Subnet (ECS) u upstream zahtjeve i zabilježite vrijednost koju je poslao klijent. Kada se AdGuardPrivate izvodi na udaljenom serveru, morate koristiti prilagođenu lokalnu IP adresu, u suprotnom će IP adresa poslana uz upstream zahtjev biti geografska IP adresa servera.",
+    "edns_cs_desc": "Dodajte opciju EDNS Client Subnet (ECS) u upstream zahtjeve i zabilježite vrijednost koju je poslao klijent. Kada se NullPrivate izvodi na udaljenom serveru, morate koristiti prilagođenu lokalnu IP adresu, u suprotnom će IP adresa poslana uz upstream zahtjev biti geografska IP adresa servera.",
     "edns_use_custom_ip": "Koristi prilagođeni IP za EDNS",
     "edns_use_custom_ip_desc": "Dopusti korištenje prilagođenog IP-a za EDNS",
     "rate_limit_desc": "Broj zahtjeva u sekundi koji su dopušteni po jednom klijentu. Postavljanje na 0 znači neograničeno.",

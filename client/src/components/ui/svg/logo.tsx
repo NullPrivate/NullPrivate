@@ -15,7 +15,7 @@ export const Logo = memo(({ className }: Props) => {
             <g fillRule="evenodd">
                 {/* Logo Text */}
                 <text x="50" y="15" fill="#1a73e8" alignmentBaseline="auto" fontWeight="900" 
-                    fontFamily="Arial, sans-serif" letterSpacing="0em" textAnchor="start">ADGUARD</text>
+                    fontFamily="Arial, sans-serif" letterSpacing="0em" textAnchor="start">NULL</text>
                 <text x="50" y="35" fill="#5f6368" alignmentBaseline="auto" fontWeight="700" 
                     fontFamily="Arial, sans-serif" letterSpacing="0em" textAnchor="start">Private</text>
                 

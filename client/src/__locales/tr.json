@@ -311,7 +311,7 @@
     "form_enter_rate_limit": "Sıklık limitini girin",
     "rate_limit": "Sıklık limiti",
     "edns_enable": "EDNS istemci alt ağını etkinleştir",
-    "edns_cs_desc": "EDNS İstemci Altağı (ECS) seçeneğini upstream isteklerine ekleyin ve istemcinin gönderdiği değeri sorgu günlüklerine kaydedin. AdGuardPrivate uzak bir sunucuda çalışırken özel bir yerel IP kullanmanız gerekir, aksi takdirde upstream istekle gönderilen IP sunucunun coğrafi IP'si olacaktır.",
+    "edns_cs_desc": "EDNS İstemci Altağı (ECS) seçeneğini upstream isteklerine ekleyin ve istemcinin gönderdiği değeri sorgu günlüklerine kaydedin. NullPrivate uzak bir sunucuda çalışırken özel bir yerel IP kullanmanız gerekir, aksi takdirde upstream istekle gönderilen IP sunucunun coğrafi IP'si olacaktır.",
     "edns_use_custom_ip": "EDNS için özel IP kullan",
     "edns_use_custom_ip_desc": "EDNS için özel IP kullanımına izin ver",
     "rate_limit_desc": "İstemci başına izin verilen saniyedeki istek sayısı. 0 olarak ayarlamak, sınır olmadığı anlamına gelir.",

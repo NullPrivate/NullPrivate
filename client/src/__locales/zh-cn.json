@@ -308,7 +308,7 @@
     "form_enter_rate_limit": "输入限制速率",
     "rate_limit": "速度限制",
     "edns_enable": "启用 EDNS 客户端子网",
-    "edns_cs_desc": "在上游请求中加入 EDNS 客户端子网（ECS）选项，并在查询日志中记录客户端发送的数值。当 AdGuardPrivate 运行在远程服务器时，必须使用自定义本地IP，否则向上游的请求携带的 IP 将是服务器的地理位置 IP。",
+    "edns_cs_desc": "在上游请求中加入 EDNS 客户端子网（ECS）选项，并在查询日志中记录客户端发送的数值。当 NullPrivate 运行在远程服务器时，必须使用自定义本地IP，否则向上游的请求携带的 IP 将是服务器的地理位置 IP。",
     "edns_use_custom_ip": "为 EDNS 使用自定义 IP",
     "edns_use_custom_ip_desc": "允许为 EDNS 使用自定义 IP",
     "rate_limit_desc": "每个客户端每秒钟查询次数的限制。设置为 0 意味着不限制。",

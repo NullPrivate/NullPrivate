@@ -311,7 +311,7 @@
     "form_enter_rate_limit": "Voer ratio limiet in",
     "rate_limit": "Ratio limiet",
     "edns_enable": "EDNS client subnet inschakelen",
-    "edns_cs_desc": "Voeg de EDNS Client Subnet (ECS)-optie toe aan upstream-verzoeken en log de waarde die de client heeft verzonden. Wanneer AdGuardPrivate op een externe server draait, moet u een aangepast lokaal IP-adres gebruiken, anders zal het IP-adres dat met het upstream-verzoek wordt verzonden, het geografische IP-adres van de server zijn.",
+    "edns_cs_desc": "Voeg de EDNS Client Subnet (ECS)-optie toe aan upstream-verzoeken en log de waarde die de client heeft verzonden. Wanneer NullPrivate op een externe server draait, moet u een aangepast lokaal IP-adres gebruiken, anders zal het IP-adres dat met het upstream-verzoek wordt verzonden, het geografische IP-adres van de server zijn.",
     "edns_use_custom_ip": "Aangepast IP-adres gebruiken voor EDNS",
     "edns_use_custom_ip_desc": "Toestaan om aangepast IP-adres voor EDNS te gebruiken",
     "rate_limit_desc": "Het aantal verzoeken per seconde toegelaten per toestel. 0 betekent onbeperkt.",

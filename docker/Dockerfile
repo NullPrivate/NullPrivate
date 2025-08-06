@@ -7,16 +7,16 @@ ARG VERSION
 ARG VCS_REF
 
 LABEL \
-	maintainer="AdGuard Private  <dev1@adguardprivate.com>" \
-	org.opencontainers.image.authors="AdGuard Private  <dev1@adguardprivate.com>" \
+	maintainer="AdGuard Private  <dev1@nullprivate.com>" \
+	org.opencontainers.image.authors="AdGuard Private  <dev1@nullprivate.com>" \
 	org.opencontainers.image.created=$BUILD_DATE \
 	org.opencontainers.image.description="Network-wide ads & trackers blocking DNS server" \
-	org.opencontainers.image.documentation="https://github.com/AdGuardPrivate/AdGuardPrivate/wiki/" \
+	org.opencontainers.image.documentation="https://github.com/NullPrivate/NullPrivate/wiki/" \
 	org.opencontainers.image.licenses="GPL-3.0" \
 	org.opencontainers.image.revision=$VCS_REF \
-	org.opencontainers.image.source="https://github.com/AdGuardPrivate/AdGuardPrivate" \
+	org.opencontainers.image.source="https://github.com/NullPrivate/NullPrivate" \
 	org.opencontainers.image.title="AdGuard Private" \
-	org.opencontainers.image.url="https://adguardprivate.com" \
+	org.opencontainers.image.url="https://nullprivate.com" \
 	org.opencontainers.image.vendor="AdGuard Private" \
 	org.opencontainers.image.version=$VERSION
 
@@ -31,7 +31,7 @@ ARG TARGETOS
 ARG TARGETVARIANT
 
 COPY --chown=nobody:nogroup\
-	./${DIST_DIR}/docker/AdGuardPrivate_${TARGETOS}_${TARGETARCH}_${TARGETVARIANT}\
+	./${DIST_DIR}/docker/NullPrivate_${TARGETOS}_${TARGETARCH}_${TARGETVARIANT}\
 	/opt/adguardhome/AdGuardHome
 
 # Ensure binary is executable before setting capabilities

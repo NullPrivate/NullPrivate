@@ -311,7 +311,7 @@
     "form_enter_rate_limit": "Nhập giới hạn yêu cầu",
     "rate_limit": "Giới hạn yêu cầu",
     "edns_enable": "Bật mạng con EDNS Client",
-    "edns_cs_desc": "Thêm tùy chọn EDNS Client Subnet (ECS) vào các yêu cầu upstream và ghi lại giá trị do máy khách gửi trong nhật ký truy vấn. Khi AdGuardPrivate chạy trên máy chủ từ xa, bạn phải sử dụng IP cục bộ tùy chỉnh, nếu không IP được gửi cùng với yêu cầu upstream sẽ là IP địa lý của máy chủ.",
+    "edns_cs_desc": "Thêm tùy chọn EDNS Client Subnet (ECS) vào các yêu cầu upstream và ghi lại giá trị do máy khách gửi trong nhật ký truy vấn. Khi NullPrivate chạy trên máy chủ từ xa, bạn phải sử dụng IP cục bộ tùy chỉnh, nếu không IP được gửi cùng với yêu cầu upstream sẽ là IP địa lý của máy chủ.",
     "edns_use_custom_ip": "Sử dụng địa chỉ IP tùy chỉnh cho EDNS",
     "edns_use_custom_ip_desc": "Cho phép sử dụng địa chỉ IP tùy chỉnh cho EDNS",
     "rate_limit_desc": "Số lượng yêu cầu mỗi giây mà một khách hàng được phép thực hiện (0: không giới hạn)",

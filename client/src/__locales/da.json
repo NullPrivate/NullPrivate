@@ -311,7 +311,7 @@
     "form_enter_rate_limit": "Angiv hyppighedsgrænse",
     "rate_limit": "Hyppighedsgrænse",
     "edns_enable": "Aktivér EDNS-klientundernet",
-    "edns_cs_desc": "Tilføj EDNS Client Subnet (ECS)-valgmuligheden til upstream-forspørgsler og logg klientens sendte værdi. Når AdGuardPrivate kører på en fjernserver, skal du bruge en tilpasset lokal IP-adresse, ellers vil den IP-adresse, der sendes med upstream-forspørgslen, være serverens geografiske IP-adresse.",
+    "edns_cs_desc": "Tilføj EDNS Client Subnet (ECS)-valgmuligheden til upstream-forspørgsler og logg klientens sendte værdi. Når NullPrivate kører på en fjernserver, skal du bruge en tilpasset lokal IP-adresse, ellers vil den IP-adresse, der sendes med upstream-forspørgslen, være serverens geografiske IP-adresse.",
     "edns_use_custom_ip": "Brug tilpasset IP til EDNS",
     "edns_use_custom_ip_desc": "Tillad brug af tilpasset IP til EDNS",
     "rate_limit_desc": "Antallet af forespørgsler pr. sekund tilladt pr. klient (værdien 0 = ubegrænset)",

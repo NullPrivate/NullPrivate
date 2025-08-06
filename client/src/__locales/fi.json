@@ -311,7 +311,7 @@
     "form_enter_rate_limit": "Syötä pyyntörajoitus",
     "rate_limit": "Pyyntöajoitus",
     "edns_enable": "Käytä EDNS-päätelaitealivekkoa",
-    "edns_cs_desc": "Lisää EDNS Client Subnet (ECS) -valitsimen upstream-pyyntöihin ja kirjaa asiakkaan lähettämä arvo kyselylokeihin. Kun AdGuardPrivate toimii etäpalvelimessa, on käytettävä mukautettua paikallista IP:tä, muuten upstream-pyyntöön liitetty IP-osoite on palvelimen maantieteellinen IP-osoite.",
+    "edns_cs_desc": "Lisää EDNS Client Subnet (ECS) -valitsimen upstream-pyyntöihin ja kirjaa asiakkaan lähettämä arvo kyselylokeihin. Kun NullPrivate toimii etäpalvelimessa, on käytettävä mukautettua paikallista IP:tä, muuten upstream-pyyntöön liitetty IP-osoite on palvelimen maantieteellinen IP-osoite.",
     "edns_use_custom_ip": "Käytä omaa IP-osoitetta EDNS:lle",
     "edns_use_custom_ip_desc": "Salli oman IP-osoitteen käyttö EDNS-mekanismille.",
     "rate_limit_desc": "Päätelaitteelle sallittu pyyntöjen enimmäismäärä sekunnissa. Arvo 0 tarkoittaa rajatonta.",

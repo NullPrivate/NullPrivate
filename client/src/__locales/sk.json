@@ -311,7 +311,7 @@
     "form_enter_rate_limit": "Zadajte rýchlostný limit",
     "rate_limit": "Rýchlostný limit",
     "edns_enable": "Povoliť klientsku podsiete EDNS",
-    "edns_cs_desc": "Pridajte možnosť EDNS Client Subnet (ECS) do upstream požiadaviek a zaznamenajte hodnotu odoslanú klientom v logoch požiadaviek. Ak beží AdGuardPrivate na vzdialenom serveri, musíte použiť vlastnú lokálnu IP adresu, inak bude IP adresa odoslaná v upstream požiadavke geografickou IP adresou servera.",
+    "edns_cs_desc": "Pridajte možnosť EDNS Client Subnet (ECS) do upstream požiadaviek a zaznamenajte hodnotu odoslanú klientom v logoch požiadaviek. Ak beží NullPrivate na vzdialenom serveri, musíte použiť vlastnú lokálnu IP adresu, inak bude IP adresa odoslaná v upstream požiadavke geografickou IP adresou servera.",
     "edns_use_custom_ip": "Použiť vlastnú IP adresu pre EDNS",
     "edns_use_custom_ip_desc": "Povoliť používanie vlastnej IP adresy pre EDNS",
     "rate_limit_desc": "Počet požiadaviek za sekundu, ktoré môže jeden klient vykonať. Nastavenie na hodnotu 0 znamená neobmedzene.",

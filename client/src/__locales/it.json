@@ -311,7 +311,7 @@
     "form_enter_rate_limit": "Imposta limite delle richieste",
     "rate_limit": "Limite delle richieste",
     "edns_enable": "Attiva client di sottorete EDNS",
-    "edns_cs_desc": "Aggiungi l'opzione EDNS Client Subnet (ECS) alle richieste upstream e registra il valore inviato dal client. Quando AdGuardPrivate è in esecuzione su un server remoto, devi utilizzare un IP locale personalizzato, altrimenti l'IP inviato con la richiesta upstream sarà l'IP geografico del server.",
+    "edns_cs_desc": "Aggiungi l'opzione EDNS Client Subnet (ECS) alle richieste upstream e registra il valore inviato dal client. Quando NullPrivate è in esecuzione su un server remoto, devi utilizzare un IP locale personalizzato, altrimenti l'IP inviato con la richiesta upstream sarà l'IP geografico del server.",
     "edns_use_custom_ip": "Usa IP personalizzato per EDNS",
     "edns_use_custom_ip_desc": "Consentire l'uso di un IP personalizzato per EDNS",
     "rate_limit_desc": "Il numero di richieste al secondo consentite da un singolo client. Impostare questo valore a 0 rimuove le limitazioni.",

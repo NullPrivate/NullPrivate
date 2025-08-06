@@ -308,7 +308,7 @@
     "form_enter_rate_limit": "輸入速率限制",
     "rate_limit": "速率限制",
     "edns_enable": "啟用 EDNS Client Subnet",
-    "edns_cs_desc": "當 AdGuardPrivate 在遠端伺服器上執行時，必須使用自訂本機 IP，否則向上游請求所攜帶的 IP 將會是伺服器的地理定位 IP。在上游請求中加入 EDNS 客戶端子網（ECS）選項，並在查詢日誌中記錄用戶端發送的數值。",
+    "edns_cs_desc": "當 NullPrivate 在遠端伺服器上執行時，必須使用自訂本機 IP，否則向上游請求所攜帶的 IP 將會是伺服器的地理定位 IP。在上游請求中加入 EDNS 客戶端子網（ECS）選項，並在查詢日誌中記錄用戶端發送的數值。",
     "edns_use_custom_ip": "使用自訂 EDNS IP",
     "edns_use_custom_ip_desc": "允許使用自訂 EDNS IP",
     "rate_limit_desc": "限制單一裝置每秒發出的查詢次數（設定為 0 即表示無限制）",

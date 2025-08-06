@@ -311,7 +311,7 @@
     "form_enter_rate_limit": "Unesite ograničenje brzine",
     "rate_limit": "Ograničenje brzine",
     "edns_enable": "Uključi EDNS Client Subnet",
-    "edns_cs_desc": "Додајте опцију EDNS Client Subnet (ECS) у захтеве према горњим серверима и бележите вредност коју је клијент послао. Када се AdGuardPrivate покреne на удаљеном серверу, морате користити прилагођену локалну IP адресу, у супротном ће IP адреса послата уз захтев према горњим серверима бити географска IP адреса сервера.",
+    "edns_cs_desc": "Додајте опцију EDNS Client Subnet (ECS) у захтеве према горњим серверима и бележите вредност коју је клијент послао. Када се NullPrivate покреne на удаљеном серверу, морате користити прилагођену локалну IP адресу, у супротном ће IP адреса послата уз захтев према горњим серверима бити географска IP адреса сервера.",
     "edns_use_custom_ip": "Koristi prilagođeni IP za EDNS",
     "edns_use_custom_ip_desc": "Dozvoli korišćenje prilagođenog IP-a za EDNS",
     "rate_limit_desc": "Broj zahteva u sekundi dozvoljen po klijentu. Postavljanje na 0 znači da nema ograničenja.",

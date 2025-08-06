@@ -39,7 +39,7 @@ docker buildx create --name buildx-builder --driver docker-container --use
 make build-docker CHANNEL='beta' VERSION='0.0.1' DOCKER_IMAGE_NAME='adguardhome' DOCKER_OUTPUT='type=image,name=docker.io/jqknono/adguardhome:v1.0,push=false'
 
 # alpine证书错误解决方法
-# nginx -s stop -c /home/test/code/adguard_private/temp/master/app/nginx/nginx.conf -p /home/test/code/adguard_private/temp/master/app/nginx
+# nginx -s stop -c /home/test/code/nullprivate/temp/master/app/nginx/nginx.conf -p /home/test/code/nullprivate/temp/master/app/nginx
 # sudo iptables -D  PREROUTING -i ens33 -t nat -p tcp --dport 80 -j REDIRECT --to-port 1080
 # sudo iptables -D  PREROUTING -i ens33 -t nat -p tcp --dport 443 -j REDIRECT --to-port 1443
 # sudo iptables -D  PREROUTING -i ens33 -t nat -p tcp --dport 853 -j REDIRECT --to-port 1853

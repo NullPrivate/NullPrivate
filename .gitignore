@@ -33,9 +33,9 @@
 /snapcraft_login
 /test-reports/
 AdGuardHome
-AdGuardPrivate
+NullPrivate
 AdGuardHome.exe
-AdGuardPrivate.exe
+NullPrivate.exe
 AdGuardHome.yaml*
 coverage.txt
 node_modules/

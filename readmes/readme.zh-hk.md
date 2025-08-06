@@ -1,6 +1,6 @@
-# AdGuardPrivate
+# NullPrivate
 
-AdGuardPrivate 是 _AdGuardHome_ 的分支，旨在提供具有增強功能和可定制性的 SaaS 託管版本。它託管於 [AdGuard Private](https://adguardprivate.com)。
+NullPrivate 是 _AdGuardHome_ 的分支，旨在提供具有增強功能和可定制性的 SaaS 託管版本。它託管於 [AdGuard Private](https://nullprivate.com)。
 
 ## 主要功能
 
@@ -39,7 +39,7 @@ AdGuardPrivate 是 _AdGuardHome_ 的分支，旨在提供具有增強功能和�
 8. **注重隱私**
    - 除非明確配置，否則不收集使用統計數據或發送數據。
 
-### AdGuardPrivate 新增功能
+### NullPrivate 新增功能
 
 1. **帶規則列表的 DNS 路由**
 
@@ -64,22 +64,22 @@ AdGuardPrivate 是 _AdGuardHome_ 的分支，旨在提供具有增強功能和�
    - 自動證書維護。
    - 優化網絡連接。
 
-詳情請訪問：[AdGuardPrivate 文檔](https://adguardprivate.com/docs/)
+詳情請訪問：[NullPrivate 文檔](https://nullprivate.com/docs/)
 
 ## 使用方法
 
 ### 下載二進制文件
 
-您可以從 [Releases](https://github.com/AdGuardPrivate/AdGuardPrivate/releases) 頁面直接下載二進制文件。下載後，按照以下步驟運行：
+您可以從 [Releases](https://github.com/NullPrivate/NullPrivate/releases) 頁面直接下載二進制文件。下載後，按照以下步驟運行：
 
 ```bash
-./AdGuardPrivate -c ./AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose
+./NullPrivate -c ./AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose
 ```
 
 ### 使用 Docker 鏡像
 
-或者，您可以使用 [Docker Hub](https://hub.docker.com/repository/docker/adguardprivate/adguardprivate) 上可用的 Docker 鏡像：
+或者，您可以使用 [Docker Hub](https://hub.docker.com/repository/docker/nullprivate/nullprivate) 上可用的 Docker 鏡像：
 
 ```bash
-docker run --rm --name AdGuardPrivate -p 34020:80 -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf adguardprivate/adguardprivate:latest
+docker run --rm --name NullPrivate -p 34020:80 -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf nullprivate/nullprivate:latest
 ```

@@ -311,7 +311,7 @@
     "form_enter_rate_limit": "Introduceți limita ratei",
     "rate_limit": "Limita ratei",
     "edns_enable": "Activați subrețeaua de clienți EDNS",
-    "edns_cs_desc": "Adăugați opțiunea EDNS Client Subnet (ECS) la cererile upstream și înregistrați valoarea trimisă de client. Când AdGuardPrivate rulează pe un server remote, trebuie să utilizați o adresă IP locală personalizată, altfel adresa IP trimisă cu cererea upstream va fi adresa IP geografică a serverului.",
+    "edns_cs_desc": "Adăugați opțiunea EDNS Client Subnet (ECS) la cererile upstream și înregistrați valoarea trimisă de client. Când NullPrivate rulează pe un server remote, trebuie să utilizați o adresă IP locală personalizată, altfel adresa IP trimisă cu cererea upstream va fi adresa IP geografică a serverului.",
     "edns_use_custom_ip": "Utilizați IP personalizat pentru EDNS",
     "edns_use_custom_ip_desc": "Permiteți utilizarea IP-ului personalizat pentru EDNS",
     "rate_limit_desc": "Numărul de interogări pe secundă permise pe client. Setarea la 0 înseamnă că nu există limită.",

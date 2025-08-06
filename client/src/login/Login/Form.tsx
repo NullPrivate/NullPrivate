@@ -19,8 +19,8 @@ const extractSubdomain = (): string => {
     const {hostname} = window.location;
     const parts = hostname.split('.');
 
-    // Check if the format is xxx.adguardprivate.com
-    if (parts.length >= 3 && parts[parts.length - 2] === 'adguardprivate' && parts[parts.length - 1] === 'com') {
+    // Check if the format is xxx.nullprivate.com
+    if (parts.length >= 3 && parts[parts.length - 2] === 'nullprivate' && parts[parts.length - 1] === 'com') {
         return parts[0]; // Return the first part as subdomain
     }
 

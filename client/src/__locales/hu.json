@@ -311,7 +311,7 @@
     "form_enter_rate_limit": "Adja meg a kérések maximális számát",
     "rate_limit": "Kérések korlátozása",
     "edns_enable": "EDNS kliens alhálózat engedélyezése",
-    "edns_cs_desc": "Adja hozzá az EDNS Client Subnet (ECS) opciót az upstream kérésekhez, és naplózza az ügyfél által küldött értéket. Ha az AdGuardPrivate távoli szerveren fut, akkor egyéni helyi IP-t kell használni, különben az upstream kérésben szereplő IP a szerver földrajzi IP-je lesz.",
+    "edns_cs_desc": "Adja hozzá az EDNS Client Subnet (ECS) opciót az upstream kérésekhez, és naplózza az ügyfél által küldött értéket. Ha az NullPrivate távoli szerveren fut, akkor egyéni helyi IP-t kell használni, különben az upstream kérésben szereplő IP a szerver földrajzi IP-je lesz.",
     "edns_use_custom_ip": "Használjon egyéni IP-címet az EDNS-hez",
     "edns_use_custom_ip_desc": "Engedélyezze az egyéni IP-cím használatát az EDNS-hez",
     "rate_limit_desc": "Maximálisan hány kérést küldhet egy kliens másodpercenkén. Ha 0-ra állítja, akkor nincs korlátozás.",

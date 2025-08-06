@@ -1,6 +1,6 @@
-# AdGuardPrivate
+# NullPrivate
 
-AdGuardPrivate은 _AdGuardHome_의 포크로, 향상된 기능과 사용자 정의 가능성을 제공하는 SaaS 호스팅 버전을 제공하도록 설계되었습니다. [AdGuard Private](https://adguardprivate.com)에서 호스팅됩니다.
+NullPrivate은 _AdGuardHome_의 포크로, 향상된 기능과 사용자 정의 가능성을 제공하는 SaaS 호스팅 버전을 제공하도록 설계되었습니다. [AdGuard Private](https://nullprivate.com)에서 호스팅됩니다.
 
 ## 주요 기능
 
@@ -39,7 +39,7 @@ AdGuardPrivate은 _AdGuardHome_의 포크로, 향상된 기능과 사용자 정�
 8. **프라이버시 중심**
    - 명시적으로 구성되지 않는 한 사용 통계를 수집하거나 데이터를 보내지 않습니다.
 
-### AdGuardPrivate의 새 기능
+### NullPrivate의 새 기능
 
 1. **규칙 목록을 사용한 DNS 라우팅**
 
@@ -64,22 +64,22 @@ AdGuardPrivate은 _AdGuardHome_의 포크로, 향상된 기능과 사용자 정�
    - 자동 인증서 유지 관리.
    - 최적화된 네트워크 연결.
 
-자세한 문서를 보려면: [AdGuardPrivate 문서](https://adguardprivate.com/docs/)
+자세한 문서를 보려면: [NullPrivate 문서](https://nullprivate.com/docs/)
 
 ## 사용 방법
 
 ### 바이너리 다운로드
 
-[Releases](https://github.com/AdGuardPrivate/AdGuardPrivate/releases) 페이지에서 바이너리를 직접 다운로드할 수 있습니다. 다운로드 후 다음 단계를 따라 실행하십시오:
+[Releases](https://github.com/NullPrivate/NullPrivate/releases) 페이지에서 바이너리를 직접 다운로드할 수 있습니다. 다운로드 후 다음 단계를 따라 실행하십시오:
 
 ```bash
-./AdGuardPrivate -c ./AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose
+./NullPrivate -c ./AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose
 ```
 
 ### Docker 이미지 사용
 
-또는 [Docker Hub](https://hub.docker.com/repository/docker/adguardprivate/adguardprivate)에서 사용할 수 있는 Docker 이미지를 사용할 수 있습니다:
+또는 [Docker Hub](https://hub.docker.com/repository/docker/nullprivate/nullprivate)에서 사용할 수 있는 Docker 이미지를 사용할 수 있습니다:
 
 ```bash
-docker run --rm --name AdGuardPrivate -p 34020:80 -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf adguardprivate/adguardprivate:latest
+docker run --rm --name NullPrivate -p 34020:80 -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf nullprivate/nullprivate:latest
 ```

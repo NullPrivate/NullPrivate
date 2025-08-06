@@ -96,7 +96,7 @@
 
 'Build frontend':
     'artifacts':
-      - 'name': 'AdGuardPrivate frontend'
+      - 'name': 'NullPrivate frontend'
         'pattern': 'build/**'
         'shared': true
         'required': true
@@ -126,18 +126,18 @@
 
 'Artifact':
     'artifact-subscriptions':
-      - 'artifact': 'AdGuardPrivate frontend'
+      - 'artifact': 'NullPrivate frontend'
     'artifacts':
-      - 'name': 'AdGuardPrivate_windows_amd64'
-        'pattern': 'dist/AdGuardPrivate_windows_amd64.zip'
+      - 'name': 'NullPrivate_windows_amd64'
+        'pattern': 'dist/NullPrivate_windows_amd64.zip'
         'shared': true
         'required': true
-      - 'name': 'AdGuardPrivate_darwin_amd64'
-        'pattern': 'dist/AdGuardPrivate_darwin_amd64.zip'
+      - 'name': 'NullPrivate_darwin_amd64'
+        'pattern': 'dist/NullPrivate_darwin_amd64.zip'
         'shared': true
         'required': true
-      - 'name': 'AdGuardPrivate_linux_amd64'
-        'pattern': 'dist/AdGuardPrivate_linux_amd64.tar.gz'
+      - 'name': 'NullPrivate_linux_amd64'
+        'pattern': 'dist/NullPrivate_linux_amd64.tar.gz'
         'shared': true
         'required': true
     'docker':
@@ -173,8 +173,8 @@
 
 'Test e2e':
     'artifact-subscriptions':
-      - 'artifact': 'AdGuardPrivate_linux_amd64'
-      - 'artifact': 'AdGuardPrivate frontend'
+      - 'artifact': 'NullPrivate_linux_amd64'
+      - 'artifact': 'NullPrivate frontend'
     'docker':
         'image': '${bamboo.dockerFrontend}'
         'volumes':
@@ -195,9 +195,9 @@
 
                 export CI=true
 
-                tar -xzf dist/AdGuardPrivate_linux_amd64.tar.gz -C /tmp
+                tar -xzf dist/NullPrivate_linux_amd64.tar.gz -C /tmp
 
-                mv /tmp/AdGuardPrivate/AdGuardPrivate ./AdGuardPrivate
+                mv /tmp/NullPrivate/NullPrivate ./NullPrivate
 
                 make VERBOSE=1 js-deps js-test-e2e
     'requirements':

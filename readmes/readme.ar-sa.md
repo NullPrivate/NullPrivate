@@ -1,6 +1,6 @@
-# AdGuardPrivate
+# NullPrivate
 
-AdGuardPrivate هو فرع من _AdGuardHome_، مصمم لتقديم نسخة مستضافة على SaaS مع ميزات محسنة وقابلية للتخصيص. يتم استضافته على [AdGuard Private](https://adguardprivate.com).
+NullPrivate هو فرع من _AdGuardHome_، مصمم لتقديم نسخة مستضافة على SaaS مع ميزات محسنة وقابلية للتخصيص. يتم استضافته على [AdGuard Private](https://nullprivate.com).
 
 ## الميزات الرئيسية
 
@@ -39,7 +39,7 @@ AdGuardPrivate هو فرع من _AdGuardHome_، مصمم لتقديم نسخة �
 8. **مركز على الخصوصية**
    - لا يجمع إحصاءات الاستخدام أو يرسل بيانات ما لم يتم تكوينه صراحة.
 
-### الميزات الجديدة من AdGuardPrivate
+### الميزات الجديدة من NullPrivate
 
 1. **توجيه DNS باستخدام قوائم القواعد**
 
@@ -64,22 +64,22 @@ AdGuardPrivate هو فرع من _AdGuardHome_، مصمم لتقديم نسخة �
    - صيانة الشهادات التلقائية.
    - تحسين اتصالات الشبكة.
 
-للوثائق التفصيلية، تفضل بزيارة: [وثائق AdGuardPrivate](https://adguardprivate.com/docs/)
+للوثائق التفصيلية، تفضل بزيارة: [وثائق NullPrivate](https://nullprivate.com/docs/)
 
 ## كيفية الاستخدام
 
 ### تحميل النسخة الثنائية
 
-يمكنك تحميل النسخة الثنائية مباشرة من صفحة [الإصدارات](https://github.com/AdGuardPrivate/AdGuardPrivate/releases). بعد التحميل، اتبع الخطوات التالية لتشغيلها:
+يمكنك تحميل النسخة الثنائية مباشرة من صفحة [الإصدارات](https://github.com/NullPrivate/NullPrivate/releases). بعد التحميل، اتبع الخطوات التالية لتشغيلها:
 
 ```bash
-./AdGuardPrivate -c ./AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose
+./NullPrivate -c ./AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose
 ```
 
 ### استخدام صورة Docker
 
-بدلاً من ذلك، يمكنك استخدام صورة Docker المتاحة على [Docker Hub](https://hub.docker.com/repository/docker/adguardprivate/adguardprivate):
+بدلاً من ذلك، يمكنك استخدام صورة Docker المتاحة على [Docker Hub](https://hub.docker.com/repository/docker/nullprivate/nullprivate):
 
 ```bash
-docker run --rm --name AdGuardPrivate -p 34020:80 -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf adguardprivate/adguardprivate:latest
+docker run --rm --name NullPrivate -p 34020:80 -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf nullprivate/nullprivate:latest
 ```

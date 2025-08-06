@@ -311,7 +311,7 @@
     "form_enter_rate_limit": "Begrenzungswert eingeben",
     "rate_limit": "Begrenzungswert",
     "edns_enable": "EDNS-Client-Subnetz aktivieren",
-    "edns_cs_desc": "Fügen Sie die EDNS-Client-Subnetzoption (ECS) zu den Upstream-Anfragen hinzu und protokollieren Sie den vom Client gesendeten Wert. Wenn AdGuardPrivate auf einem Remote-Server ausgeführt wird, muss eine benutzerdefinierte lokale IP-Adresse verwendet werden, andernfalls wäre die in der Upstream-Anfrage gesendete IP-Adresse die geografische IP-Adresse des Servers.",
+    "edns_cs_desc": "Fügen Sie die EDNS-Client-Subnetzoption (ECS) zu den Upstream-Anfragen hinzu und protokollieren Sie den vom Client gesendeten Wert. Wenn NullPrivate auf einem Remote-Server ausgeführt wird, muss eine benutzerdefinierte lokale IP-Adresse verwendet werden, andernfalls wäre die in der Upstream-Anfrage gesendete IP-Adresse die geografische IP-Adresse des Servers.",
     "edns_use_custom_ip": "Benutzerdefinierte IP für EDNS verwenden",
     "edns_use_custom_ip_desc": "Benutzerdefinierte IP für EDNS zulassen",
     "rate_limit_desc": "Die Anzahl der Anfragen pro Sekunde, die ein einzelner Client stellen darf. Das Setzen auf 0 bedeutet keine Begrenzung.",

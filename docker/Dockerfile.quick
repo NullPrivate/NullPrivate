@@ -1,11 +1,11 @@
-FROM registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:base
+FROM registry.cn-hangzhou.aliyuncs.com/nullprivate/nullprivate:base
 
 ARG TARGETARCH
 ARG TARGETOS
 ARG TARGETVARIANT
 
 COPY --chown=nobody:nogroup\
-	./dist/AdGuardPrivate_${TARGETOS}_${TARGETARCH}/AdGuardPrivate/AdGuardPrivate \
+	./dist/NullPrivate_${TARGETOS}_${TARGETARCH}/NullPrivate/NullPrivate \
 	/opt/adguardhome/AdGuardHome
 
 RUN chmod +x /opt/adguardhome/AdGuardHome && \

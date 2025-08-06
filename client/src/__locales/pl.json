@@ -311,7 +311,7 @@
     "form_enter_rate_limit": "Wpisz limit ilościowy",
     "rate_limit": "Limit ilościowy",
     "edns_enable": "Włącz podsieć klienta EDNS",
-    "edns_cs_desc": "Dodaj opcję EDNS Client Subnet (ECS) do zapytań upstream i zapisz wartość wysłaną przez klienta w logach zapytań. Gdy AdGuardPrivate działa na zdalnym serwerze, należy użyć niestandardowego lokalnego adresu IP, w przeciwnym razie adres IP wysłany w zapytaniu upstream będzie geograficznym adresem IP serwera.",
+    "edns_cs_desc": "Dodaj opcję EDNS Client Subnet (ECS) do zapytań upstream i zapisz wartość wysłaną przez klienta w logach zapytań. Gdy NullPrivate działa na zdalnym serwerze, należy użyć niestandardowego lokalnego adresu IP, w przeciwnym razie adres IP wysłany w zapytaniu upstream będzie geograficznym adresem IP serwera.",
     "edns_use_custom_ip": "Użyj niestandardowego adresu IP dla EDNS",
     "edns_use_custom_ip_desc": "Zezwól na użycie niestandardowego adresu IP dla EDNS",
     "rate_limit_desc": "Liczba żądań na sekundę dozwolona na klienta. Ustawienie wartości 0 oznacza brak ograniczeń.",

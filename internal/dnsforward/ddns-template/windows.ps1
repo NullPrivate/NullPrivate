@@ -24,7 +24,7 @@ $TEMP_FILE_IPV6 = "$env:TEMP\adguard_ddns_ipv6.tmp"
 function Show-Usage {
     Write-Host "Usage:" -ForegroundColor Blue
     Write-Host "  Edit the script and set the following parameters before running:"
-    Write-Host "  base_url  - AdGuard Private server URL (e.g., https://{xxxxxxxxxxxxxxxx}.adguardprivate.com)" -ForegroundColor Yellow
+    Write-Host "  base_url  - AdGuard Private server URL (e.g., https://{xxxxxxxxxxxxxxxx}.nullprivate.com)" -ForegroundColor Yellow
     Write-Host "  domain    - Domain to update (e.g., nas.example.com)" -ForegroundColor Yellow
     Write-Host ""
     Write-Host "  For authentication, use one of the following methods:"
@@ -36,7 +36,7 @@ function Show-Usage {
     Write-Host "     cookies  - Cookie string (e.g., 'agh_session=abc123')" -ForegroundColor Yellow
     Write-Host ""
     Write-Host "  Example configuration:"
-    Write-Host "    `$base_url = 'https://{xxxxxxxxxxxxxxxx}.adguardprivate.com'"
+    Write-Host "    `$base_url = 'https://{xxxxxxxxxxxxxxxx}.nullprivate.com'"
     Write-Host "    `$username = 'admin'"
     Write-Host "    `$password = 'password123'"
     Write-Host "    `$domain = 'nas.example.com'"
@@ -44,7 +44,7 @@ function Show-Usage {
     Write-Host "    # OR using cookies instead of username/password:"
     Write-Host "    `$cookies = 'agh_session=abc123'"
     Write-Host ""
-    Write-Host "Note: This script is specifically developed for adguardprivate.com" -ForegroundColor Blue
+    Write-Host "Note: This script is specifically developed for nullprivate.com" -ForegroundColor Blue
     exit
 }
 

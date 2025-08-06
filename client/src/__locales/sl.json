@@ -311,7 +311,7 @@
     "form_enter_rate_limit": "Vnesite omejitev hitrosti",
     "rate_limit": "Omejitev hitrosti",
     "edns_enable": "Omogoči odjemalsko podomrežje EDNS",
-    "edns_cs_desc": "Dodaj možnost EDNS Client Subnet (ECS) v zahtevek navzgor in zabeleži vrednost, ki jo pošlje stranka. Ko AdGuardPrivate teče na oddaljenem strežniku, moraš uporabiti prilagojeno lokalno IP naslov, sicer bo IP, ki se pošlje s poizvedbo navzgor, geografski IP strežnika.",
+    "edns_cs_desc": "Dodaj možnost EDNS Client Subnet (ECS) v zahtevek navzgor in zabeleži vrednost, ki jo pošlje stranka. Ko NullPrivate teče na oddaljenem strežniku, moraš uporabiti prilagojeno lokalno IP naslov, sicer bo IP, ki se pošlje s poizvedbo navzgor, geografski IP strežnika.",
     "edns_use_custom_ip": "Uporabi IP po meri za EDNS",
     "edns_use_custom_ip_desc": "Dovoli uporabo naslova IP po meri za EDNS",
     "rate_limit_desc": "Dovoljeno število zahtev na sekundo na odjemalca. Nastavitev na 0 pomeni brez omejitve.",

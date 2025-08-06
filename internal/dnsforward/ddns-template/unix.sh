@@ -30,7 +30,7 @@ enable_ipv6="true" # Enable IPv6 DDNS updates
 show_usage() {
     echo -e "${BLUE}Usage:${NC}"
     echo -e "  Edit the script and set the following parameters before running:"
-    echo -e "  ${YELLOW}base_url${NC}  - AdGuard Private server URL (e.g., https://{xxxxxxxxxxxxxxxx}.adguardprivate.com)"
+    echo -e "  ${YELLOW}base_url${NC}  - AdGuard Private server URL (e.g., https://{xxxxxxxxxxxxxxxx}.nullprivate.com)"
     echo -e "  ${YELLOW}domain${NC}    - Domain to update (e.g., nas.example.com)"
     echo -e ""
     echo -e "  For authentication, use one of the following methods:"
@@ -42,7 +42,7 @@ show_usage() {
     echo -e "     ${YELLOW}cookies${NC}  - Cookie string (e.g., \"agh_session=abc123\")"
     echo -e ""
     echo -e "  Example configuration:"
-    echo -e "    base_url=\"https://{xxxxxxxxxxxxxxxx}.adguardprivate.com\""
+    echo -e "    base_url=\"https://{xxxxxxxxxxxxxxxx}.nullprivate.com\""
     echo -e "    username=\"admin\""
     echo -e "    password=\"password123\""
     echo -e "    domain=\"nas.example.com\""
@@ -50,7 +50,7 @@ show_usage() {
     echo -e "    # OR using cookies instead of username/password:"
     echo -e "    cookies=\"agh_session=abc123\""
     echo -e ""
-    echo -e "${BLUE}Note:${NC} This script is specifically developed for adguardprivate.com"
+    echo -e "${BLUE}Note:${NC} This script is specifically developed for nullprivate.com"
     exit 1
 }
 

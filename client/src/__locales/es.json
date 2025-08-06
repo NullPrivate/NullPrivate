@@ -311,7 +311,7 @@
     "form_enter_rate_limit": "Ingresa el límite de cantidad",
     "rate_limit": "Límite de cantidad",
     "edns_enable": "Habilitar subred de cliente EDNS",
-    "edns_cs_desc": "Añada la opción EDNS Client Subnet (ECS) a las solicitudes upstream y registre el valor enviado por el cliente. Cuando AdGuardPrivate se ejecuta en un servidor remoto, debe usar una IP local personalizada, de lo contrario la IP enviada con la solicitud upstream será la IP geográfica del servidor.",
+    "edns_cs_desc": "Añada la opción EDNS Client Subnet (ECS) a las solicitudes upstream y registre el valor enviado por el cliente. Cuando NullPrivate se ejecuta en un servidor remoto, debe usar una IP local personalizada, de lo contrario la IP enviada con la solicitud upstream será la IP geográfica del servidor.",
     "edns_use_custom_ip": "Usar IP personalizada para EDNS",
     "edns_use_custom_ip_desc": "Permitir el uso de IP personalizadas para EDNS",
     "rate_limit_desc": "Número de peticiones por segundo permitidas por cliente. Establecerlo en 0 significa que no hay límite.",
