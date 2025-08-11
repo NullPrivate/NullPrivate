@@ -15,7 +15,7 @@ export const Logo = memo(({ className }: Props) => {
             <g fillRule="evenodd">
                 {/* Logo Text */}
                 <text x="50" y="15" fill="#1a73e8" alignmentBaseline="auto" fontWeight="900" 
-                    fontFamily="Arial, sans-serif" letterSpacing="0em" textAnchor="start">ADGUARD</text>
+                    fontFamily="Arial, sans-serif" letterSpacing="0em" textAnchor="start">NULL</text>
                 <text x="50" y="35" fill="#5f6368" alignmentBaseline="auto" fontWeight="700" 
                     fontFamily="Arial, sans-serif" letterSpacing="0em" textAnchor="start">Private</text>
                 
@@ -30,9 +30,9 @@ export const Logo = memo(({ className }: Props) => {
                     <circle cx="28" cy="28" r="12" fill="#ea4335" opacity="0.7" />
                 </g>
                 
-                {/* AP Text */}
+                {/* NP Text */}
                 <text x="20" y="21" fill="#fff" alignmentBaseline="middle" fontWeight="900"
-                    fontFamily="Arial, sans-serif" letterSpacing="0em" textAnchor="middle">AP</text>
+                    fontFamily="Arial, sans-serif" letterSpacing="0em" textAnchor="middle">NP</text>
             </g>
         </svg>
     );

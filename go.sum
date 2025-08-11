@@ -10,8 +10,6 @@ cloud.google.com/go/compute/metadata v0.7.0 h1:PBWF+iiAerVNe8UCHxdOt6eHLVc3ydFeO
 cloud.google.com/go/compute/metadata v0.7.0/go.mod h1:j5MvL9PprKL39t166CoB1uVHfQMs4tFQZZcKwksXUjo=
 cloud.google.com/go/longrunning v0.6.7 h1:IGtfDWHhQCgCjwQjV9iiLnUta9LBCo8R9QmAFsS/PrE=
 cloud.google.com/go/longrunning v0.6.7/go.mod h1:EAFV3IZAKmM56TyiE6VAP3VoTzhZzySwI/YI1s/nRsY=
-github.com/AdGuardPrivate/dnsproxy v0.75.7 h1:7+8B37CblqsDuXLR8eBN8FV4kzTn35QyIP62e/oHyuA=
-github.com/AdGuardPrivate/dnsproxy v0.75.7/go.mod h1:fdwtHhrDkTueDagDCasYKZbXdppkkBXW7RGPBNH+pis=
 github.com/AdguardTeam/golibs v0.32.9 h1:/6luT0aMOn05/s9eh1yA4lbcHgl0d1iEEvEBbIMMUk0=
 github.com/AdguardTeam/golibs v0.32.9/go.mod h1:McV1QFFlKLElKa306V4OL/T2kr7564PhsayfvTWYBVs=
 github.com/AdguardTeam/urlfilter v0.20.0 h1:X32qiuVCVd8WDYCEsbdZKfXMzwdVqrdulamtUi4rmzs=
@@ -20,6 +18,8 @@ github.com/BurntSushi/toml v1.5.0 h1:W5quZX/G/csjUnuI8SUYlsHs9M38FC7znL0lIO+DvMg
 github.com/BurntSushi/toml v1.5.0/go.mod h1:ukJfTF/6rtPPRCnwkur4qwRxa8vTRFBF0uk2lLoLwho=
 github.com/NYTimes/gziphandler v1.1.1 h1:ZUDjpQae29j0ryrS0u/B8HZfJBtBQHjqw2rQ2cqUQ3I=
 github.com/NYTimes/gziphandler v1.1.1/go.mod h1:n/CVRwUEOgIxrgPvAQhUUr9oeUtvrhMomdKFjzJNB0c=
+github.com/NullPrivate/dnsproxy v0.75.7 h1:TVmhHm1fKEkS2CZ7geXZ74VWly78tfWQbzNbeOs3xyo=
+github.com/NullPrivate/dnsproxy v0.75.7/go.mod h1:fdwtHhrDkTueDagDCasYKZbXdppkkBXW7RGPBNH+pis=
 github.com/ameshkov/dnscrypt/v2 v2.4.0 h1:if6ZG2cuQmcP2TwSY+D0+8+xbPfoatufGlOQTMNkI9o=
 github.com/ameshkov/dnscrypt/v2 v2.4.0/go.mod h1:WpEFV2uhebXb8Jhes/5/fSdpmhGV8TL22RDaeWwV6hI=
 github.com/ameshkov/dnsstamps v1.0.3 h1:Srzik+J9mivH1alRACTbys2xOxs0lRH9qnTA7Y1OYVo=

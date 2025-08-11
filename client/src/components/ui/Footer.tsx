@@ -68,8 +68,8 @@ const Footer = () => {
                 <a
                     target="_blank"
                     rel="noopener noreferrer"
-                    href="https://www.adguardprivate.com">
-                    AdGuardPrivate
+                    href="https://www.nullprivate.com">
+                    NullPrivate
                 </a>
             </div>
         </div>

@@ -16,7 +16,7 @@
                 "-v",
                 "--local-frontend",
                 "-l",
-                "adguardprivate.log",
+                "nullprivate.log",
                 "-v"
             ]
         }

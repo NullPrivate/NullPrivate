@@ -183,7 +183,7 @@ sign() {
 build() {
 	# Get the arguments.  Here and below, use the "build_" prefix for all
 	# variables local to function build.
-	build_dir="${dist}/${1}/AdGuardPrivate" \
+	build_dir="${dist}/${1}/NullPrivate" \
 		build_ar="$2" \
 		build_os="$3" \
 		build_arch="$4" \
@@ -193,9 +193,9 @@ build() {
 
 	# Use the ".exe" filename extension if we build a Windows release.
 	if [ "$build_os" = 'windows' ]; then
-		build_output="./${build_dir}/AdGuardPrivate.exe"
+		build_output="./${build_dir}/NullPrivate.exe"
 	else
-		build_output="./${build_dir}/AdGuardPrivate"
+		build_output="./${build_dir}/NullPrivate"
 	fi
 
 	mkdir -p "./${build_dir}"
@@ -227,11 +227,11 @@ build() {
 		build_archive="./${dist}/${build_ar}.zip"
 		# TODO(a.garipov): Find an option similar to the -C option of tar for
 		# zip.
-		(cd "${dist}/${1}" && zip -9 -q -r "../../${build_archive}" "./AdGuardPrivate")
+		(cd "${dist}/${1}" && zip -9 -q -r "../../${build_archive}" "./NullPrivate")
 		;;
 	*)
 		build_archive="./${dist}/${build_ar}.tar.gz"
-		tar -C "./${dist}/${1}" -c -f - "./AdGuardPrivate" | gzip -9 - >"$build_archive"
+		tar -C "./${dist}/${1}" -c -f - "./NullPrivate" | gzip -9 - >"$build_archive"
 		;;
 	esac
 
@@ -267,15 +267,15 @@ echo "$platforms" | while read -r os arch arm mips; do
 
 	case "$arch" in
 	arm)
-		dir="AdGuardPrivate_${os}_${arch}_${arm}"
-		ar="AdGuardPrivate_${os}_${arch}v${arm}"
+		dir="NullPrivate_${os}_${arch}_${arm}"
+		ar="NullPrivate_${os}_${arch}v${arm}"
 		;;
 	mips*)
-		dir="AdGuardPrivate_${os}_${arch}_${mips}"
+		dir="NullPrivate_${os}_${arch}_${mips}"
 		ar="$dir"
 		;;
 	*)
-		dir="AdGuardPrivate_${os}_${arch}"
+		dir="NullPrivate_${os}_${arch}"
 		ar="$dir"
 		;;
 	esac
@@ -285,7 +285,7 @@ done
 
 log "packing frontend"
 
-build_archive="./${dist}/AdGuardPrivate_frontend.tar.gz"
+build_archive="./${dist}/NullPrivate_frontend.tar.gz"
 tar -c -f - ./build | gzip -9 - >"$build_archive"
 log "$build_archive"
 
@@ -330,16 +330,16 @@ echo "version=$version" >"./${dist}/version.txt"
 
 # Create the version.json file.
 
-version_download_url="https://static.adguardprivate.com/adguardprivate/${channel}"
+version_download_url="https://static.nullprivate.com/nullprivate/${channel}"
 version_json="./${dist}/version.json"
 readonly version_download_url version_json
 
 # If the channel is edge, point users to the "Platforms" page on the Wiki,
 # because the direct links to the edge packages are listed there.
 if [ "$channel" = 'edge' ]; then
-	announcement_url='https://github.com/AdGuardPrivate/AdGuardPrivate/wiki/Platforms'
+	announcement_url='https://github.com/NullPrivate/NullPrivate/wiki/Platforms'
 else
-	announcement_url="https://github.com/AdGuardPrivate/AdGuardPrivate/releases/tag/${version}"
+	announcement_url="https://github.com/NullPrivate/NullPrivate/releases/tag/${version}"
 fi
 readonly announcement_url
 
@@ -347,7 +347,7 @@ readonly announcement_url
 rm -f "$version_json"
 echo "{
   \"version\": \"${version}\",
-  \"announcement\": \"AdGuard Private ${version} is now available!\",
+  \"announcement\": \"Null Private ${version} is now available!\",
   \"announcement_url\": \"${announcement_url}\",
   \"selfupdate_min_version\": \"0.0\",
 " >>"$version_json"
@@ -357,9 +357,9 @@ echo "{
 #
 # TODO(a.garipov): Remove this around fall 2023.
 # echo "
-#   \"download_linux_mips64\": \"${version_download_url}/AdGuardPrivate_linux_mips64_softfloat.tar.gz\",
-#   \"download_linux_mips64le\": \"${version_download_url}/AdGuardPrivate_linux_mips64le_softfloat.tar.gz\",
-#   \"download_linux_mipsle\": \"${version_download_url}/AdGuardPrivate_linux_mipsle_softfloat.tar.gz\",
+#   \"download_linux_mips64\": \"${version_download_url}/NullPrivate_linux_mips64_softfloat.tar.gz\",
+#   \"download_linux_mips64le\": \"${version_download_url}/NullPrivate_linux_mips64le_softfloat.tar.gz\",
+#   \"download_linux_mipsle\": \"${version_download_url}/NullPrivate_linux_mipsle_softfloat.tar.gz\",
 # " >>"$version_json"
 
 # Same as with checksums above, don't use ls, because files matching one of the
@@ -374,7 +374,7 @@ for f in $ar_files; do
 	platform="$f"
 
 	# Remove the prefix.
-	platform="${platform#"./${dist}/AdGuardPrivate_"}"
+	platform="${platform#"./${dist}/NullPrivate_"}"
 
 	# Remove the filename extensions.
 	platform="${platform%.zip}"

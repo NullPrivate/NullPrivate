@@ -47,15 +47,15 @@
             "command": "make build VERBOSE=2"
         },
         {
-            "label": "Dev: Run AdGuardPrivate",
+            "label": "Dev: Run NullPrivate",
             "type": "shell",
-            "command": "./AdGuardPrivate -c ../AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose",
+            "command": "./NullPrivate -c ../AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose",
             "problemMatcher": []
         },
         {
-            "label": "Dev: Run AdGuardPrivate Release",
+            "label": "Dev: Run NullPrivate Release",
             "type": "shell",
-            "command": "./dist/AdGuardPrivate_linux_amd64/AdGuardPrivate/AdGuardPrivate -c ../AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose",
+            "command": "./dist/NullPrivate_linux_amd64/NullPrivate/NullPrivate -c ../AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose",
             "problemMatcher": []
         },
         // ==================== Release Build ====================
@@ -73,27 +73,27 @@
         {
             "label": "Docker: Build Dev Image",
             "type": "shell",
-            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='adguardprivate' DOCKER_OUTPUT='type=docker,name=adguardprivate:dev,push=false'"
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='nullprivate' DOCKER_OUTPUT='type=docker,name=nullprivate:dev,push=false'"
         },
         {
             "label": "Docker: Run Dev Container",
             "type": "shell",
-            "command": "docker run --rm --name AdGuardPrivatev -p 50000:3000 -p 50001:80 -p 50002:443 -p 50003:853 -p 50004:53/udp -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf adguardprivate:dev"
+            "command": "docker run --rm --name NullPrivatev -p 50000:3000 -p 50001:80 -p 50002:443 -p 50003:853 -p 50004:53/udp -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf nullprivate:dev"
         },
         {
             "label": "Docker: Build Dev Image (Legacy)",
             "type": "shell",
-            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64' DOCKER_IMAGE_NAME='adguardprivate-dev' DOCKER_OUTPUT='type=docker,dest=./dist/docker/AdGuardPrivate_linux_amd64_.tar' VERBOSE=2"
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64' DOCKER_IMAGE_NAME='nullprivate-dev' DOCKER_OUTPUT='type=docker,dest=./dist/docker/NullPrivate_linux_amd64_.tar' VERBOSE=2"
         },
         {
             "label": "Docker: Load Dev Image (Legacy)",
             "type": "shell",
-            "command": "docker load -i ./dist/docker/AdGuardPrivate_linux_amd64_.tar && IMAGE_ID=$(docker images -q --filter \"dangling=true\" | head -n 1) && docker tag $IMAGE_ID adguardprivate-dev:dev && echo \"Loaded and tagged image $IMAGE_ID as adguardprivate-dev\""
+            "command": "docker load -i ./dist/docker/NullPrivate_linux_amd64_.tar && IMAGE_ID=$(docker images -q --filter \"dangling=true\" | head -n 1) && docker tag $IMAGE_ID nullprivate-dev:dev && echo \"Loaded and tagged image $IMAGE_ID as nullprivate-dev\""
         },
         {
             "label": "Docker: Run Dev Container (Legacy)",
             "type": "shell",
-            "command": "docker run --rm --name AdGuardPrivate-dev -p 50000:3000 -p 50001:80 -p 50002:443 -p 50003:853 -p 50004:53/udp -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf adguardprivate-dev:dev"
+            "command": "docker run --rm --name NullPrivate-dev -p 50000:3000 -p 50001:80 -p 50002:443 -p 50003:853 -p 50004:53/udp -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf nullprivate-dev:dev"
         },
         // ==================== Release & Deploy ====================
         {
@@ -161,15 +161,8 @@
         {
             "label": "Deploy: Push to Docker Hub",
             "type": "shell",
-            "command": "echo $DOCKER_HUB_TOKEN_ADGUARDPRIVATE | docker login --username adguardprivate --password-stdin && docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.quick -t docker.io/adguardprivate/adguardprivate:${input:version} -t docker.io/adguardprivate/adguardprivate:latest . --push",
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "Release: Build Release"
-            ],
-            "problemMatcher": [
-                "$go",
-                "$tsc"
-            ]
+            "command": "echo $DOCKER_HUB_TOKEN_NULLPRIVATE | docker login --username nullprivate --password-stdin && docker pull \"registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:${input:version}\" && docker tag \"registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:${input:version}\" \"docker.io/nullprivate/nullprivate:${input:version}\" && docker tag \"registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:${input:version}\" \"docker.io/nullprivate/nullprivate:latest\" && docker push \"docker.io/nullprivate/nullprivate:${input:version}\" && docker push \"docker.io/nullprivate/nullprivate:latest\"",
+            "problemMatcher": []
         },
         // ==================== Tools & Testing ====================
         {
@@ -205,7 +198,7 @@
         {
             "label": "Tools: Git Commit (No Verify)",
             "type": "shell",
-            "command": "git commit --no-verify -m 'adguardprivate commit'"
+            "command": "git commit --no-verify -m 'nullprivate commit'"
         },
         // ==================== Internationalization ====================
         {
@@ -234,7 +227,7 @@
         {
             "label": "Docker: Update Dist Files",
             "type": "shell",
-            "command": "mkdir -p dist/docker && cp -f dist/AdGuardPrivate_linux_amd64/AdGuardPrivate/AdGuardPrivate dist/docker/AdGuardPrivate_linux_amd64_ && cp -f dist/AdGuardPrivate_linux_arm64/AdGuardPrivate/AdGuardPrivate dist/docker/AdGuardPrivate_linux_arm64_"
+            "command": "mkdir -p dist/docker && cp -f dist/NullPrivate_linux_amd64/NullPrivate/NullPrivate dist/docker/NullPrivate_linux_amd64_ && cp -f dist/NullPrivate_linux_arm64/NullPrivate/NullPrivate dist/docker/NullPrivate_linux_arm64_"
         },
         {
             "label": "[DEPRECATED] Customize Build Init",

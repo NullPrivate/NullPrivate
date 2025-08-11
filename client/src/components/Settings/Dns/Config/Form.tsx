@@ -293,7 +293,7 @@ const Form = ({ processing, initialValues, onSubmit, serviceType }: Props) => {
                                                 className="btn btn-outline-secondary text-nowrap px-3"
                                                 onClick={async () => {
                                                     try {
-                                                        const response = await fetch('https://ip.adguardprivate.com/ip');
+                                                        const response = await fetch('https://ip.nullprivate.com/ip');
                                                         const ip = (await response.text()).trim();
                                                         field.onChange(ip);
                                                     } catch (error) {

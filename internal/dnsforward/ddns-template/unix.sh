@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# AdGuard Private DDNS Update Script
+# Null Private DDNS Update Script
 # For Linux/macOS systems
 #
 
@@ -13,8 +13,8 @@ NC='\033[0m' # No Color
 
 # Configuration - modify before running
 base_url="{{server_name}}" # Example: http://localhost:34020 or https://dns.example.com
-username="{{username}}"    # AdGuard Private username
-password="{{password}}"    # AdGuard Private password
+username="{{username}}"    # Null Private username
+password="{{password}}"    # Null Private password
 domain="{{domain}}"        # Domain to update, e.g.: nas.example.com
 cookies="{{cookies}}"      # Cookie string for authentication, e.g.: "agh_session=abc123"
 
@@ -30,19 +30,19 @@ enable_ipv6="true" # Enable IPv6 DDNS updates
 show_usage() {
     echo -e "${BLUE}Usage:${NC}"
     echo -e "  Edit the script and set the following parameters before running:"
-    echo -e "  ${YELLOW}base_url${NC}  - AdGuard Private server URL (e.g., https://{xxxxxxxxxxxxxxxx}.adguardprivate.com)"
+    echo -e "  ${YELLOW}base_url${NC}  - Null Private server URL (e.g., https://{xxxxxxxxxxxxxxxx}.nullprivate.com)"
     echo -e "  ${YELLOW}domain${NC}    - Domain to update (e.g., nas.example.com)"
     echo -e ""
     echo -e "  For authentication, use one of the following methods:"
     echo -e "  1. Username/Password (recommended):"
-    echo -e "     ${YELLOW}username${NC} - AdGuard Private username"
-    echo -e "     ${YELLOW}password${NC} - AdGuard Private password"
+    echo -e "     ${YELLOW}username${NC} - Null Private username"
+    echo -e "     ${YELLOW}password${NC} - Null Private password"
     echo -e ""
     echo -e "  2. Cookies (alternative, may expire):"
     echo -e "     ${YELLOW}cookies${NC}  - Cookie string (e.g., \"agh_session=abc123\")"
     echo -e ""
     echo -e "  Example configuration:"
-    echo -e "    base_url=\"https://{xxxxxxxxxxxxxxxx}.adguardprivate.com\""
+    echo -e "    base_url=\"https://{xxxxxxxxxxxxxxxx}.nullprivate.com\""
     echo -e "    username=\"admin\""
     echo -e "    password=\"password123\""
     echo -e "    domain=\"nas.example.com\""
@@ -50,7 +50,7 @@ show_usage() {
     echo -e "    # OR using cookies instead of username/password:"
     echo -e "    cookies=\"agh_session=abc123\""
     echo -e ""
-    echo -e "${BLUE}Note:${NC} This script is specifically developed for adguardprivate.com"
+    echo -e "${BLUE}Note:${NC} This script is specifically developed for nullprivate.com"
     exit 1
 }
 
@@ -230,7 +230,7 @@ get_current_record() {
         return 1
     fi
 
-    # If this is an AdGuard Private response with the items field (newer versions)
+    # If this is an Null Private response with the items field (newer versions)
     if [[ $response == *"\"items\""* ]]; then
         if [[ $response == *"\"domain\":\"${domain}\""* ]]; then
             # Filter records based on IP version
@@ -524,7 +524,7 @@ check_auth() {
 
 # Main function
 main() {
-    echo -e "${BLUE}AdGuard Private DDNS Update Script${NC}"
+    echo -e "${BLUE}Null Private DDNS Update Script${NC}"
     echo -e "${BLUE}=============================${NC}"
 
     # Check if all essential parameters are provided

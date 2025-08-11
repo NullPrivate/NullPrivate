@@ -1,6 +1,6 @@
-# AdGuardPrivate
+# NullPrivate
 
-AdGuardPrivateは、_AdGuardHome_のフォークで、強化された機能とカスタマイズ性を備えたSaaSホストバージョンを提供するために設計されています。ホスティングは[AdGuard Private](https://adguardprivate.com)で行われています。
+NullPrivateは、_AdGuardHome_のフォークで、強化された機能とカスタマイズ性を備えたSaaSホストバージョンを提供するために設計されています。ホスティングは[Null Private](https://nullprivate.com)で行われています。
 
 ## 主要な機能
 
@@ -39,7 +39,7 @@ AdGuardPrivateは、_AdGuardHome_のフォークで、強化された機能と�
 8. **プライバシーに焦点を当てた**
    - 明示的に設定されていない限り、使用統計を収集したりデータを送信したりしません。
 
-### AdGuardPrivateによる新機能
+### NullPrivateによる新機能
 
 1. **ルールリストを使用したDNSルーティング**
 
@@ -64,22 +64,22 @@ AdGuardPrivateは、_AdGuardHome_のフォークで、強化された機能と�
    - 自動証明書のメンテナンス。
    - 最適化されたネットワーク接続。
 
-詳細なドキュメントはこちらを訪問してください：[AdGuardPrivate ドキュメント](https://adguardprivate.com/docs/)
+詳細なドキュメントはこちらを訪問してください：[NullPrivate ドキュメント](https://nullprivate.com/docs/)
 
 ## 使用方法
 
 ### バイナリのダウンロード
 
-バイナリは[Releases](https://github.com/AdGuardPrivate/AdGuardPrivate/releases)ページから直接ダウンロードできます。ダウンロード後、以下の手順で実行します：
+バイナリは[Releases](https://github.com/NullPrivate/NullPrivate/releases)ページから直接ダウンロードできます。ダウンロード後、以下の手順で実行します：
 
 ```bash
-./AdGuardPrivate -c ./AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose
+./NullPrivate -c ./AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose
 ```
 
 ### Dockerイメージの使用
 
-または、[Docker Hub](https://hub.docker.com/repository/docker/adguardprivate/adguardprivate)で利用可能なDockerイメージを使用できます：
+または、[Docker Hub](https://hub.docker.com/repository/docker/nullprivate/nullprivate)で利用可能なDockerイメージを使用できます：
 
 ```bash
-docker run --rm --name AdGuardPrivate -p 34020:80 -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf adguardprivate/adguardprivate:latest
+docker run --rm --name NullPrivate -p 34020:80 -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf nullprivate/nullprivate:latest
 ```

@@ -117,7 +117,7 @@ const getDnsPrivacyList = () => [
                 components: [
                     {
                         key: 0,
-                        href: 'https://github.com/adguardprivate/dnsproxy',
+                        href: 'https://github.com/nullprivate/dnsproxy',
                     },
                 ],
             },

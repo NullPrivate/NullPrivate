@@ -1,6 +1,6 @@
-# AdGuardPrivate
+# NullPrivate
 
-AdGuardPrivate - это форк _AdGuardHome_, разработанный для предоставления SaaS-хостинга с улучшенными функциями и настраиваемостью. Он размещен на [AdGuard Private](https://adguardprivate.com).
+NullPrivate - это форк _AdGuardHome_, разработанный для предоставления SaaS-хостинга с улучшенными функциями и настраиваемостью. Он размещен на [Null Private](https://nullprivate.com).
 
 ## Основные функции
 
@@ -39,7 +39,7 @@ AdGuardPrivate - это форк _AdGuardHome_, разработанный дл�
 8. **Ориентированность на конфиденциальность**
    - Не собирает статистику использования или не отправляет данные, если это не настроено явно.
 
-### Новые функции от AdGuardPrivate
+### Новые функции от NullPrivate
 
 1. **Маршрутизация DNS с использованием списков правил**
 
@@ -64,22 +64,22 @@ AdGuardPrivate - это форк _AdGuardHome_, разработанный дл�
    - Автоматическое обслуживание сертификатов.
    - Оптимизация сетевых соединений.
 
-Для подробной документации посетите: [Документация AdGuardPrivate](https://adguardprivate.com/docs/)
+Для подробной документации посетите: [Документация NullPrivate](https://nullprivate.com/docs/)
 
 ## Как использовать
 
 ### Загрузка бинарного файла
 
-Вы можете загрузить бинарный файл напрямую со страницы [Releases](https://github.com/AdGuardPrivate/AdGuardPrivate/releases). После загрузки следуйте этим шагам для запуска:
+Вы можете загрузить бинарный файл напрямую со страницы [Releases](https://github.com/NullPrivate/NullPrivate/releases). После загрузки следуйте этим шагам для запуска:
 
 ```bash
-./AdGuardPrivate -c ./AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose
+./NullPrivate -c ./AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose
 ```
 
 ### Использование Docker-образа
 
-Альтернативно, вы можете использовать Docker-образ, доступный на [Docker Hub](https://hub.docker.com/repository/docker/adguardprivate/adguardprivate):
+Альтернативно, вы можете использовать Docker-образ, доступный на [Docker Hub](https://hub.docker.com/repository/docker/nullprivate/nullprivate):
 
 ```bash
-docker run --rm --name AdGuardPrivate -p 34020:80 -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf adguardprivate/adguardprivate:latest
+docker run --rm --name NullPrivate -p 34020:80 -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf nullprivate/nullprivate:latest
 ```

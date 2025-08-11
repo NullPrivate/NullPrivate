@@ -18,14 +18,14 @@ import (
 func TestUpdater_internal(t *testing.T) {
 	wd := t.TempDir()
 
-	exePathUnix := filepath.Join(wd, "AdGuardPrivate.exe")
-	exePathWindows := filepath.Join(wd, "AdGuardPrivate")
+	exePathUnix := filepath.Join(wd, "NullPrivate.exe")
+	exePathWindows := filepath.Join(wd, "NullPrivate")
 	yamlPath := filepath.Join(wd, "AdGuardHome.yaml")
 	readmePath := filepath.Join(wd, "README.md")
 	licensePath := filepath.Join(wd, "LICENSE.txt")
 
-	require.NoError(t, os.WriteFile(exePathUnix, []byte("AdGuardPrivate.exe"), 0o755))
-	require.NoError(t, os.WriteFile(exePathWindows, []byte("AdGuardPrivate"), 0o755))
+	require.NoError(t, os.WriteFile(exePathUnix, []byte("NullPrivate.exe"), 0o755))
+	require.NoError(t, os.WriteFile(exePathWindows, []byte("NullPrivate"), 0o755))
 	require.NoError(t, os.WriteFile(yamlPath, []byte("AdGuardHome.yaml"), 0o644))
 	require.NoError(t, os.WriteFile(readmePath, []byte("README.md"), 0o644))
 	require.NoError(t, os.WriteFile(licensePath, []byte("LICENSE.txt"), 0o644))
@@ -38,13 +38,13 @@ func TestUpdater_internal(t *testing.T) {
 	}{{
 		name:        "unix",
 		os:          "linux",
-		exeName:     "AdGuardPrivate",
-		archiveName: "AdGuardPrivate.tar.gz",
+		exeName:     "NullPrivate",
+		archiveName: "NullPrivate.tar.gz",
 	}, {
 		name:        "windows",
 		os:          "windows",
-		exeName:     "AdGuardPrivate.exe",
-		archiveName: "AdGuardPrivate.zip",
+		exeName:     "NullPrivate.exe",
+		archiveName: "NullPrivate.zip",
 	}}
 
 	for _, tc := range testCases {

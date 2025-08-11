@@ -72,7 +72,7 @@ dns:
   serve_http3: false
   use_http3_upstreams: false
   serve_plain_dns: true
-  hostsfile_enabled: false
+  hostsfile_enabled: true
   pending_requests:
     enabled: true
 tls:

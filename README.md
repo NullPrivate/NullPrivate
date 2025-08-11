@@ -1,8 +1,8 @@
-# AdGuardPrivate
+# NullPrivate
 
 > Available in other languages: [العربية](./readmes/readme.ar-sa.md), [Deutsch](./readmes/readme.de-de.md), [Español](./readmes/readme.es-es.md), [Français (Canada)](./readmes/readme.fr-ca.md), [Français (France)](./readmes/readme.fr-fr.md), [日本語](./readmes/readme.ja-jp.md), [한국어](./readmes/readme.ko-kr.md), [Português (Brasil)](./readmes/readme.pt-br.md), [Русский](./readmes/readme.ru-ru.md), [简体中文](./readmes/readme.zh-cn.md), [繁體中文 (香港)](./readmes/readme.zh-hk.md)
 
-AdGuardPrivate is a fork of _AdGuardHome_, designed to provide a SaaS-hosted version with enhanced features and customizability. It is hosted on [AdGuard Private](https://adguardprivate.com).
+NullPrivate is a fork of _AdGuardHome_, designed to provide a SaaS-hosted version with enhanced features and customizability. It is hosted on [Null Private](https://nullprivate.com).
 
 ## Key Features
 
@@ -41,7 +41,7 @@ AdGuardPrivate is a fork of _AdGuardHome_, designed to provide a SaaS-hosted ver
 8. **Privacy-Focused**
    - Does not collect usage statistics or send data unless explicitly configured.
 
-### New Features by AdGuardPrivate
+### New Features by NullPrivate
 
 1. **DNS Routing with Rule Lists**
 
@@ -66,22 +66,22 @@ AdGuardPrivate is a fork of _AdGuardHome_, designed to provide a SaaS-hosted ver
    - Automatic certificate maintenance.
    - Optimized network connections.
 
-For detailed documentation, visit: [AdGuardPrivate Documentation](https://adguardprivate.com/docs/)
+For detailed documentation, visit: [NullPrivate Documentation](https://nullprivate.com/docs/)
 
 ## How to Use
 
 ### Download Binary
 
-You can download the binary directly from the [Releases](https://github.com/AdGuardPrivate/AdGuardPrivate/releases) page. Once downloaded, follow these steps to run it:
+You can download the binary directly from the [Releases](https://github.com/NullPrivate/NullPrivate/releases) page. Once downloaded, follow these steps to run it:
 
 ```bash
-./AdGuardPrivate -c ./AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose
+./NullPrivate -c ./AdGuardHome.yaml -w ./data --web-addr 0.0.0.0:34020 --local-frontend --no-check-update --verbose
 ```
 
 ### Use Docker Image
 
-Alternatively, you can use the Docker image available on [Docker Hub](https://hub.docker.com/r/adguardprivate/adguardprivate):
+Alternatively, you can use the Docker image available on [Docker Hub](https://hub.docker.com/r/nullprivate/nullprivate):
 
 ```bash
-docker run --rm --name AdGuardPrivate -p 34020:80 -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf adguardprivate/adguardprivate:latest
+docker run --rm --name NullPrivate -p 34020:80 -v ./data/container/work:/opt/adguardhome/work -v ./data/container/conf:/opt/adguardhome/conf nullprivate/nullprivate:latest
 ```

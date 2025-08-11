@@ -133,7 +133,7 @@ type configuration struct {
 	Language string `yaml:"language"`
 	// Theme is a UI theme for current user.
 	Theme Theme `yaml:"theme"`
-	// ServiceType represents the type of service for AdGuard Private
+	// ServiceType represents the type of service for Null Private
 	ServiceType string `yaml:"service_type"`
 
 	// TODO(a.garipov): Make DNS and the fields below pointers and validate

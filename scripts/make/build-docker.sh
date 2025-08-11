@@ -48,7 +48,7 @@ readonly build_date
 
 # Set DOCKER_IMAGE_NAME to 'adguard/adguard-home' if you want (and are allowed)
 # to push to DockerHub.
-docker_image_name="${DOCKER_IMAGE_NAME:-adguardprivate}"
+docker_image_name="${DOCKER_IMAGE_NAME:-nullprivate}"
 readonly docker_image_name
 
 # Set DOCKER_OUTPUT to 'type=image,name=adguard/adguard-home,push=true' if you
@@ -95,29 +95,29 @@ dist_docker="${dist_dir}/docker"
 readonly dist_docker
 
 mkdir -p "$dist_docker"
-if [ -d "${dist_dir}/AdGuardPrivate_linux_386/AdGuardPrivate" ]; then
-    cp "${dist_dir}/AdGuardPrivate_linux_386/AdGuardPrivate/AdGuardPrivate" \
-        "${dist_docker}/AdGuardPrivate_linux_386_"
+if [ -d "${dist_dir}/NullPrivate_linux_386/NullPrivate" ]; then
+    cp "${dist_dir}/NullPrivate_linux_386/NullPrivate/NullPrivate" \
+        "${dist_docker}/NullPrivate_linux_386_"
 fi
-if [ -d "${dist_dir}/AdGuardPrivate_linux_amd64/AdGuardPrivate" ]; then
-    cp "${dist_dir}/AdGuardPrivate_linux_amd64/AdGuardPrivate/AdGuardPrivate" \
-        "${dist_docker}/AdGuardPrivate_linux_amd64_"
+if [ -d "${dist_dir}/NullPrivate_linux_amd64/NullPrivate" ]; then
+    cp "${dist_dir}/NullPrivate_linux_amd64/NullPrivate/NullPrivate" \
+        "${dist_docker}/NullPrivate_linux_amd64_"
 fi
-if [ -d "${dist_dir}/AdGuardPrivate_linux_arm64/AdGuardPrivate" ]; then
-    cp "${dist_dir}/AdGuardPrivate_linux_arm64/AdGuardPrivate/AdGuardPrivate" \
-        "${dist_docker}/AdGuardPrivate_linux_arm64_"
+if [ -d "${dist_dir}/NullPrivate_linux_arm64/NullPrivate" ]; then
+    cp "${dist_dir}/NullPrivate_linux_arm64/NullPrivate/NullPrivate" \
+        "${dist_docker}/NullPrivate_linux_arm64_"
 fi
-if [ -d "${dist_dir}/AdGuardPrivate_linux_arm_6/AdGuardPrivate" ]; then
-    cp "${dist_dir}/AdGuardPrivate_linux_arm_6/AdGuardPrivate/AdGuardPrivate" \
-        "${dist_docker}/AdGuardPrivate_linux_arm_v6"
+if [ -d "${dist_dir}/NullPrivate_linux_arm_6/NullPrivate" ]; then
+    cp "${dist_dir}/NullPrivate_linux_arm_6/NullPrivate/NullPrivate" \
+        "${dist_docker}/NullPrivate_linux_arm_v6"
 fi
-if [ -d "${dist_dir}/AdGuardPrivate_linux_arm_7/AdGuardPrivate" ]; then
-    cp "${dist_dir}/AdGuardPrivate_linux_arm_7/AdGuardPrivate/AdGuardPrivate" \
-        "${dist_docker}/AdGuardPrivate_linux_arm_v7"
+if [ -d "${dist_dir}/NullPrivate_linux_arm_7/NullPrivate" ]; then
+    cp "${dist_dir}/NullPrivate_linux_arm_7/NullPrivate/NullPrivate" \
+        "${dist_docker}/NullPrivate_linux_arm_v7"
 fi
-if [ -d "${dist_dir}/AdGuardPrivate_linux_ppc64le/AdGuardPrivate" ]; then
-    cp "${dist_dir}/AdGuardPrivate_linux_ppc64le/AdGuardPrivate/AdGuardPrivate" \
-        "${dist_docker}/AdGuardPrivate_linux_ppc64le_"
+if [ -d "${dist_dir}/NullPrivate_linux_ppc64le/NullPrivate" ]; then
+    cp "${dist_dir}/NullPrivate_linux_ppc64le/NullPrivate/NullPrivate" \
+        "${dist_docker}/NullPrivate_linux_ppc64le_"
 fi
 
 # Don't use quotes with $docker_version_tag and $docker_channel_tag, because we

@@ -8,7 +8,7 @@
     <g fillRule="evenodd">
         <!-- Logo Text -->
         <text x="50" y="15" fill="#8ab4f8" alignment-baseline="auto" font-weight="900" font-family="Arial, sans-serif"
-            letterSpacing="0em" text-anchor="start">ADGUARD</text>
+            letterSpacing="0em" text-anchor="start">NULL</text>
         <text x="50" y="35" fill="#bdc1c6" alignment-baseline="auto" font-weight="700" font-size="18" font-family="Arial, sans-serif"
             letterSpacing="0em" text-anchor="start">Private</text>
         
@@ -19,12 +19,12 @@
             
             <!-- Overlapping Circles -->
             <circle cx="10" cy="14" r="14" fill="#81c995" opacity="0.8" />
-            <circle cx="30" cy="14" r="12" fill="#fdd663" opacity="0.8" />
-            <circle cx="28" cy="28" r="12" fill="#f28b82" opacity="0.8" />
+            <circle cx="28" cy="12" r="12" fill="#f28b82" opacity="0.8" />
+            <circle cx="18" cy="28" r="10" fill="#fde293" opacity="0.8" />
         </g>
         
-        <!-- AP Text -->
-        <text x="20" y="21" fill="#202124" alignment-baseline="middle" font-weight="900"
-            font-family="Arial, sans-serif" letterSpacing="0em" text-anchor="middle">AP</text>
+        <!-- Checkmark -->
+        <path fill="#ffffff"
+            d="M16.286 21.788l-3.312-3.312c-.39-.39-1.024-.39-1.414 0s-.39 1.024 0 1.414l4.019 4.019c.39.39 1.024.39 1.414 0l8.707-8.707c.39-.39.39-1.024 0-1.414s-1.024-.39-1.414 0l-7.986 7.986z" />
     </g>
 </svg>
