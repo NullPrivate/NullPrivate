@@ -1,6 +1,6 @@
 # NullPrivate
 
-NullPrivateは、_AdGuardHome_のフォークで、強化された機能とカスタマイズ性を備えたSaaSホストバージョンを提供するために設計されています。ホスティングは[AdGuard Private](https://nullprivate.com)で行われています。
+NullPrivateは、_AdGuardHome_のフォークで、強化された機能とカスタマイズ性を備えたSaaSホストバージョンを提供するために設計されています。ホスティングは[Null Private](https://nullprivate.com)で行われています。
 
 ## 主要な機能
 

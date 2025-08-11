@@ -2,7 +2,7 @@
 
 > Available in other languages: [العربية](./readmes/readme.ar-sa.md), [Deutsch](./readmes/readme.de-de.md), [Español](./readmes/readme.es-es.md), [Français (Canada)](./readmes/readme.fr-ca.md), [Français (France)](./readmes/readme.fr-fr.md), [日本語](./readmes/readme.ja-jp.md), [한국어](./readmes/readme.ko-kr.md), [Português (Brasil)](./readmes/readme.pt-br.md), [Русский](./readmes/readme.ru-ru.md), [简体中文](./readmes/readme.zh-cn.md), [繁體中文 (香港)](./readmes/readme.zh-hk.md)
 
-NullPrivate is a fork of _AdGuardHome_, designed to provide a SaaS-hosted version with enhanced features and customizability. It is hosted on [AdGuard Private](https://nullprivate.com).
+NullPrivate is a fork of _AdGuardHome_, designed to provide a SaaS-hosted version with enhanced features and customizability. It is hosted on [Null Private](https://nullprivate.com).
 
 ## Key Features
 

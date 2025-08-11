@@ -1,6 +1,6 @@
 # NullPrivate
 
-NullPrivate - это форк _AdGuardHome_, разработанный для предоставления SaaS-хостинга с улучшенными функциями и настраиваемостью. Он размещен на [AdGuard Private](https://nullprivate.com).
+NullPrivate - это форк _AdGuardHome_, разработанный для предоставления SaaS-хостинга с улучшенными функциями и настраиваемостью. Он размещен на [Null Private](https://nullprivate.com).
 
 ## Основные функции
 

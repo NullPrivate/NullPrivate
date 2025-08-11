@@ -7,17 +7,17 @@ ARG VERSION
 ARG VCS_REF
 
 LABEL \
-	maintainer="AdGuard Private  <dev1@nullprivate.com>" \
-	org.opencontainers.image.authors="AdGuard Private  <dev1@nullprivate.com>" \
+	maintainer="Null Private  <dev1@nullprivate.com>" \
+	org.opencontainers.image.authors="Null Private  <dev1@nullprivate.com>" \
 	org.opencontainers.image.created=$BUILD_DATE \
 	org.opencontainers.image.description="Network-wide ads & trackers blocking DNS server" \
 	org.opencontainers.image.documentation="https://github.com/NullPrivate/NullPrivate/wiki/" \
 	org.opencontainers.image.licenses="GPL-3.0" \
 	org.opencontainers.image.revision=$VCS_REF \
 	org.opencontainers.image.source="https://github.com/NullPrivate/NullPrivate" \
-	org.opencontainers.image.title="AdGuard Private" \
+	org.opencontainers.image.title="Null Private" \
 	org.opencontainers.image.url="https://nullprivate.com" \
-	org.opencontainers.image.vendor="AdGuard Private" \
+	org.opencontainers.image.vendor="Null Private" \
 	org.opencontainers.image.version=$VERSION
 
 # Update certificates.

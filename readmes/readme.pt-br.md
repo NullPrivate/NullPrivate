@@ -1,6 +1,6 @@
 # NullPrivate
 
-NullPrivate é um fork do _AdGuardHome_, projetado para fornecer uma versão hospedada em SaaS com recursos aprimorados e personalização. Está hospedado em [AdGuard Private](https://nullprivate.com).
+NullPrivate é um fork do _AdGuardHome_, projetado para fornecer uma versão hospedada em SaaS com recursos aprimorados e personalização. Está hospedado em [Null Private](https://nullprivate.com).
 
 ## Principais Recursos
 

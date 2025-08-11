@@ -1,6 +1,6 @@
 # NullPrivate
 
-NullPrivate es una bifurcación de _AdGuardHome_, diseñada para proporcionar una versión alojada en SaaS con características mejoradas y personalización. Se aloja en [AdGuard Private](https://nullprivate.com).
+NullPrivate es una bifurcación de _AdGuardHome_, diseñada para proporcionar una versión alojada en SaaS con características mejoradas y personalización. Se aloja en [Null Private](https://nullprivate.com).
 
 ## Características clave
 

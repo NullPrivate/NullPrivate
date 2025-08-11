@@ -1,6 +1,6 @@
 # NullPrivate
 
-NullPrivate ist eine Abspaltung von _AdGuardHome_, die entwickelt wurde, um eine SaaS-gehostete Version mit erweiterten Funktionen und Anpassungsmöglichkeiten zu bieten. Es wird gehostet auf [AdGuard Private](https://nullprivate.com).
+NullPrivate ist eine Abspaltung von _AdGuardHome_, die entwickelt wurde, um eine SaaS-gehostete Version mit erweiterten Funktionen und Anpassungsmöglichkeiten zu bieten. Es wird gehostet auf [Null Private](https://nullprivate.com).
 
 ## Wichtige Funktionen
 

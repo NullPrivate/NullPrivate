@@ -1,6 +1,6 @@
 # NullPrivate
 
-NullPrivate은 _AdGuardHome_의 포크로, 향상된 기능과 사용자 정의 가능성을 제공하는 SaaS 호스팅 버전을 제공하도록 설계되었습니다. [AdGuard Private](https://nullprivate.com)에서 호스팅됩니다.
+NullPrivate은 _AdGuardHome_의 포크로, 향상된 기능과 사용자 정의 가능성을 제공하는 SaaS 호스팅 버전을 제공하도록 설계되었습니다. [Null Private](https://nullprivate.com)에서 호스팅됩니다.
 
 ## 주요 기능
 

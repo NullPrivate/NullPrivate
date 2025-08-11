@@ -3,7 +3,7 @@
 'plan':
     'project-key': 'AGH'
     'key': 'AHBRTSPECS'
-    'name': 'AdGuard Private - Build and run tests'
+    'name': 'Null Private - Build and run tests'
 'variables':
     'dockerFrontend': 'adguard/home-js-builder:3.1'
     'dockerGo': 'adguard/go-builder:1.24.4--1'
@@ -210,7 +210,7 @@
         'after-inactive-days': 5
     'integration':
         'push-on-success': false
-        'merge-from': 'AdGuard Private - Build and run tests'
+        'merge-from': 'Null Private - Build and run tests'
     'link-to-jira': true
 
 'notifications':

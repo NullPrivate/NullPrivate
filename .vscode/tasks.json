@@ -99,12 +99,12 @@
         {
             "label": "Deploy: Push Base Image to Aliyun",
             "type": "shell",
-            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.base -t registry.cn-hangzhou.aliyuncs.com/nullprivate/nullprivate:base . --push"
+            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.base -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:base . --push"
         },
         {
             "label": "Deploy Dev: Push Dev to Aliyun (Full)",
             "type": "shell",
-            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/nullprivate/nullprivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/nullprivate/nullprivate:dev,push=true'",
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:dev,push=true'",
             "dependsOn": [
                 "Release: Build Release",
             ]
@@ -112,7 +112,7 @@
         {
             "label": "Deploy Dev: Push Dev to Aliyun (Quick)",
             "type": "shell",
-            "command": "docker buildx build --platform linux/amd64 -f docker/Dockerfile.quick -t registry.cn-hangzhou.aliyuncs.com/nullprivate/nullprivate:dev . --push",
+            "command": "docker buildx build --platform linux/amd64 -f docker/Dockerfile.quick -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:dev . --push",
             "dependsOrder": "sequence",
             "dependsOn": [
                 "Dev: Build Frontend",
@@ -126,7 +126,7 @@
         {
             "label": "Deploy: Push Version to Aliyun (Full)",
             "type": "shell",
-            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='${input:version}' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/nullprivate/nullprivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/nullprivate/nullprivate:${input:version},push=true'",
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' VERSION='${input:version}' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:${input:version},push=true'",
             "dependsOn": [
                 "Release: Build Release"
             ]
@@ -134,7 +134,7 @@
         {
             "label": "Deploy: Push Version to Aliyun (Quick)",
             "type": "shell",
-            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.quick -t registry.cn-hangzhou.aliyuncs.com/nullprivate/nullprivate:${input:version} . --push",
+            "command": "docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.quick -t registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:${input:version} . --push",
             "dependsOrder": "sequence",
             "dependsOn": [
                 "Release: Build Release"
@@ -147,7 +147,7 @@
         {
             "label": "Deploy: Push Latest to Aliyun (Full)",
             "type": "shell",
-            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/nullprivate/nullprivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/nullprivate/nullprivate:latest,push=true'",
+            "command": "make build-docker VERBOSE=2 CHANNEL='development' ARCH='amd64 arm64' DOCKER_IMAGE_NAME='registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate' DOCKER_OUTPUT='type=image,name=registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest,push=true'",
             "dependsOn": [
                 "Release: Build Release"
             ]
@@ -155,21 +155,14 @@
         {
             "label": "Deploy: Push Latest to Aliyun (Quick)",
             "type": "shell",
-            "command": "docker pull registry.cn-hangzhou.aliyuncs.com/nullprivate/nullprivate:${input:version} && docker tag registry.cn-hangzhou.aliyuncs.com/nullprivate/nullprivate:${input:version} registry.cn-hangzhou.aliyuncs.com/nullprivate/nullprivate:latest && docker push registry.cn-hangzhou.aliyuncs.com/nullprivate/nullprivate:latest",
+            "command": "docker pull registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:${input:version} && docker tag registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:${input:version} registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest && docker push registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:latest",
             "problemMatcher": []
         },
         {
             "label": "Deploy: Push to Docker Hub",
             "type": "shell",
-            "command": "echo $DOCKER_HUB_TOKEN_ADGUARDPRIVATE | docker login --username nullprivate --password-stdin && docker buildx build --platform linux/amd64,linux/arm64 -f docker/Dockerfile.quick -t docker.io/nullprivate/nullprivate:${input:version} -t docker.io/nullprivate/nullprivate:latest . --push",
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "Release: Build Release"
-            ],
-            "problemMatcher": [
-                "$go",
-                "$tsc"
-            ]
+            "command": "echo $DOCKER_HUB_TOKEN_NULLPRIVATE | docker login --username nullprivate --password-stdin && docker pull \"registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:${input:version}\" && docker tag \"registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:${input:version}\" \"docker.io/nullprivate/nullprivate:${input:version}\" && docker tag \"registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:${input:version}\" \"docker.io/nullprivate/nullprivate:latest\" && docker push \"docker.io/nullprivate/nullprivate:${input:version}\" && docker push \"docker.io/nullprivate/nullprivate:latest\"",
+            "problemMatcher": []
         },
         // ==================== Tools & Testing ====================
         {

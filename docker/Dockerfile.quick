@@ -1,4 +1,4 @@
-FROM registry.cn-hangzhou.aliyuncs.com/nullprivate/nullprivate:base
+FROM registry.cn-hangzhou.aliyuncs.com/adguardprivate/adguardprivate:base
 
 ARG TARGETARCH
 ARG TARGETOS

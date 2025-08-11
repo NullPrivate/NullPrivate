@@ -1,6 +1,6 @@
 # NullPrivate
 
-NullPrivate هو فرع من _AdGuardHome_، مصمم لتقديم نسخة مستضافة على SaaS مع ميزات محسنة وقابلية للتخصيص. يتم استضافته على [AdGuard Private](https://nullprivate.com).
+NullPrivate هو فرع من _AdGuardHome_، مصمم لتقديم نسخة مستضافة على SaaS مع ميزات محسنة وقابلية للتخصيص. يتم استضافته على [Null Private](https://nullprivate.com).
 
 ## الميزات الرئيسية
 

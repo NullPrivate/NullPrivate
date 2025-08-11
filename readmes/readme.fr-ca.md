@@ -1,6 +1,6 @@
 # NullPrivate
 
-NullPrivate est une version dérivée de _AdGuardHome_, conçue pour offrir une version hébergée en SaaS avec des fonctionnalités améliorées et une personnalisation accrue. Elle est hébergée sur [AdGuard Private](https://nullprivate.com).
+NullPrivate est une version dérivée de _AdGuardHome_, conçue pour offrir une version hébergée en SaaS avec des fonctionnalités améliorées et une personnalisation accrue. Elle est hébergée sur [Null Private](https://nullprivate.com).
 
 ## Caractéristiques principales
 

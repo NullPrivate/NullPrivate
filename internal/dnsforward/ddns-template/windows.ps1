@@ -1,11 +1,11 @@
-# AdGuard Private DDNS Update Script
+# Null Private DDNS Update Script
 # For Windows Systems (PowerShell)
 #
 
 # Configuration - modify before running
 $base_url = "{{server_name}}"  # Example: http://localhost:34020 or https://dns.example.com
-$username = "{{username}}"      # AdGuard Private username
-$password = "{{password}}"      # AdGuard Private password
+$username = "{{username}}"      # Null Private username
+$password = "{{password}}"      # Null Private password
 $domain = "{{domain}}"          # Domain to update, e.g.: nas.example.com
 $cookies = "{{cookies}}"        # Cookie string for authentication, e.g.: "agh_session=abc123"
 
@@ -24,13 +24,13 @@ $TEMP_FILE_IPV6 = "$env:TEMP\adguard_ddns_ipv6.tmp"
 function Show-Usage {
     Write-Host "Usage:" -ForegroundColor Blue
     Write-Host "  Edit the script and set the following parameters before running:"
-    Write-Host "  base_url  - AdGuard Private server URL (e.g., https://{xxxxxxxxxxxxxxxx}.nullprivate.com)" -ForegroundColor Yellow
+    Write-Host "  base_url  - Null Private server URL (e.g., https://{xxxxxxxxxxxxxxxx}.nullprivate.com)" -ForegroundColor Yellow
     Write-Host "  domain    - Domain to update (e.g., nas.example.com)" -ForegroundColor Yellow
     Write-Host ""
     Write-Host "  For authentication, use one of the following methods:"
     Write-Host "  1. Username/Password (recommended):"
-    Write-Host "     username - AdGuard Private username" -ForegroundColor Yellow
-    Write-Host "     password - AdGuard Private password" -ForegroundColor Yellow
+    Write-Host "     username - Null Private username" -ForegroundColor Yellow
+    Write-Host "     password - Null Private password" -ForegroundColor Yellow
     Write-Host ""
     Write-Host "  2. Cookies (alternative, may expire):"
     Write-Host "     cookies  - Cookie string (e.g., 'agh_session=abc123')" -ForegroundColor Yellow
@@ -298,7 +298,7 @@ function Update-DNSRecord {
 
 # Main function
 function Start-DDNSUpdate {
-    Write-ColorOutput "AdGuard Private DDNS Update Script" "Cyan"
+    Write-ColorOutput "Null Private DDNS Update Script" "Cyan"
     Write-ColorOutput "===================" "Cyan"
     
     # Check if all essential parameters are provided

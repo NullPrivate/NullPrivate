@@ -1,6 +1,6 @@
 # NullPrivate
 
-NullPrivate 是 _AdGuardHome_ 的一个分支，旨在提供一个具有增强功能和可定制性的 SaaS 托管版本。它托管在 [AdGuard Private](https://nullprivate.com)。
+NullPrivate 是 _AdGuardHome_ 的一个分支，旨在提供一个具有增强功能和可定制性的 SaaS 托管版本。它托管在 [Null Private](https://nullprivate.com)。
 
 ## 主要功能
 
