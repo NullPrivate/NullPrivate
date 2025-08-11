@@ -53,3 +53,4 @@ __debug_bin*
 go.work
 go.work.sum
 .translation-cache/
+NullPrivate
