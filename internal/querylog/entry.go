@@ -38,10 +38,6 @@ type logEntry struct {
 
 	Result filtering.Result
 
-	// FilteringStatusStr is a string representation of the filtering status.
-	// It is used for quick matching in search.
-	FilteringStatusStr string `json:"FS,omitempty"`
-
 	Elapsed time.Duration
 
 	Cached            bool `json:",omitempty"`
