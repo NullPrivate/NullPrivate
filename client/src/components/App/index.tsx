@@ -13,8 +13,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import Toasts from '../Toasts';
 import Footer from '../ui/Footer';
 import Status from '../ui/Status';
-import UpdateTopline from '../ui/UpdateTopline';
-import UpdateOverlay from '../ui/UpdateOverlay';
+
 import EncryptionTopline from '../ui/EncryptionTopline';
 import Icons from '../ui/Icons';
 import i18n from '../../i18n';
@@ -105,7 +104,7 @@ const ROUTES = [
 
 const App = () => {
     const dispatch = useDispatch();
-    const { language, isCoreRunning, isUpdateAvailable, processing, theme } = useSelector<
+    const { language, isCoreRunning, processing, theme } = useSelector<
         RootState,
         RootState['dashboard']
     >((state) => state.dashboard, shallowEqual);
@@ -115,7 +114,7 @@ const App = () => {
         shallowEqual,
     );
 
-    const updateAvailable = isCoreRunning && isUpdateAvailable;
+    
 
     useEffect(() => {
         dispatch(getDnsStatus());
@@ -191,13 +190,7 @@ const App = () => {
 
     return (
         <HashRouter hashType="noslash">
-            {updateAvailable && (
-                <>
-                    <UpdateTopline />
-
-                    <UpdateOverlay />
-                </>
-            )}
+            
 
             {!processingEncryption && <EncryptionTopline />}
 

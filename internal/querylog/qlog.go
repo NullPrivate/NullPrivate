@@ -205,9 +205,6 @@ func newLogEntry(ctx context.Context, logger *slog.Logger, params *AddParams) (e
 		AuthenticatedData: params.AuthenticatedData,
 	}
 
-	// Set FilteringStatusStr based on the filtering result
-	entry.FilteringStatusStr = determineFilteringStatus(entry.Result.Reason, entry.Result.IsFiltered)
-
 	if params.ReqECS != nil {
 		entry.ReqECS = params.ReqECS.String()
 	}
@@ -216,43 +213,6 @@ func newLogEntry(ctx context.Context, logger *slog.Logger, params *AddParams) (e
 	entry.addResponse(ctx, logger, params.OrigAnswer, true)
 
 	return entry
-}
-
-// determineFilteringStatus returns the string representation of the filtering status
-// based on the filtering reason and isFiltered flag.
-func determineFilteringStatus(reason filtering.Reason, isFiltered bool) string {
-	if isFiltered {
-		switch reason {
-		case filtering.FilteredBlockList:
-			return filteringStatusBlocked
-		case filtering.FilteredParental:
-			return filteringStatusBlockedParental
-		case filtering.FilteredSafeBrowsing:
-			return filteringStatusBlockedSafebrowsing
-		case filtering.FilteredBlockedService:
-			return filteringStatusBlockedService
-		case filtering.FilteredSafeSearch:
-			return filteringStatusSafeSearch
-		default:
-			return filteringStatusFiltered
-		}
-	}
-
-	switch reason {
-	case filtering.NotFilteredAllowList:
-		return filteringStatusWhitelisted
-	case filtering.Rewritten, filtering.RewrittenAutoHosts, filtering.RewrittenRule:
-		return filteringStatusRewritten
-	default:
-		if !reason.In(
-			filtering.FilteredBlockList,
-			filtering.FilteredBlockedService,
-			filtering.NotFilteredAllowList,
-		) {
-			return filteringStatusProcessed
-		}
-		return filteringStatusAll
-	}
 }
 
 // Add implements the [QueryLog] interface for *queryLog.
