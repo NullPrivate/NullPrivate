@@ -1,12 +1,11 @@
 import React from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { Trans } from 'react-i18next';
+import { shallowEqual, useSelector } from 'react-redux';
 
 import './Version.css';
 import { RootState } from '../../initialState';
 
 const Version = () => {
-    const dispatch = useDispatch();
     const dashboard = useSelector((state: RootState) => state.dashboard, shallowEqual);
     const install = useSelector((state: RootState) => state.install, shallowEqual);
 

@@ -114,7 +114,7 @@ const App = () => {
         shallowEqual,
     );
 
-    const updateAvailable = false;
+    
 
     useEffect(() => {
         dispatch(getDnsStatus());
