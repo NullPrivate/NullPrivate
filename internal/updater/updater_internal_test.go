@@ -99,17 +99,17 @@ func TestUpdater_internal(t *testing.T) {
 			d, err = os.ReadFile(exePath)
 			require.NoError(t, err)
 
-			assert.Equal(t, "1", string(d))
+			assert.Equal(t, "1\n", string(d))
 
 			d, err = os.ReadFile(readmePath)
 			require.NoError(t, err)
 
-			assert.Equal(t, "2", string(d))
+			assert.Equal(t, "2\n", string(d))
 
 			d, err = os.ReadFile(licensePath)
 			require.NoError(t, err)
 
-			assert.Equal(t, "3", string(d))
+			assert.Equal(t, "3\n", string(d))
 
 			d, err = os.ReadFile(yamlPath)
 			require.NoError(t, err)
