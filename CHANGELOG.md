@@ -27,7 +27,7 @@ See also the [v0.107.63 GitHub milestone][ms-v0.107.63].
 
 ### Security
 
-- Go version has been updated to prevent the possibility of exploiting the Go vulnerabilities fixed in [1.24.4][go-1.24.4].
+- Go version has been updated to prevent the possibility of exploiting the Go vulnerabilities fixed in [1.24.5][go-1.24.5].
 
 ### Fixed
 
@@ -35,7 +35,7 @@ See also the [v0.107.63 GitHub milestone][ms-v0.107.63].
 
 - Status reported by the systemd service implementation in cases of auto-restart after a failed start.
 
-[go-1.24.4]: https://groups.google.com/g/golang-announce/c/ufZ8WpEsA3A
+[go-1.24.5]: https://groups.google.com/g/golang-announce/c/ufZ8WpEsA3A
 [ms-v0.107.63]: https://github.com/AdguardTeam/AdGuardHome/milestone/98?closed=1
 
 ## [v0.107.62] - 2025-05-27

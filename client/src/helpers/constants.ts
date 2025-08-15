@@ -69,7 +69,7 @@ export const HOMEPAGE = 'https://www.nullprivate.com';
 export const CLIENT_ID_LINK = 'https://github.com/AdguardTeam/AdGuardHome/wiki/Clients#clientid';
 export const MANUAL_UPDATE_LINK = 'https://github.com/AdguardTeam/AdGuardHome/wiki/FAQ#manual-update';
 export const PORT_53_FAQ_LINK = 'https://github.com/AdguardTeam/AdGuardHome/wiki/FAQ#bindinuse';
-export const PRIVACY_POLICY_LINK = 'https://www.nullprivate.com/docs/startup/private/privacy_policy/';
+export const PRIVACY_POLICY_LINK = 'https://www.nullprivate.com/docs/startup/privacy_policy/';
 export const UPSTREAM_CONFIGURATION_WIKI_LINK =
     'https://github.com/AdguardTeam/AdGuardHome/wiki/Configuration#upstreams';
 

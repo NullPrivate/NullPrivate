@@ -129,5 +129,8 @@
                 }
             ]
         }
-    ]
+    ],
+    "go.toolsEnvVars": {
+        "GOTOOLCHAIN": "go1.24.5"
+    }
 }
