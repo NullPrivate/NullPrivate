@@ -107,6 +107,11 @@ func initDNS(
 		return fmt.Errorf("init querylog: %w", err)
 	}
 
+	// 将全局 service_type 传递给过滤模块, 便于在过滤器内部进行资源限制
+	if config.Filtering != nil {
+		config.Filtering.ServiceType = config.ServiceType
+	}
+
 	globalContext.filters, err = filtering.New(config.Filtering, nil)
 	if err != nil {
 		// Don't wrap the error, since it's informative enough as is.

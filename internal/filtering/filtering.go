@@ -185,6 +185,10 @@ type Config struct {
 
 	// ServiceURLs is the URL list for downloading blocked services
 	ServiceURLs ServicesURLs `yaml:"service_urls"`
+
+	// ServiceType 表示服务类型: personal / family / enterprise
+	// 该字段由上层模块注入, 不从 YAML 读取
+	ServiceType string `yaml:"-"`
 }
 
 // BlockingMode is an enum of all allowed blocking modes.

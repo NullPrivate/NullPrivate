@@ -456,6 +456,21 @@ func (s *Server) initDefaultSettings() {
 	if s.conf.UpstreamTimeout == 0 {
 		s.conf.UpstreamTimeout = DefaultTimeout
 	}
+
+	// 针对 personal/family 服务类型的资源限制默认值
+	// - 当未设置或为 0 时，应用默认值
+	// - personal/family: max_domain_upstreams=10000, max_parallel_upstreams=5, max_upstreams_per_domain=5
+	if s.conf.ServiceType == "personal" || s.conf.ServiceType == "family" {
+		if s.conf.MaxDomainUpstreams == 0 {
+			s.conf.MaxDomainUpstreams = 10000
+		}
+		if s.conf.MaxParallelUpstreams == 0 {
+			s.conf.MaxParallelUpstreams = 5
+		}
+		if s.conf.MaxUpstreamsPerDomain == 0 {
+			s.conf.MaxUpstreamsPerDomain = 5
+		}
+	}
 }
 
 // prepareIpsetListSettings reads and prepares the ipset configuration either

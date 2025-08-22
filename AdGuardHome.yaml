@@ -25,8 +25,6 @@ dns:
   refuse_any: true
   upstream_dns:
     - h3://dns.alidns.com/dns-query
-    - h3://dns.alidns1.com/dns-query
-    - h3://dns.alidns2.com/dns-query
   upstream_dns_file: ""
   bootstrap_dns:
     - 223.5.5.5
