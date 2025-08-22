@@ -131,6 +131,6 @@
         }
     ],
     "go.toolsEnvVars": {
-        "GOTOOLCHAIN": "go1.24.5"
+        "GOTOOLCHAIN": "go1.24.6"
     }
 }

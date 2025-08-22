@@ -25,6 +25,8 @@ dns:
   refuse_any: true
   upstream_dns:
     - h3://dns.alidns.com/dns-query
+    - h3://dns.alidns1.com/dns-query
+    - h3://dns.alidns2.com/dns-query
   upstream_dns_file: ""
   bootstrap_dns:
     - 223.5.5.5
@@ -36,7 +38,7 @@ dns:
   upstream_alternate_rulesets:
     - https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/gfw.txt
     - https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/proxy-list.txt
-  upstream_mode: load_balance
+  upstream_mode: parallel
   fastest_timeout: 1s
   allowed_clients: []
   disallowed_clients: []
@@ -63,6 +65,9 @@ dns:
   ipset: []
   ipset_file: ""
   bootstrap_prefer_ipv6: false
+  max_domain_upstreams: 1
+  max_parallel_upstreams: 1
+  max_upstreams_per_domain: 1
   upstream_timeout: 3s
   private_networks: []
   use_private_ptr_resolvers: false

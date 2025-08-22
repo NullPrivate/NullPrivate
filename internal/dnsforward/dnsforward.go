@@ -568,84 +568,97 @@ func (s *Server) getHomeConfigServiceType() string {
 func (s *Server) limitResourceUsage(conf *proxy.Config) {
 	upsConf := conf.UpstreamConfig
 
-	// Limit domain maps
-	limitDomainMaps(upsConf)
-
-	// Apply parallel mode limits if needed
-	if conf.UpstreamMode == proxy.UpstreamModeParallel {
-		limitParallelModeResources(conf, upsConf)
-	}
-
-	// Limit upstream counts for all domain maps
-	limitUpstreamsPerDomain(upsConf)
-}
-
-// limitDomainMaps limits the number of domain-specific upstream entries
-func limitDomainMaps(upsConf *proxy.UpstreamConfig) {
-	const maxDomainUpstreams = 10000
-
-	mapsToLimit := []*map[string][]upstream.Upstream{
-		&upsConf.DomainReservedUpstreams,
-		&upsConf.SpecifiedDomainUpstreams,
-	}
-
-	for _, currentMap := range mapsToLimit {
-		if len(*currentMap) <= maxDomainUpstreams {
-			continue
-		}
-
-		limitedMap := make(map[string][]upstream.Upstream)
-		count := 0
-		for domain, upstreams := range *currentMap {
-			if count >= maxDomainUpstreams {
-				break
+	// 先执行域名映射总量限制, 优先保留更具体域名映射
+	if upsConf != nil && s.conf.MaxDomainUpstreams > 0 {
+		beforeTotal := len(upsConf.DomainReservedUpstreams) + len(upsConf.SpecifiedDomainUpstreams)
+		if beforeTotal > s.conf.MaxDomainUpstreams {
+			removedReserved, removedSpecified := enforceMaxDomainMappings(upsConf, s.conf.MaxDomainUpstreams)
+			afterTotal := len(upsConf.DomainReservedUpstreams) + len(upsConf.SpecifiedDomainUpstreams)
+			if removedReserved+removedSpecified > 0 {
+				log.Info(
+					"dnsforward: warning: domain upstream mappings trimmed due to max_domain_upstreams=%d (before=%d, after=%d, removed_reserved=%d, removed_specified=%d)",
+					s.conf.MaxDomainUpstreams, beforeTotal, afterTotal, removedReserved, removedSpecified,
+				)
 			}
-			limitedMap[domain] = upstreams
-			count++
 		}
-		*currentMap = limitedMap
 	}
+
+	// Apply parallel mode limits if needed, only if configured (>0)
+	if conf.UpstreamMode == proxy.UpstreamModeParallel {
+		limitParallelModeResources(conf, upsConf, s.conf.MaxParallelUpstreams)
+	}
+
+	// Enforce per-domain upstream limits if configured (>0)
+	limitUpstreamsPerDomain(upsConf, s.conf.MaxUpstreamsPerDomain)
 }
 
 // limitParallelModeResources applies specific limits when in parallel upstream mode
-func limitParallelModeResources(conf *proxy.Config, upsConf *proxy.UpstreamConfig) {
-	const maxParallelUpstreams = 5
+func limitParallelModeResources(conf *proxy.Config, upsConf *proxy.UpstreamConfig, maxParallelUpstreams int) {
+	if upsConf == nil || maxParallelUpstreams <= 0 {
+		// 0 or negative means no limit
+		return
+	}
 
 	// Limit domain maps in parallel mode
-	limitUpstreamsInMaps(
+	domainsAffected, totalRemoved := limitUpstreamsInMaps(
 		[]*map[string][]upstream.Upstream{
 			&upsConf.DomainReservedUpstreams,
 			&upsConf.SpecifiedDomainUpstreams,
 		},
 		maxParallelUpstreams,
 	)
+	if totalRemoved > 0 {
+		log.Info(
+			"dnsforward: warning: parallel mode: trimmed upstreams per domain (domains=%d, removed=%d, max_parallel_upstreams=%d)",
+			domainsAffected, totalRemoved, maxParallelUpstreams,
+		)
+	}
 
 	// Limit the Upstreams count
 	if len(upsConf.Upstreams) > maxParallelUpstreams {
+		before := len(upsConf.Upstreams)
 		upsConf.Upstreams = upsConf.Upstreams[:maxParallelUpstreams]
+		log.Info(
+			"dnsforward: warning: parallel mode: trimmed upstreams list from %d to %d (max_parallel_upstreams=%d)",
+			before, len(upsConf.Upstreams), maxParallelUpstreams,
+		)
 	}
 
 	// Limit the Fallbacks count
 	if conf.Fallbacks != nil && len(conf.Fallbacks.Upstreams) > maxParallelUpstreams {
+		before := len(conf.Fallbacks.Upstreams)
 		conf.Fallbacks.Upstreams = conf.Fallbacks.Upstreams[:maxParallelUpstreams]
+		log.Info(
+			"dnsforward: warning: parallel mode: trimmed fallbacks from %d to %d (max_parallel_upstreams=%d)",
+			before, len(conf.Fallbacks.Upstreams), maxParallelUpstreams,
+		)
 	}
 }
 
 // limitUpstreamsPerDomain enforces a maximum number of upstreams per domain
-func limitUpstreamsPerDomain(upsConf *proxy.UpstreamConfig) {
-	const maxUpstreams = 5
+func limitUpstreamsPerDomain(upsConf *proxy.UpstreamConfig, maxCount int) {
+	if upsConf == nil || maxCount <= 0 {
+		// 0 or negative means no limit
+		return
+	}
 
-	limitUpstreamsInMaps(
+	domainsAffected, totalRemoved := limitUpstreamsInMaps(
 		[]*map[string][]upstream.Upstream{
 			&upsConf.DomainReservedUpstreams,
 			&upsConf.SpecifiedDomainUpstreams,
 		},
-		maxUpstreams,
+		maxCount,
 	)
+	if totalRemoved > 0 {
+		log.Info(
+			"dnsforward: warning: trimmed upstreams per domain (domains=%d, removed=%d, max_upstreams_per_domain=%d)",
+			domainsAffected, totalRemoved, maxCount,
+		)
+	}
 }
 
 // limitUpstreamsInMaps limits the number of upstreams in each domain's entry
-func limitUpstreamsInMaps(maps []*map[string][]upstream.Upstream, maxCount int) {
+func limitUpstreamsInMaps(maps []*map[string][]upstream.Upstream, maxCount int) (domainsAffected int, totalRemoved int) {
 	for _, currentMap := range maps {
 		if *currentMap == nil {
 			continue
@@ -653,10 +666,63 @@ func limitUpstreamsInMaps(maps []*map[string][]upstream.Upstream, maxCount int) 
 
 		for domain, upstreams := range *currentMap {
 			if len(upstreams) > maxCount {
+				removed := len(upstreams) - maxCount
 				(*currentMap)[domain] = upstreams[:maxCount]
+				domainsAffected++
+				totalRemoved += removed
 			}
 		}
 	}
+
+	return domainsAffected, totalRemoved
+}
+
+// enforceMaxDomainMappings 限制域名映射总数量, 优先保留更具体域名映射
+// - 先裁剪 DomainReservedUpstreams, 如仍超限再裁剪 SpecifiedDomainUpstreams
+// - 返回各自被移除的条目数量
+func enforceMaxDomainMappings(upsConf *proxy.UpstreamConfig, maxDomains int) (removedReserved int, removedSpecified int) {
+	if upsConf == nil || maxDomains <= 0 {
+		return 0, 0
+	}
+
+	reservedCount := len(upsConf.DomainReservedUpstreams)
+	specifiedCount := len(upsConf.SpecifiedDomainUpstreams)
+	total := reservedCount + specifiedCount
+	if total <= maxDomains {
+		return 0, 0
+	}
+
+	toRemove := total - maxDomains
+
+	// 从保留域开始裁剪
+	if toRemove > 0 && reservedCount > 0 {
+		keys := make([]string, 0, len(upsConf.DomainReservedUpstreams))
+		for k := range upsConf.DomainReservedUpstreams {
+			keys = append(keys, k)
+		}
+		slices.Sort(keys)
+		for i := len(keys) - 1; i >= 0 && toRemove > 0; i-- {
+			delete(upsConf.DomainReservedUpstreams, keys[i])
+			removedReserved++
+			toRemove--
+		}
+	}
+
+	// 再裁剪具体域
+	if toRemove > 0 && specifiedCount > 0 {
+		keys := make([]string, 0, len(upsConf.SpecifiedDomainUpstreams))
+		for k := range upsConf.SpecifiedDomainUpstreams {
+			keys = append(keys, k)
+		}
+		slices.Sort(keys)
+		for i := len(keys) - 1; i >= 0 && toRemove > 0; i-- {
+			delete(upsConf.SpecifiedDomainUpstreams, keys[i])
+			removedSpecified++
+			toRemove--
+		}
+	}
+
+	return removedReserved, removedSpecified
 }
 
 // prepareUpstreamSettings sets upstream DNS server settings.
@@ -687,7 +753,10 @@ func (s *Server) prepareUpstreamSettings(boot upstream.Resolver) (err error) {
 		return fmt.Errorf("preparing upstream config: %w", err)
 	}
 
+	// After preparing general upstream config, enforce per-domain upstream limits
+	// before merging alternate upstreams, so built-in rules are preserved.
 	s.conf.UpstreamConfig = uc
+	limitUpstreamsPerDomain(s.conf.UpstreamConfig, s.conf.MaxUpstreamsPerDomain)
 	s.conf.ClientsContainer.UpdateCommonUpstreamConfig(&client.CommonUpstreamConfig{
 		Bootstrap:               boot,
 		UpstreamTimeout:         s.conf.UpstreamTimeout,
@@ -751,10 +820,31 @@ func (s *Server) mergeAlternateUpstreams(altUC *proxy.UpstreamConfig) {
 		s.conf.UpstreamConfig.DomainReservedUpstreams = make(map[string][]upstream.Upstream)
 	}
 
-	// Merge the alternate upstreams into the main config
+	// Merge the alternate upstreams into the main config with domain cap
+	maxDomains := s.conf.MaxDomainUpstreams
+	currentCount := len(s.conf.UpstreamConfig.DomainReservedUpstreams) + len(s.conf.UpstreamConfig.SpecifiedDomainUpstreams)
+	skipped := 0
 	for domain, upstreams := range altUC.DomainReservedUpstreams {
-		// append "." to domain to make it a FQDN
-		s.conf.UpstreamConfig.DomainReservedUpstreams[dns.Fqdn(domain)] = upstreams
+		fqdn := dns.Fqdn(domain)
+		// If domain cap is configured (>0) and adding a new domain would exceed it,
+		// skip adding further entries. Overwriting an existing domain does not
+		// change the count and is allowed.
+		if maxDomains > 0 {
+			if _, exists := s.conf.UpstreamConfig.DomainReservedUpstreams[fqdn]; !exists {
+				if currentCount >= maxDomains {
+					skipped++
+					continue
+				}
+				currentCount++
+			}
+		}
+		s.conf.UpstreamConfig.DomainReservedUpstreams[fqdn] = upstreams
+	}
+	if skipped > 0 {
+		log.Info(
+			"dnsforward: warning: skipped %d alternate domain upstream mappings due to max_domain_upstreams=%d (current=%d)",
+			skipped, maxDomains, currentCount,
+		)
 	}
 }
 
