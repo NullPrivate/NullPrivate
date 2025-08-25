@@ -131,4 +131,7 @@ tool (
 	mvdan.cc/unparam
 )
 
-replace github.com/AdguardTeam/dnsproxy v0.75.5 => github.com/NullPrivate/dnsproxy v0.75.7
+replace github.com/AdguardTeam/dnsproxy v0.75.5 => github.com/NullPrivate/dnsproxy v0.75.8
+
+// 使用本地dnsproxy
+// replace github.com/AdguardTeam/dnsproxy v0.75.5 => ../dnsproxy

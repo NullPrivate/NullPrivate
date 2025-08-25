@@ -18,8 +18,8 @@ github.com/BurntSushi/toml v1.5.0 h1:W5quZX/G/csjUnuI8SUYlsHs9M38FC7znL0lIO+DvMg
 github.com/BurntSushi/toml v1.5.0/go.mod h1:ukJfTF/6rtPPRCnwkur4qwRxa8vTRFBF0uk2lLoLwho=
 github.com/NYTimes/gziphandler v1.1.1 h1:ZUDjpQae29j0ryrS0u/B8HZfJBtBQHjqw2rQ2cqUQ3I=
 github.com/NYTimes/gziphandler v1.1.1/go.mod h1:n/CVRwUEOgIxrgPvAQhUUr9oeUtvrhMomdKFjzJNB0c=
-github.com/NullPrivate/dnsproxy v0.75.7 h1:TVmhHm1fKEkS2CZ7geXZ74VWly78tfWQbzNbeOs3xyo=
-github.com/NullPrivate/dnsproxy v0.75.7/go.mod h1:fdwtHhrDkTueDagDCasYKZbXdppkkBXW7RGPBNH+pis=
+github.com/NullPrivate/dnsproxy v0.75.8 h1:RK+dZrdqCiTZiN4woxZQdmIeIc3HJ3TBsMndJmfuZYM=
+github.com/NullPrivate/dnsproxy v0.75.8/go.mod h1:pyM2ij7uJVrSmbhr7JVtcq/SZrXIEflD1RfjUT3IAU4=
 github.com/ameshkov/dnscrypt/v2 v2.4.0 h1:if6ZG2cuQmcP2TwSY+D0+8+xbPfoatufGlOQTMNkI9o=
 github.com/ameshkov/dnscrypt/v2 v2.4.0/go.mod h1:WpEFV2uhebXb8Jhes/5/fSdpmhGV8TL22RDaeWwV6hI=
 github.com/ameshkov/dnsstamps v1.0.3 h1:Srzik+J9mivH1alRACTbys2xOxs0lRH9qnTA7Y1OYVo=
