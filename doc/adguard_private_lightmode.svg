@@ -7,10 +7,8 @@
     </defs>
     <g fillRule="evenodd">
         <!-- Logo Text -->
-        <text x="50" y="15" fill="#1a73e8" alignment-baseline="auto" font-weight="900" font-family="Arial, sans-serif"
-            letterSpacing="0em" text-anchor="start">NULL</text>
-        <text x="50" y="35" fill="#5f6368" alignment-baseline="auto" font-weight="700" font-size="18" font-family="Arial, sans-serif"
-            letterSpacing="0em" text-anchor="start">Private</text>
+        <text x="50" y="24" fill="#1a73e8" alignment-baseline="middle" font-weight="600" font-family="Arial, sans-serif"
+            font-size="24px" letterSpacing="0em" text-anchor="start">宁屏</text>
         
         <!-- Colorful Overlapping Circles -->
         <g clip-path="url(#circleMask)">

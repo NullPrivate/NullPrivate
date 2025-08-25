@@ -36,7 +36,7 @@ export const Login = () => {
 
                 <Form onSubmit={handleSubmit} processing={processingLogin} />
 
-                <div className="login__info">
+                {/* <div className="login__info">
                     <button type="button" className="btn btn-link login__link" onClick={toggleText}>
                         <Trans>forgot_password</Trans>
                     </button>
@@ -57,7 +57,7 @@ export const Login = () => {
                             </Trans>
                         </div>
                     )}
-                </div>
+                </div> */}
             </div>
 
             <Footer />
