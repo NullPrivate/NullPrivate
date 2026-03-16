@@ -1080,7 +1080,7 @@ func New(c *Config, blockFilters []Filter) (d *DNSFilter, err error) {
 	}
 
 	if d.conf.BlockedServices != nil {
-		if err = d.preloadBlockedServicesAtStartup(); err != nil {
+		if err = d.validateBlockedServicesAtStartup(); err != nil {
 			return nil, fmt.Errorf("filtering: %w", err)
 		}
 	}
@@ -1124,30 +1124,15 @@ func (d *DNSFilter) validateAndCopySafeFSPatterns(patterns []string) error {
 	return nil
 }
 
-// preloadBlockedServicesAtStartup preloads dynamic service sources (with timeout)
-// and validates configured IDs, falling back to built-ins on failure.
-func (d *DNSFilter) preloadBlockedServicesAtStartup() error {
-	// 1) 初始化并尝试同步加载服务源（带超时，避免卡住启动）。
-	d.initServiceLoader()
-	serviceLoaderMu.RLock()
-	loader := serviceLoader
-	serviceLoaderMu.RUnlock()
-
-	if loader != nil {
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-		if _, e := loader.LoadServices(ctx); e != nil {
-			log.Error("filtering: preload services failed at startup: %s", e)
-			// 回退到内置列表
-			initBlockedServices()
-		} else {
-			updateBlockedServicesFromLoader(context.Background())
-		}
-	} else {
-		initBlockedServices()
-	}
-
-	// 2) 规范化与校验（此时 serviceRules 已包含动态或内置服务）。
+// validateBlockedServicesAtStartup validates configured blocked-service IDs
+// against the already initialized service rules.
+//
+// Dynamic service catalogs are intentionally not loaded here.  At this stage
+// the filtering config may already contain an HTTP client that depends on the
+// DNS server being initialized later in the startup sequence.  The early
+// preload in home.PreloadServiceCatalog and the later loader initialization in
+// DNSFilter.Start provide the actual catalog loading at safe points.
+func (d *DNSFilter) validateBlockedServicesAtStartup() error {
 	kept, dropped := SanitizeBlockedServiceIDs(d.conf.BlockedServices.IDs)
 	if len(dropped) > 0 {
 		log.Error("filtering: ignoring unknown blocked-service ids at startup: %v", dropped)
