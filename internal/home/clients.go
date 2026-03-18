@@ -92,7 +92,13 @@ func (clients *clientsContainer) Init(
 	confClients := make([]*client.Persistent, 0, len(objects))
 	for i, o := range objects {
 		var p *client.Persistent
-		p, err = o.toPersistent(ctx, baseLogger, clients.safeSearchCacheSize, clients.safeSearchCacheTTL)
+		p, err = o.toPersistent(
+			ctx,
+			baseLogger,
+			clients.safeSearchCacheSize,
+			clients.safeSearchCacheTTL,
+			filteringConf.ServiceURLs,
+		)
 		if err != nil {
 			return fmt.Errorf("init persistent client at index %d: %w", i, err)
 		}
@@ -192,6 +198,7 @@ func (o *clientObject) toPersistent(
 	baseLogger *slog.Logger,
 	safeSearchCacheSize uint,
 	safeSearchCacheTTL time.Duration,
+	serviceURLs filtering.ServicesURLs,
 ) (cli *client.Persistent, err error) {
 	cli = &client.Persistent{
 		Name: o.Name,
@@ -225,7 +232,7 @@ func (o *clientObject) toPersistent(
 		return nil, err
 	}
 
-	cli.BlockedServices, err = o.prepareBlockedServices(baseLogger, cli.Name)
+	cli.BlockedServices, err = o.prepareBlockedServices(baseLogger, cli.Name, serviceURLs)
 	if err != nil {
 		return nil, err
 	}
@@ -278,12 +285,21 @@ func (o *clientObject) initSafeSearchIfEnabled(
 	return nil
 }
 
-// prepareBlockedServices ensures blocked services are initialized, sanitized, validated.
-func (o *clientObject) prepareBlockedServices(baseLogger *slog.Logger, cliName string) (*filtering.BlockedServices, error) {
+// prepareBlockedServices ensures blocked services are initialized and
+// normalized against the active blocked-services catalog.
+func (o *clientObject) prepareBlockedServices(
+	baseLogger *slog.Logger,
+	cliName string,
+	serviceURLs filtering.ServicesURLs,
+) (*filtering.BlockedServices, error) {
 	if o.BlockedServices == nil {
 		o.BlockedServices = &filtering.BlockedServices{
 			Schedule: schedule.EmptyWeekly(),
 		}
+	}
+
+	if len(serviceURLs) != 0 && !filtering.IsBlockedServicesCatalogReady(serviceURLs) {
+		return o.BlockedServices.Clone(), nil
 	}
 
 	// 启动阶段不因未知服务而失败：剔除未知 ID 并记录日志，然后校验。
@@ -300,6 +316,58 @@ func (o *clientObject) prepareBlockedServices(baseLogger *slog.Logger, cliName s
 	}
 
 	return o.BlockedServices.Clone(), nil
+}
+
+func (clients *clientsContainer) normalizeBlockedServices() (changed bool) {
+	if clients.storage == nil {
+		return false
+	}
+
+	persistent := []*client.Persistent{}
+	clients.storage.RangeByName(func(c *client.Persistent) (cont bool) {
+		persistent = append(persistent, c.ShallowClone())
+
+		return true
+	})
+
+	ctx := context.Background()
+	for _, cli := range persistent {
+		if cli.BlockedServices == nil || len(cli.BlockedServices.IDs) == 0 {
+			continue
+		}
+
+		kept, dropped := filtering.SanitizeBlockedServiceIDs(cli.BlockedServices.IDs)
+		if len(dropped) == 0 {
+			continue
+		}
+
+		clients.logger.Error(
+			"client: removing unknown blocked-service ids after catalog change",
+			slogutil.KeyError,
+			fmt.Errorf("%v", dropped),
+			safesearch.LogKeyClient,
+			cli.Name,
+		)
+		cli.BlockedServices.IDs = kept
+
+		err := clients.storage.Update(ctx, cli.Name, cli)
+		if err != nil {
+			clients.logger.ErrorContext(
+				ctx,
+				"client: updating blocked services after catalog change",
+				slogutil.KeyError,
+				err,
+				safesearch.LogKeyClient,
+				cli.Name,
+			)
+
+			continue
+		}
+
+		changed = true
+	}
+
+	return changed
 }
 
 // forConfig returns all currently known persistent clients as objects for the

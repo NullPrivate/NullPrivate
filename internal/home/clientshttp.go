@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/netip"
+	"slices"
 
 	"github.com/AdguardTeam/AdGuardHome/internal/aghalg"
 	"github.com/AdguardTeam/AdGuardHome/internal/aghhttp"
@@ -62,6 +63,33 @@ type clientJSON struct {
 
 	UpstreamsCacheSize    uint32          `json:"upstreams_cache_size"`
 	UpstreamsCacheEnabled aghalg.NullBool `json:"upstreams_cache_enabled"`
+}
+
+type clientRequestJSON struct {
+	clientJSON
+
+	blockedServicesSet bool
+}
+
+func (cj *clientRequestJSON) UnmarshalJSON(data []byte) (err error) {
+	type clientJSONFields clientJSON
+
+	decoded := &clientJSONFields{}
+	err = json.Unmarshal(data, decoded)
+	if err != nil {
+		return err
+	}
+
+	fields := map[string]json.RawMessage{}
+	err = json.Unmarshal(data, &fields)
+	if err != nil {
+		return err
+	}
+
+	cj.clientJSON = clientJSON(*decoded)
+	_, cj.blockedServicesSet = fields["blocked_services"]
+
+	return nil
 }
 
 // runtimeClientJSON is a JSON representation of the [client.Runtime].
@@ -129,7 +157,7 @@ func (clients *clientsContainer) handleGetClients(w http.ResponseWriter, r *http
 
 // initPrev initializes the persistent client with the default or previous
 // client properties.
-func initPrev(cj clientJSON, prev *client.Persistent) (c *client.Persistent, err error) {
+func initPrev(cj clientRequestJSON, prev *client.Persistent) (c *client.Persistent, err error) {
 	var (
 		uid              client.UID
 		ignoreQueryLog   bool
@@ -159,7 +187,13 @@ func initPrev(cj clientJSON, prev *client.Persistent) (c *client.Persistent, err
 		upsCacheSize = cj.UpstreamsCacheSize
 	}
 
-	svcs, err := copyBlockedServices(cj.Schedule, cj.BlockedServices, prev)
+	svcs, err := copyBlockedServices(
+		cj.Schedule,
+		cj.BlockedServices,
+		prev,
+		blockedServicesCatalogReady(),
+		cj.blockedServicesSet,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("invalid blocked services: %w", err)
 	}
@@ -181,11 +215,19 @@ func initPrev(cj clientJSON, prev *client.Persistent) (c *client.Persistent, err
 	}, nil
 }
 
+func blockedServicesCatalogReady() (ready bool) {
+	if globalContext.filters == nil {
+		return true
+	}
+
+	return globalContext.filters.BlockedServicesCatalogReady()
+}
+
 // jsonToClient converts JSON object to persistent client object if there are no
 // errors.
 func (clients *clientsContainer) jsonToClient(
 	ctx context.Context,
-	cj clientJSON,
+	cj clientRequestJSON,
 	prev *client.Persistent,
 ) (c *client.Persistent, err error) {
 	c, err = initPrev(cj, prev)
@@ -268,6 +310,8 @@ func copyBlockedServices(
 	sch *schedule.Weekly,
 	svcStrs []string,
 	prev *client.Persistent,
+	catalogReady bool,
+	blockedServicesSet bool,
 ) (svcs *filtering.BlockedServices, err error) {
 	var weekly *schedule.Weekly
 	if sch != nil {
@@ -278,9 +322,25 @@ func copyBlockedServices(
 		weekly = schedule.EmptyWeekly()
 	}
 
+	var ids []string
+	if blockedServicesSet {
+		ids = slices.Clone(svcStrs)
+	} else if prev != nil && prev.BlockedServices != nil {
+		ids = slices.Clone(prev.BlockedServices.IDs)
+	}
+
 	svcs = &filtering.BlockedServices{
 		Schedule: weekly,
-		IDs:      svcStrs,
+		IDs:      ids,
+	}
+
+	if !catalogReady || !blockedServicesSet {
+		return svcs, nil
+	}
+
+	kept, dropped := filtering.SanitizeBlockedServiceIDs(svcs.IDs)
+	if len(dropped) > 0 {
+		svcs.IDs = kept
 	}
 
 	err = svcs.Validate()
@@ -324,9 +384,27 @@ func clientToJSON(c *client.Persistent) (cj *clientJSON) {
 	}
 }
 
+func (clients *clientsContainer) persistentByName(name string) (cli *client.Persistent) {
+	if clients.storage == nil {
+		return nil
+	}
+
+	clients.storage.RangeByName(func(c *client.Persistent) (cont bool) {
+		if c.Name != name {
+			return true
+		}
+
+		cli = c.ShallowClone()
+
+		return false
+	})
+
+	return cli
+}
+
 // handleAddClient is the handler for POST /control/clients/add HTTP API.
 func (clients *clientsContainer) handleAddClient(w http.ResponseWriter, r *http.Request) {
-	cj := clientJSON{}
+	cj := clientRequestJSON{}
 	err := json.NewDecoder(r.Body).Decode(&cj)
 	if err != nil {
 		aghhttp.Error(r, w, http.StatusBadRequest, "failed to process request body: %s", err)
@@ -386,11 +464,16 @@ type updateJSON struct {
 	Data clientJSON `json:"data"`
 }
 
+type updateRequestJSON struct {
+	Name string            `json:"name"`
+	Data clientRequestJSON `json:"data"`
+}
+
 // handleUpdateClient is the handler for POST /control/clients/update HTTP API.
 //
 // TODO(s.chzhen):  Accept updated parameters instead of whole structure.
 func (clients *clientsContainer) handleUpdateClient(w http.ResponseWriter, r *http.Request) {
-	dj := updateJSON{}
+	dj := updateRequestJSON{}
 	err := json.NewDecoder(r.Body).Decode(&dj)
 	if err != nil {
 		aghhttp.Error(r, w, http.StatusBadRequest, "failed to process request body: %s", err)
@@ -404,7 +487,9 @@ func (clients *clientsContainer) handleUpdateClient(w http.ResponseWriter, r *ht
 		return
 	}
 
-	c, err := clients.jsonToClient(r.Context(), dj.Data, nil)
+	prev := clients.persistentByName(dj.Name)
+
+	c, err := clients.jsonToClient(r.Context(), dj.Data, prev)
 	if err != nil {
 		aghhttp.Error(r, w, http.StatusBadRequest, "%s", err)
 

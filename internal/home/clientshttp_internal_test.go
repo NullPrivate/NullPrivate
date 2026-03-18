@@ -3,6 +3,7 @@ package home
 import (
 	"bytes"
 	"cmp"
+	"context"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 	"net/netip"
 	"net/url"
 	"slices"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -117,7 +119,10 @@ func assertPersistentClients(tb testing.TB, clients *clientsContainer, want []*c
 	ctx := testutil.ContextWithTimeout(tb, testTimeout)
 	for _, cj := range clientList.Clients {
 		var c *client.Persistent
-		c, err = clients.jsonToClient(ctx, *cj, nil)
+		c, err = clients.jsonToClient(ctx, clientRequestJSON{
+			clientJSON:         *cj,
+			blockedServicesSet: true,
+		}, nil)
 		require.NoError(tb, err)
 
 		got = append(got, c)
@@ -141,7 +146,10 @@ func assertPersistentClientsData(
 	for _, cm := range data {
 		for _, cj := range cm {
 			var c *client.Persistent
-			c, err := clients.jsonToClient(ctx, *cj, nil)
+			c, err := clients.jsonToClient(ctx, clientRequestJSON{
+				clientJSON:         *cj,
+				blockedServicesSet: true,
+			}, nil)
 			require.NoError(tb, err)
 
 			got = append(got, c)
@@ -149,6 +157,20 @@ func assertPersistentClientsData(
 	}
 
 	assertClients(tb, want, got)
+}
+
+func setTestFilters(t *testing.T, d *filtering.DNSFilter) {
+	t.Helper()
+
+	prev := globalContext.filters
+	globalContext.filters = d
+
+	t.Cleanup(func() {
+		globalContext.filters = prev
+		if d != nil {
+			d.Close()
+		}
+	})
 }
 
 func TestClientsContainer_HandleAddClient(t *testing.T) {
@@ -346,6 +368,306 @@ func TestClientsContainer_HandleUpdateClient(t *testing.T) {
 			assertPersistentClients(t, clients, tc.wantClient)
 		})
 	}
+}
+
+func TestClientsContainer_HandleAddClient_preservesPendingBlockedServices(t *testing.T) {
+	filtering.PreloadServiceCatalog(context.Background(), &filtering.Config{}, nil)
+
+	var hits atomic.Int32
+
+	d, err := filtering.New(&filtering.Config{
+		DataDir: t.TempDir(),
+		ServiceURLs: []string{filteringServeHTTPLocally(t, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			hits.Add(1)
+			http.Error(w, "upstream failure", http.StatusInternalServerError)
+		}))},
+		HTTPClient: &http.Client{
+			Timeout: testTimeout,
+		},
+	}, nil)
+	require.NoError(t, err)
+	setTestFilters(t, d)
+
+	clients := newClientsContainer(t)
+
+	body, err := json.Marshal(clientJSON{
+		Name:            "dynamic-client",
+		IDs:             []string{testClientIP1},
+		BlockedServices: []string{"dynamic_service"},
+	})
+	require.NoError(t, err)
+
+	r, err := http.NewRequest(http.MethodPost, "", bytes.NewReader(body))
+	require.NoError(t, err)
+
+	rw := httptest.NewRecorder()
+	clients.handleAddClient(rw, r)
+	require.Equal(t, http.StatusOK, rw.Code)
+
+	var got *client.Persistent
+	clients.storage.RangeByName(func(c *client.Persistent) (cont bool) {
+		got = c.ShallowClone()
+
+		return false
+	})
+
+	require.NotNil(t, got)
+	require.Equal(t, []string{"dynamic_service"}, got.BlockedServices.IDs)
+	require.Zero(t, hits.Load())
+}
+
+func TestClientsContainer_HandleAddClient_doesNotWarmPendingCatalogWithoutBlockedServices(t *testing.T) {
+	filtering.PreloadServiceCatalog(context.Background(), &filtering.Config{}, nil)
+
+	var hits atomic.Int32
+
+	d, err := filtering.New(&filtering.Config{
+		DataDir: t.TempDir(),
+		ServiceURLs: []string{filteringServeHTTPLocally(t, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			hits.Add(1)
+			http.Error(w, "upstream failure", http.StatusInternalServerError)
+		}))},
+		HTTPClient: &http.Client{
+			Timeout: testTimeout,
+		},
+	}, nil)
+	require.NoError(t, err)
+	setTestFilters(t, d)
+
+	clients := newClientsContainer(t)
+
+	body, err := json.Marshal(clientJSON{
+		Name: "plain-client",
+		IDs:  []string{testClientIP1},
+	})
+	require.NoError(t, err)
+
+	r, err := http.NewRequest(http.MethodPost, "", bytes.NewReader(body))
+	require.NoError(t, err)
+
+	rw := httptest.NewRecorder()
+	clients.handleAddClient(rw, r)
+	require.Equal(t, http.StatusOK, rw.Code)
+	require.Zero(t, hits.Load())
+}
+
+func TestClientsContainer_HandleUpdateClient_clearsPendingBlockedServicesWhenExplicitEmpty(t *testing.T) {
+	filtering.PreloadServiceCatalog(context.Background(), &filtering.Config{}, nil)
+
+	var hits atomic.Int32
+
+	d, err := filtering.New(&filtering.Config{
+		DataDir: t.TempDir(),
+		ServiceURLs: []string{filteringServeHTTPLocally(t, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			hits.Add(1)
+			http.Error(w, "upstream failure", http.StatusInternalServerError)
+		}))},
+		HTTPClient: &http.Client{
+			Timeout: testTimeout,
+		},
+	}, nil)
+	require.NoError(t, err)
+	setTestFilters(t, d)
+
+	clients := newClientsContainer(t)
+	ctx := testutil.ContextWithTimeout(t, testTimeout)
+
+	var weekly schedule.Weekly
+	err = json.Unmarshal([]byte(`{"time_zone":"Asia/Shanghai"}`), &weekly)
+	require.NoError(t, err)
+
+	prev := newPersistentClientWithIDs(t, "client1", []string{testClientIP1})
+	prev.BlockedServices = &filtering.BlockedServices{
+		Schedule: &weekly,
+		IDs:      []string{"dynamic_service"},
+	}
+
+	err = clients.storage.Add(ctx, prev)
+	require.NoError(t, err)
+
+	reqBody, err := json.Marshal(updateJSON{
+		Name: prev.Name,
+		Data: clientJSON{
+			Name:            "client-renamed",
+			IDs:             []string{testClientIP2},
+			BlockedServices: []string{},
+		},
+	})
+	require.NoError(t, err)
+
+	r, err := http.NewRequest(http.MethodPost, "", bytes.NewReader(reqBody))
+	require.NoError(t, err)
+
+	rw := httptest.NewRecorder()
+	clients.handleUpdateClient(rw, r)
+	require.Equal(t, http.StatusOK, rw.Code)
+
+	got := clients.persistentByName("client-renamed")
+	require.NotNil(t, got)
+	require.Empty(t, got.BlockedServices.IDs)
+	data, err := got.BlockedServices.Schedule.MarshalJSON()
+	require.NoError(t, err)
+	assert.Contains(t, string(data), `"time_zone":"Asia/Shanghai"`)
+	require.Zero(t, hits.Load())
+}
+
+func TestClientsContainer_HandleUpdateClient_preservesPendingBlockedServicesWhenFieldOmitted(t *testing.T) {
+	filtering.PreloadServiceCatalog(context.Background(), &filtering.Config{}, nil)
+
+	var hits atomic.Int32
+
+	d, err := filtering.New(&filtering.Config{
+		DataDir: t.TempDir(),
+		ServiceURLs: []string{filteringServeHTTPLocally(t, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			hits.Add(1)
+			http.Error(w, "upstream failure", http.StatusInternalServerError)
+		}))},
+		HTTPClient: &http.Client{
+			Timeout: testTimeout,
+		},
+	}, nil)
+	require.NoError(t, err)
+	setTestFilters(t, d)
+
+	clients := newClientsContainer(t)
+	ctx := testutil.ContextWithTimeout(t, testTimeout)
+
+	var weekly schedule.Weekly
+	err = json.Unmarshal([]byte(`{"time_zone":"Asia/Shanghai"}`), &weekly)
+	require.NoError(t, err)
+
+	prev := newPersistentClientWithIDs(t, "client1", []string{testClientIP1})
+	prev.BlockedServices = &filtering.BlockedServices{
+		Schedule: &weekly,
+		IDs:      []string{"dynamic_service"},
+	}
+
+	err = clients.storage.Add(ctx, prev)
+	require.NoError(t, err)
+
+	reqBody := []byte(`{"name":"client1","data":{"name":"client-renamed","ids":["2.2.2.2"]}}`)
+	r, err := http.NewRequest(http.MethodPost, "", bytes.NewReader(reqBody))
+	require.NoError(t, err)
+
+	rw := httptest.NewRecorder()
+	clients.handleUpdateClient(rw, r)
+	require.Equal(t, http.StatusOK, rw.Code)
+
+	got := clients.persistentByName("client-renamed")
+	require.NotNil(t, got)
+	require.Equal(t, []string{"dynamic_service"}, got.BlockedServices.IDs)
+	data, err := got.BlockedServices.Schedule.MarshalJSON()
+	require.NoError(t, err)
+	assert.Contains(t, string(data), `"time_zone":"Asia/Shanghai"`)
+	require.Zero(t, hits.Load())
+}
+
+func TestClientsContainer_HandleUpdateClient_replacesPendingBlockedServicesWhenExplicitList(t *testing.T) {
+	filtering.PreloadServiceCatalog(context.Background(), &filtering.Config{}, nil)
+
+	var hits atomic.Int32
+
+	d, err := filtering.New(&filtering.Config{
+		DataDir: t.TempDir(),
+		ServiceURLs: []string{filteringServeHTTPLocally(t, http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			hits.Add(1)
+			http.Error(w, "upstream failure", http.StatusInternalServerError)
+		}))},
+		HTTPClient: &http.Client{
+			Timeout: testTimeout,
+		},
+	}, nil)
+	require.NoError(t, err)
+	setTestFilters(t, d)
+
+	clients := newClientsContainer(t)
+	ctx := testutil.ContextWithTimeout(t, testTimeout)
+
+	prev := newPersistentClientWithIDs(t, "client1", []string{testClientIP1})
+	prev.BlockedServices = &filtering.BlockedServices{
+		Schedule: schedule.EmptyWeekly(),
+		IDs:      []string{"dynamic_service"},
+	}
+
+	err = clients.storage.Add(ctx, prev)
+	require.NoError(t, err)
+
+	reqBody, err := json.Marshal(updateJSON{
+		Name: prev.Name,
+		Data: clientJSON{
+			Name:            "client-renamed",
+			IDs:             []string{testClientIP2},
+			BlockedServices: []string{"new_dynamic"},
+		},
+	})
+	require.NoError(t, err)
+
+	r, err := http.NewRequest(http.MethodPost, "", bytes.NewReader(reqBody))
+	require.NoError(t, err)
+
+	rw := httptest.NewRecorder()
+	clients.handleUpdateClient(rw, r)
+	require.Equal(t, http.StatusOK, rw.Code)
+
+	got := clients.persistentByName("client-renamed")
+	require.NotNil(t, got)
+	require.Equal(t, []string{"new_dynamic"}, got.BlockedServices.IDs)
+	require.Zero(t, hits.Load())
+}
+
+func TestClientsContainer_HandleUpdateClient_readyPreservesWhenFieldOmittedAndClearsOnExplicitEmpty(t *testing.T) {
+	filtering.PreloadServiceCatalog(context.Background(), &filtering.Config{}, nil)
+
+	d, err := filtering.New(&filtering.Config{
+		DataDir: t.TempDir(),
+	}, nil)
+	require.NoError(t, err)
+	setTestFilters(t, d)
+
+	clients := newClientsContainer(t)
+	ctx := testutil.ContextWithTimeout(t, testTimeout)
+
+	prev := newPersistentClientWithIDs(t, "client1", []string{testClientIP1})
+	prev.BlockedServices = &filtering.BlockedServices{
+		Schedule: schedule.EmptyWeekly(),
+		IDs:      []string{"bilibili"},
+	}
+
+	err = clients.storage.Add(ctx, prev)
+	require.NoError(t, err)
+
+	reqBody := []byte(`{"name":"client1","data":{"name":"client-ready","ids":["2.2.2.2"]}}`)
+	r, err := http.NewRequest(http.MethodPost, "", bytes.NewReader(reqBody))
+	require.NoError(t, err)
+
+	rw := httptest.NewRecorder()
+	clients.handleUpdateClient(rw, r)
+	require.Equal(t, http.StatusOK, rw.Code)
+
+	got := clients.persistentByName("client-ready")
+	require.NotNil(t, got)
+	require.Equal(t, []string{"bilibili"}, got.BlockedServices.IDs)
+
+	reqBody, err = json.Marshal(updateJSON{
+		Name: "client-ready",
+		Data: clientJSON{
+			Name:            "client-cleared",
+			IDs:             []string{testClientIP1},
+			BlockedServices: []string{},
+		},
+	})
+	require.NoError(t, err)
+
+	r, err = http.NewRequest(http.MethodPost, "", bytes.NewReader(reqBody))
+	require.NoError(t, err)
+
+	rw = httptest.NewRecorder()
+	clients.handleUpdateClient(rw, r)
+	require.Equal(t, http.StatusOK, rw.Code)
+
+	got = clients.persistentByName("client-cleared")
+	require.NotNil(t, got)
+	require.Empty(t, got.BlockedServices.IDs)
 }
 
 func TestClientsContainer_HandleFindClient(t *testing.T) {

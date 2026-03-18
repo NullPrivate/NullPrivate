@@ -102,6 +102,31 @@ func (s *ServiceLoader) LoadServices(ctx context.Context) ([]blockedService, err
 	return nil, aggErr
 }
 
+// ReloadServices forces a refresh from the configured remote URLs.  It keeps
+// the last successful in-memory result untouched on failure.
+func (s *ServiceLoader) ReloadServices(ctx context.Context) ([]blockedService, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if err := s.ensureServiceDir(); err != nil {
+		return nil, fmt.Errorf("failed to create service cache directory: %w", err)
+	}
+
+	allServices, aggErr := s.reloadFromAllURLs(ctx)
+	if len(allServices) > 0 {
+		s.services = allServices
+		s.lastRefresh = time.Now()
+
+		return s.services, nil
+	}
+
+	if aggErr == nil {
+		aggErr = fmt.Errorf("no services loaded from configured URLs")
+	}
+
+	return nil, aggErr
+}
+
 // loadFromAllURLs iterates over configured URLs, loads services and aggregates errors.
 func (s *ServiceLoader) loadFromAllURLs(ctx context.Context) ([]blockedService, error) {
 	var allServices []blockedService
@@ -123,6 +148,34 @@ func (s *ServiceLoader) loadFromAllURLs(ctx context.Context) ([]blockedService, 
 		}
 		allServices = append(allServices, services...)
 	}
+	return allServices, aggErr
+}
+
+// reloadFromAllURLs forces downloading from all URLs and aggregates errors.
+func (s *ServiceLoader) reloadFromAllURLs(ctx context.Context) ([]blockedService, error) {
+	var allServices []blockedService
+	var aggErr error
+	for _, url := range s.urls {
+		cacheFile := s.cacheFileName(url)
+		services, err := s.downloadAndCache(ctx, url, cacheFile)
+		if err != nil {
+			if errors.Is(err, context.Canceled) {
+				s.logger.DebugContext(ctx, "reload services canceled", slogutil.KeyError, err, "url", url)
+			} else {
+				s.logger.ErrorContext(ctx, "failed to reload services from URL", slogutil.KeyError, err, "url", url)
+			}
+			if aggErr == nil {
+				aggErr = err
+			} else {
+				aggErr = fmt.Errorf("%w; %v", aggErr, err)
+			}
+
+			continue
+		}
+
+		allServices = append(allServices, services...)
+	}
+
 	return allServices, aggErr
 }
 
@@ -286,6 +339,23 @@ func convertToBlockedServices(hlServices []*hlServicesService) []blockedService 
 	return services
 }
 
+// loadBlockedServicesFromLoader loads blocked services through loader.
+func loadBlockedServicesFromLoader(
+	ctx context.Context,
+	loader *ServiceLoader,
+) (services []blockedService, err error) {
+	if loader == nil {
+		return nil, nil
+	}
+
+	services, err = loader.LoadServices(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return services, nil
+}
+
 // PreloadServiceCatalog 在启动早期预加载服务源，并更新全局的 serviceRules。
 // 这样在 clients 初始化阶段调用 SanitizeBlockedServiceIDs 时，能够识别来自
 // 动态服务源（service_urls）的 ID，避免被误判为未知而剔除。
@@ -296,35 +366,33 @@ func PreloadServiceCatalog(ctx context.Context, conf *Config, logger *slog.Logge
 		return
 	}
 
+	ensureBlockedServicesInitialized()
+
 	slogger := slog.Default()
 	if logger != nil {
 		slogger = logger
 	}
 
-	// 若未配置 service_urls，按内部默认值与现有逻辑处理
 	urls := conf.ServiceURLs
 	if len(urls) == 0 {
-		urls = []string{"https://hostlistsregistry.adguardprivate.com/assets/services.zh-cn.json"}
+		activateBuiltinCatalog(true)
+
+		return
 	}
 
 	loader := NewServiceLoader(urls, conf.DataDir, conf.HTTPClient, slogger)
-
-	// 设置为全局 loader，供后续使用
-	serviceLoaderMu.Lock()
-	serviceLoader = loader
-	serviceLoaderMu.Unlock()
+	rememberBlockedServicesLoader(urls, loader)
 
 	// 带超时的同步加载，避免阻塞启动过久
 	ctx2, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
-	if _, err := loader.LoadServices(ctx2); err != nil {
-		// 加载失败不阻断启动：回退至内置服务
+	services, err := loadBlockedServicesFromLoader(ctx2, loader)
+	if err != nil {
 		slogger.ErrorContext(ctx, "filtering: preload services failed at startup", slogutil.KeyError, err)
-		initBlockedServices()
+
 		return
 	}
 
-	// 将已加载的服务写入 serviceRules
-	updateBlockedServicesFromLoader(context.Background())
+	activateDynamicCatalog(urls, loader, services)
 }

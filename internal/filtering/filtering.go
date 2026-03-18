@@ -103,6 +103,11 @@ type Config struct {
 	// Called when the configuration is changed by HTTP request
 	ConfigModified func() `yaml:"-"`
 
+	// NormalizeBlockedServices normalizes blocked-services references stored
+	// outside of the filtering config after the active blocked-services catalog
+	// changes.  It should return true if it changed any persisted state.
+	NormalizeBlockedServices func() (changed bool) `yaml:"-"`
+
 	// Register an HTTP handler
 	HTTPRegister aghhttp.RegisterFunc `yaml:"-"`
 
@@ -1124,15 +1129,21 @@ func (d *DNSFilter) validateAndCopySafeFSPatterns(patterns []string) error {
 	return nil
 }
 
+// initializeBlockedServicesAtStartup makes sure blocked-service rules are
+// initialized before startup validation runs.
+func (d *DNSFilter) initializeBlockedServicesAtStartup() {
+	ensureBlockedServicesInitialized()
+}
+
 // validateBlockedServicesAtStartup validates configured blocked-service IDs
-// against the already initialized service rules.
-//
-// Dynamic service catalogs are intentionally not loaded here.  At this stage
-// the filtering config may already contain an HTTP client that depends on the
-// DNS server being initialized later in the startup sequence.  The early
-// preload in home.PreloadServiceCatalog and the later loader initialization in
-// DNSFilter.Start provide the actual catalog loading at safe points.
+// against the initialized service rules.
 func (d *DNSFilter) validateBlockedServicesAtStartup() error {
+	d.initializeBlockedServicesAtStartup()
+
+	if len(d.conf.ServiceURLs) != 0 && !isBlockedServicesCatalogReady(d.conf.ServiceURLs) {
+		return nil
+	}
+
 	kept, dropped := SanitizeBlockedServiceIDs(d.conf.BlockedServices.IDs)
 	if len(dropped) > 0 {
 		log.Error("filtering: ignoring unknown blocked-service ids at startup: %v", dropped)
@@ -1154,8 +1165,12 @@ func (d *DNSFilter) Start() {
 
 	d.RegisterFilteringHandlers()
 
-	// Initialize the service loader during startup
-	d.initServiceLoader()
+	urls := d.cloneConfiguredServiceURLs()
+	if len(urls) != 0 && !isBlockedServicesCatalogReady(urls) {
+		go func() {
+			_ = d.EnsureBlockedServicesCatalog()
+		}()
+	}
 
 	go d.updatesLoop()
 }

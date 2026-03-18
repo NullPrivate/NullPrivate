@@ -389,6 +389,7 @@ func setupDNSFilteringConf(
 	}
 
 	conf.ConfigModified = onConfigModified
+	conf.NormalizeBlockedServices = globalContext.clients.normalizeBlockedServices
 	conf.HTTPRegister = httpRegister
 	conf.DataDir = globalContext.getDataDir()
 	conf.Filters = slices.Clone(config.Filters)

@@ -17,112 +17,52 @@ import (
 	"github.com/AdguardTeam/urlfilter/rules"
 )
 
-// serviceRules maps a service ID to its filtering rules.
-var serviceRules map[string][]*rules.NetworkRule
+type blockedCatalogSource string
 
-// serviceIDs contains service IDs sorted alphabetically.
-var serviceIDs []string
+const (
+	blockedCatalogSourceBuiltin blockedCatalogSource = "builtin"
+	blockedCatalogSourceDynamic blockedCatalogSource = "dynamic"
+)
 
-// serviceLoader is the global service loader instance.
-var serviceLoader *ServiceLoader
+// blockedServicesCatalog is the single source of truth for the process-wide
+// blocked-services catalog state.
+type blockedServicesCatalog struct {
+	ids    []string
+	rules  map[string][]*rules.NetworkRule
+	loader *ServiceLoader
 
-// serviceLoaderMu protects the service loader instance.
-var serviceLoaderMu sync.RWMutex
+	services []blockedService
 
-// serviceRulesMu protects serviceIDs and serviceRules.
-var serviceRulesMu sync.RWMutex
+	source blockedCatalogSource
 
-// initBlockedServices initializes package-level blocked service data.
-func initBlockedServices() {
-	serviceRulesMu.Lock()
-	defer serviceRulesMu.Unlock()
-	l := len(blockedServices)
-	serviceIDs = make([]string, l)
-	serviceRules = make(map[string][]*rules.NetworkRule, l)
-	for i, s := range blockedServices {
-		netRules := make([]*rules.NetworkRule, 0, len(s.Rules))
-		for _, text := range s.Rules {
-			rule, err := rules.NewNetworkRule(text, rulelist.URLFilterIDBlockedService)
-			if err != nil {
-				log.Error("parsing blocked service %q rule %q: %s", s.ID, text, err)
-				continue
-			}
-
-			netRules = append(netRules, rule)
-		}
-		serviceIDs[i] = s.ID
-		serviceRules[s.ID] = netRules
-	}
-	slices.Sort(serviceIDs)
-	log.Debug("filtering: initialized %d services", l)
+	// configuredServiceURLs are the URLs associated with loader and the current
+	// desired dynamic source.  The active catalog only matches them when source
+	// is dynamic and activeServiceURLs are equal to the current config.
+	configuredServiceURLs ServicesURLs
+	activeServiceURLs     ServicesURLs
 }
 
-// InitServiceLoader initializes the service loader with the configured URLs.
-// It is called when the DNSFilter is created.
-func (d *DNSFilter) initServiceLoader() {
-	if len(d.conf.ServiceURLs) == 0 {
-		// d.conf.ServiceURLs = []string{"https://www.nullprivate.com/services/i18n/zh-cn.json"}
-		// d.conf.ServiceURLs = []string{"https://hostlistsregistry.nullprivate.com/assets/services.en-us.json"}
-		d.conf.ServiceURLs = []string{"https://hostlistsregistry.adguardprivate.com/assets/services.zh-cn.json"}
-	}
+var blockedCatalogMu sync.RWMutex
 
-	logger := slog.Default()
-	if d.logger != nil {
-		logger = d.logger
-	}
+var blockedCatalog blockedServicesCatalog
 
-	newLoader := NewServiceLoader(
-		d.conf.ServiceURLs,
-		d.conf.DataDir,
-		d.conf.HTTPClient,
-		logger,
-	)
-
-	// Use the service loader mutex to ensure that only one instance is created
-	// at a time.
-	serviceLoaderMu.Lock()
-	serviceLoader = newLoader
-	serviceLoaderMu.Unlock()
-
-	// 预加载服务：使用与请求无关的后台上下文，避免 r.Context() 很快被取消导致“context canceled”
-	go func() {
-		// 在goroutine中使用读锁访问 serviceLoader
-		serviceLoaderMu.RLock()
-		loader := serviceLoader
-		serviceLoaderMu.RUnlock()
-
-		// 预加载使用独立的超时上下文
-		preloadCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-		defer cancel()
-
-		if loader != nil {
-			_, err := loader.LoadServices(preloadCtx)
-			if err != nil {
-				log.Error("filtering: failed to load services: %s", err)
-			}
-		}
-	}()
-}
-
-// updateBlockedServicesFromLoader 从加载器中更新服务规则
-func updateBlockedServicesFromLoader(ctx context.Context) {
-	serviceLoaderMu.RLock()
-	loader := serviceLoader
-	serviceLoaderMu.RUnlock()
-
-	if loader == nil {
-		return
-	}
-	services := loader.GetBlockedServices(ctx)
+func cloneBlockedServices(services []blockedService) (cloned []blockedService) {
 	if len(services) == 0 {
-		log.Debug("filtering: no services loaded from URLs")
-		return
+		return nil
 	}
 
-	// 更新服务规则
-	newServiceIDs := make([]string, len(services))
-	newServiceRules := make(map[string][]*rules.NetworkRule, len(services))
+	cloned = make([]blockedService, len(services))
+	copy(cloned, services)
 
+	return cloned
+}
+
+func compileBlockedServices(
+	services []blockedService,
+) (ids []string, serviceRules map[string][]*rules.NetworkRule) {
+	l := len(services)
+	ids = make([]string, l)
+	serviceRules = make(map[string][]*rules.NetworkRule, l)
 	for i, s := range services {
 		netRules := make([]*rules.NetworkRule, 0, len(s.Rules))
 		for _, text := range s.Rules {
@@ -131,21 +71,246 @@ func updateBlockedServicesFromLoader(ctx context.Context) {
 				log.Error("parsing blocked service %q rule %q: %s", s.ID, text, err)
 				continue
 			}
+
 			netRules = append(netRules, rule)
 		}
-		newServiceIDs[i] = s.ID
-		newServiceRules[s.ID] = netRules
+
+		ids[i] = s.ID
+		serviceRules[s.ID] = netRules
 	}
 
-	slices.Sort(newServiceIDs)
+	slices.Sort(ids)
 
-	// 使用读写锁保护全局变量
-	serviceRulesMu.Lock()
-	serviceIDs = newServiceIDs
-	serviceRules = newServiceRules
-	serviceRulesMu.Unlock()
+	return ids, serviceRules
+}
 
-	log.Debug("filtering: updated %d services from dynamic sources", len(services))
+func setBuiltinCatalogLocked(clearDynamic bool) {
+	ids, serviceRules := compileBlockedServices(blockedServices)
+
+	blockedCatalog.ids = ids
+	blockedCatalog.rules = serviceRules
+	blockedCatalog.services = cloneBlockedServices(blockedServices)
+	blockedCatalog.source = blockedCatalogSourceBuiltin
+	blockedCatalog.activeServiceURLs = nil
+	if clearDynamic {
+		blockedCatalog.loader = nil
+		blockedCatalog.configuredServiceURLs = nil
+	}
+}
+
+func activateBuiltinCatalog(clearDynamic bool) {
+	blockedCatalogMu.Lock()
+	defer blockedCatalogMu.Unlock()
+
+	setBuiltinCatalogLocked(clearDynamic)
+}
+
+func rememberBlockedServicesLoader(urls ServicesURLs, loader *ServiceLoader) {
+	blockedCatalogMu.Lock()
+	defer blockedCatalogMu.Unlock()
+
+	blockedCatalog.loader = loader
+	blockedCatalog.configuredServiceURLs = slices.Clone(urls)
+}
+
+func activateDynamicCatalog(
+	urls ServicesURLs,
+	loader *ServiceLoader,
+	services []blockedService,
+) {
+	ids, serviceRules := compileBlockedServices(services)
+
+	blockedCatalogMu.Lock()
+	defer blockedCatalogMu.Unlock()
+
+	blockedCatalog.ids = ids
+	blockedCatalog.rules = serviceRules
+	blockedCatalog.services = cloneBlockedServices(services)
+	blockedCatalog.source = blockedCatalogSourceDynamic
+	blockedCatalog.loader = loader
+	blockedCatalog.configuredServiceURLs = slices.Clone(urls)
+	blockedCatalog.activeServiceURLs = slices.Clone(urls)
+}
+
+func blockedServicesCatalogSnapshot() (catalog blockedServicesCatalog) {
+	ensureBlockedServicesInitialized()
+
+	blockedCatalogMu.RLock()
+	defer blockedCatalogMu.RUnlock()
+
+	catalog = blockedCatalog
+	catalog.ids = slices.Clone(blockedCatalog.ids)
+	catalog.services = cloneBlockedServices(blockedCatalog.services)
+	catalog.configuredServiceURLs = slices.Clone(blockedCatalog.configuredServiceURLs)
+	catalog.activeServiceURLs = slices.Clone(blockedCatalog.activeServiceURLs)
+
+	return catalog
+}
+
+func currentBlockedServicesLoader(urls ServicesURLs) (loader *ServiceLoader) {
+	blockedCatalogMu.RLock()
+	defer blockedCatalogMu.RUnlock()
+
+	if blockedCatalog.loader == nil || !slices.Equal(blockedCatalog.configuredServiceURLs, urls) {
+		return nil
+	}
+
+	return blockedCatalog.loader
+}
+
+func isBlockedServicesCatalogReady(urls ServicesURLs) (ok bool) {
+	if len(urls) == 0 {
+		return true
+	}
+
+	blockedCatalogMu.RLock()
+	defer blockedCatalogMu.RUnlock()
+
+	return blockedCatalog.source == blockedCatalogSourceDynamic &&
+		slices.Equal(blockedCatalog.activeServiceURLs, urls)
+}
+
+// IsBlockedServicesCatalogReady reports whether the current process-wide
+// blocked-services catalog is already resolved for urls.
+func IsBlockedServicesCatalogReady(urls ServicesURLs) (ok bool) {
+	return isBlockedServicesCatalogReady(urls)
+}
+
+// BlockedServicesCatalogReady reports whether the catalog for the current
+// filter configuration is already active without triggering any warmup.
+func (d *DNSFilter) BlockedServicesCatalogReady() (ok bool) {
+	urls := d.cloneConfiguredServiceURLs()
+	if len(urls) == 0 {
+		return true
+	}
+
+	return isBlockedServicesCatalogReady(urls)
+}
+
+// ensureBlockedServicesInitialized makes sure blocked-service rules are always
+// backed by at least the built-in catalog.
+func ensureBlockedServicesInitialized() {
+	blockedCatalogMu.Lock()
+	defer blockedCatalogMu.Unlock()
+
+	if blockedCatalog.rules != nil {
+		return
+	}
+
+	setBuiltinCatalogLocked(false)
+}
+
+// initBlockedServices initializes package-level blocked service data.
+func initBlockedServices() {
+	activateBuiltinCatalog(false)
+	log.Debug("filtering: initialized %d services", len(blockedServices))
+}
+
+// getOrInitServiceLoader returns the current service loader, initializing it
+// from the DNS filter configuration if needed.
+func (d *DNSFilter) getOrInitServiceLoader() (loader *ServiceLoader) {
+	urls := slices.Clone(d.conf.ServiceURLs)
+	loader = currentBlockedServicesLoader(urls)
+	if loader != nil {
+		return loader
+	}
+
+	loader = d.initServiceLoader()
+
+	return loader
+}
+
+// initServiceLoader initializes the process-wide loader for the current
+// service_urls configuration without performing network I/O.
+func (d *DNSFilter) initServiceLoader() (loader *ServiceLoader) {
+	urls := slices.Clone(d.conf.ServiceURLs)
+	if len(urls) == 0 {
+		return nil
+	}
+
+	logger := slog.Default()
+	if d.logger != nil {
+		logger = d.logger
+	}
+
+	loader = NewServiceLoader(
+		urls,
+		d.conf.DataDir,
+		d.conf.HTTPClient,
+		logger,
+	)
+
+	rememberBlockedServicesLoader(urls, loader)
+
+	return loader
+}
+
+func (d *DNSFilter) cloneConfiguredServiceURLs() (urls ServicesURLs) {
+	d.confMu.RLock()
+	defer d.confMu.RUnlock()
+
+	return slices.Clone(d.conf.ServiceURLs)
+}
+
+func (d *DNSFilter) normalizeBlockedServicesAfterCatalogChange() (changed bool) {
+	d.confMu.Lock()
+	if d.conf.BlockedServices != nil && len(d.conf.BlockedServices.IDs) > 0 {
+		kept, dropped := SanitizeBlockedServiceIDs(d.conf.BlockedServices.IDs)
+		if len(dropped) > 0 {
+			log.Error("filtering: removed unknown blocked-service ids after catalog change: %v", dropped)
+			d.conf.BlockedServices.IDs = kept
+			changed = true
+		}
+	}
+	d.confMu.Unlock()
+
+	if d.conf.NormalizeBlockedServices != nil {
+		changed = d.conf.NormalizeBlockedServices() || changed
+	}
+
+	return changed
+}
+
+// EnsureBlockedServicesCatalog makes a best effort to activate the dynamic
+// blocked-services catalog for the current service_urls configuration.
+func (d *DNSFilter) EnsureBlockedServicesCatalog() (ready bool) {
+	urls := d.cloneConfiguredServiceURLs()
+	if len(urls) == 0 {
+		ensureBlockedServicesInitialized()
+
+		return true
+	}
+
+	if isBlockedServicesCatalogReady(urls) {
+		return true
+	}
+
+	loader := d.getOrInitServiceLoader()
+	if loader == nil {
+		return false
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	services, err := loadBlockedServicesFromLoader(ctx, loader)
+	if err != nil {
+		log.Error("filtering: blocked-services warmup failed: %s", err)
+
+		return false
+	}
+
+	currentURLs := d.cloneConfiguredServiceURLs()
+	if !slices.Equal(currentURLs, urls) {
+		return isBlockedServicesCatalogReady(currentURLs)
+	}
+
+	activateDynamicCatalog(urls, loader, services)
+	if d.normalizeBlockedServicesAfterCatalogChange() && d.conf.ConfigModified != nil {
+		d.conf.ConfigModified()
+	}
+
+	return true
 }
 
 // filterKnownServiceIDs 过滤出当前已知（可用）的服务 ID。
@@ -154,12 +319,14 @@ func filterKnownServiceIDs(list []string) (kept, dropped []string) {
 	if len(list) == 0 {
 		return nil, nil
 	}
-	serviceRulesMu.RLock()
-	defer serviceRulesMu.RUnlock()
+
+	blockedCatalogMu.RLock()
+	defer blockedCatalogMu.RUnlock()
+
 	kept = make([]string, 0, len(list))
 	dropped = make([]string, 0)
 	for _, id := range list {
-		if _, ok := serviceRules[id]; ok {
+		if _, ok := blockedCatalog.rules[id]; ok {
 			kept = append(kept, id)
 		} else {
 			dropped = append(dropped, id)
@@ -197,10 +364,11 @@ func (s *BlockedServices) Clone() (c *BlockedServices) {
 // Validate returns an error if blocked services contain unknown service ID.  s
 // must not be nil.
 func (s *BlockedServices) Validate() (err error) {
-	serviceRulesMu.RLock()
-	defer serviceRulesMu.RUnlock()
+	blockedCatalogMu.RLock()
+	defer blockedCatalogMu.RUnlock()
+
 	for _, id := range s.IDs {
-		_, ok := serviceRules[id]
+		_, ok := blockedCatalog.rules[id]
 		if !ok {
 			return fmt.Errorf("unknown blocked-service %q", id)
 		}
@@ -225,10 +393,11 @@ func (d *DNSFilter) ApplyBlockedServices(setts *Settings) {
 
 // ApplyBlockedServicesList appends filtering rules to the settings.
 func (d *DNSFilter) ApplyBlockedServicesList(setts *Settings, list []string) {
-	serviceRulesMu.RLock()
-	defer serviceRulesMu.RUnlock()
+	blockedCatalogMu.RLock()
+	defer blockedCatalogMu.RUnlock()
+
 	for _, name := range list {
-		rules, ok := serviceRules[name]
+		rules, ok := blockedCatalog.rules[name]
 		if !ok {
 			log.Error("unknown service name: %s", name)
 
@@ -242,28 +411,19 @@ func (d *DNSFilter) ApplyBlockedServicesList(setts *Settings, list []string) {
 }
 
 func (d *DNSFilter) handleBlockedServicesIDs(w http.ResponseWriter, r *http.Request) {
-	// 在获取规则列表前动态更新服务规则
-	updateBlockedServicesFromLoader(r.Context())
+	_ = d.EnsureBlockedServicesCatalog()
 
-	serviceRulesMu.RLock()
-	ids := slices.Clone(serviceIDs)
-	serviceRulesMu.RUnlock()
+	ids := blockedServicesCatalogSnapshot().ids
 	aghhttp.WriteJSONResponseOK(w, r, ids)
 }
 
 func (d *DNSFilter) handleBlockedServicesAll(w http.ResponseWriter, r *http.Request) {
-	// 在获取规则列表前动态更新服务规则
-	updateBlockedServicesFromLoader(r.Context())
-
-	allServices := blockedServices
-	if serviceLoader != nil {
-		allServices = serviceLoader.GetBlockedServices(r.Context())
-	}
+	_ = d.EnsureBlockedServicesCatalog()
 
 	aghhttp.WriteJSONResponseOK(w, r, struct {
 		BlockedServices []blockedService `json:"blocked_services"`
 	}{
-		BlockedServices: allServices,
+		BlockedServices: blockedServicesCatalogSnapshot().services,
 	})
 }
 
@@ -297,13 +457,14 @@ func (d *DNSFilter) handleBlockedServicesSet(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	// 在设置规则前动态更新服务规则
-	updateBlockedServicesFromLoader(r.Context())
-
-	// 规范化为 id 并丢弃未知项
-	ids, dropped := SanitizeBlockedServiceIDs(list)
-	if len(dropped) > 0 {
-		log.Debug("blocked_services.set: dropping unknown ids: %v", dropped)
+	ids := list
+	if d.EnsureBlockedServicesCatalog() {
+		// 规范化为 id 并丢弃未知项
+		var dropped []string
+		ids, dropped = SanitizeBlockedServiceIDs(list)
+		if len(dropped) > 0 {
+			log.Debug("blocked_services.set: dropping unknown ids: %v", dropped)
+		}
 	}
 
 	func() {
@@ -345,30 +506,82 @@ func (d *DNSFilter) handleBlockedServicesGet(w http.ResponseWriter, r *http.Requ
 	aghhttp.WriteJSONResponseOK(w, r, bsvc)
 }
 
+type blockedServicesUpdateRequest struct {
+	Schedule *schedule.Weekly `json:"schedule"`
+	IDs      []string         `json:"ids"`
+
+	idsSet bool
+}
+
+func (req *blockedServicesUpdateRequest) UnmarshalJSON(data []byte) (err error) {
+	type blockedServicesUpdateRequestJSON struct {
+		Schedule *schedule.Weekly `json:"schedule"`
+		IDs      []string         `json:"ids"`
+	}
+
+	decoded := &blockedServicesUpdateRequestJSON{}
+	err = json.Unmarshal(data, decoded)
+	if err != nil {
+		return err
+	}
+
+	fields := map[string]json.RawMessage{}
+	err = json.Unmarshal(data, &fields)
+	if err != nil {
+		return err
+	}
+
+	req.Schedule = decoded.Schedule
+	req.IDs = decoded.IDs
+	_, req.idsSet = fields["ids"]
+
+	return nil
+}
+
+func (d *DNSFilter) currentBlockedServiceIDs() (ids []string) {
+	d.confMu.RLock()
+	defer d.confMu.RUnlock()
+
+	if d.conf.BlockedServices == nil {
+		return nil
+	}
+
+	return slices.Clone(d.conf.BlockedServices.IDs)
+}
+
 // handleBlockedServicesUpdate is the handler for the PUT
 // /control/blocked_services/update HTTP API.
 func (d *DNSFilter) handleBlockedServicesUpdate(w http.ResponseWriter, r *http.Request) {
-	bsvc := &BlockedServices{}
-	err := json.NewDecoder(r.Body).Decode(bsvc)
+	req := &blockedServicesUpdateRequest{}
+	err := json.NewDecoder(r.Body).Decode(req)
 	if err != nil {
 		aghhttp.Error(r, w, http.StatusBadRequest, "json.Decode: %s", err)
 		return
 	}
 
-	// 在更新规则前动态更新服务规则
-	updateBlockedServicesFromLoader(r.Context())
-
-	// 规范化并过滤请求中的服务：仅按 ID 丢弃未知，避免 422。
-	kept, dropped := SanitizeBlockedServiceIDs(bsvc.IDs)
-	if len(dropped) > 0 {
-		log.Debug("blocked_services.update: dropping unknown ids: %v", dropped)
+	ids := req.IDs
+	if !req.idsSet {
+		ids = d.currentBlockedServiceIDs()
 	}
-	bsvc.IDs = kept
 
-	err = bsvc.Validate()
-	if err != nil {
-		aghhttp.Error(r, w, http.StatusUnprocessableEntity, "validating: %s", err)
-		return
+	bsvc := &BlockedServices{
+		Schedule: req.Schedule,
+		IDs:      ids,
+	}
+
+	if d.EnsureBlockedServicesCatalog() && req.idsSet {
+		// 规范化并过滤请求中的服务：仅按 ID 丢弃未知，避免 422。
+		kept, dropped := SanitizeBlockedServiceIDs(bsvc.IDs)
+		if len(dropped) > 0 {
+			log.Debug("blocked_services.update: dropping unknown ids: %v", dropped)
+		}
+		bsvc.IDs = kept
+
+		err = bsvc.Validate()
+		if err != nil {
+			aghhttp.Error(r, w, http.StatusUnprocessableEntity, "validating: %s", err)
+			return
+		}
 	}
 	if bsvc.Schedule == nil {
 		bsvc.Schedule = schedule.EmptyWeekly()
@@ -385,42 +598,33 @@ func (d *DNSFilter) handleBlockedServicesUpdate(w http.ResponseWriter, r *http.R
 // handleBlockedServicesReload is the handler for the POST
 // /control/blocked_services/reload HTTP API
 func (d *DNSFilter) handleBlockedServicesReload(w http.ResponseWriter, r *http.Request) {
-	// 确保已初始化 loader（避免因进程生命周期差异导致的空指针场景）
-	serviceLoaderMu.RLock()
-	loader := serviceLoader
-	serviceLoaderMu.RUnlock()
-	if loader == nil {
-		d.initServiceLoader()
-		serviceLoaderMu.RLock()
-		loader = serviceLoader
-		serviceLoaderMu.RUnlock()
-	}
-
-	// 读取当前配置的 service_urls
-	var urls []string
-	func() {
-		d.confMu.RLock()
-		defer d.confMu.RUnlock()
-		if d.conf.ServiceURLs != nil {
-			urls = slices.Clone(d.conf.ServiceURLs)
-		}
-	}()
+	urls := d.cloneConfiguredServiceURLs()
 
 	// 若未配置服务配置源：不视为错误，回退并保留/刷新内置服务
 	if len(urls) == 0 {
-		initBlockedServices()
-		serviceRulesMu.RLock()
-		count := len(serviceIDs)
-		serviceRulesMu.RUnlock()
+		activateBuiltinCatalog(true)
+		if d.normalizeBlockedServicesAfterCatalogChange() && d.conf.ConfigModified != nil {
+			d.conf.ConfigModified()
+		}
+
 		aghhttp.WriteJSONResponseOK(w, r, struct {
 			Status  string `json:"status"`
 			Count   int    `json:"count"`
 			Message string `json:"message"`
 		}{
 			Status:  "ok",
-			Count:   count,
+			Count:   len(blockedServicesCatalogSnapshot().ids),
 			Message: "未配置服务源，已使用内置服务",
 		})
+		return
+	}
+
+	loader := currentBlockedServicesLoader(urls)
+	if loader == nil {
+		loader = d.initServiceLoader()
+	}
+	if loader == nil {
+		aghhttp.Error(r, w, http.StatusBadGateway, "reloading blocked services catalog: no service loader")
 		return
 	}
 
@@ -428,17 +632,15 @@ func (d *DNSFilter) handleBlockedServicesReload(w http.ResponseWriter, r *http.R
 	reloadCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	// 尝试重新加载；失败时降级为使用内置/缓存数据并返回 200，避免 500
-	_, err := loader.LoadServices(reloadCtx)
+	services, err := loader.ReloadServices(reloadCtx)
 	if err != nil {
-		log.Error("failed to reload services, falling back: %s", err)
+		aghhttp.Error(r, w, http.StatusBadGateway, "reloading blocked services catalog: %s", err)
+		return
 	}
 
-	updateBlockedServicesFromLoader(r.Context())
-
-	msg := "服务已重新加载"
-	if err != nil {
-		msg = "服务源加载失败，已回退至内置/缓存数据"
+	activateDynamicCatalog(urls, loader, services)
+	if d.normalizeBlockedServicesAfterCatalogChange() && d.conf.ConfigModified != nil {
+		d.conf.ConfigModified()
 	}
 
 	aghhttp.WriteJSONResponseOK(w, r, struct {
@@ -447,8 +649,8 @@ func (d *DNSFilter) handleBlockedServicesReload(w http.ResponseWriter, r *http.R
 		Message string `json:"message"`
 	}{
 		Status:  "ok",
-		Count:   func() int { serviceRulesMu.RLock(); defer serviceRulesMu.RUnlock(); return len(serviceIDs) }(),
-		Message: msg,
+		Count:   len(blockedServicesCatalogSnapshot().ids),
+		Message: "服务已重新加载",
 	})
 }
 
@@ -482,48 +684,62 @@ func (d *DNSFilter) handleServiceURLsSet(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	if len(data.ServiceURLs) == 0 {
-		// Use default value
-		data.ServiceURLs = []string{"https://hostlistsregistry.adguardprivate.com/assets/services.zh-cn.json"}
+	urls := ServicesURLs(data.ServiceURLs)
+
+	if len(urls) == 0 {
+		func() {
+			d.confMu.Lock()
+			defer d.confMu.Unlock()
+			d.conf.ServiceURLs = nil
+		}()
+
+		activateBuiltinCatalog(true)
+		d.normalizeBlockedServicesAfterCatalogChange()
+		log.Debug("Updated service URLs: 0")
+		if d.conf.ConfigModified != nil {
+			d.conf.ConfigModified()
+		}
+
+		aghhttp.WriteJSONResponseOK(w, r, struct {
+			Status  string   `json:"status"`
+			URLs    []string `json:"urls"`
+			Message string   `json:"message"`
+		}{
+			Status:  "ok",
+			URLs:    []string{},
+			Message: "Service URLs updated",
+		})
+		return
+	}
+
+	logger := slog.Default()
+	if d.logger != nil {
+		logger = d.logger
+	}
+
+	loader := NewServiceLoader(urls, d.conf.DataDir, d.conf.HTTPClient, logger)
+	reloadCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	services, loadErr := loader.ReloadServices(reloadCtx)
+	if loadErr != nil {
+		aghhttp.Error(r, w, http.StatusBadGateway, "setting service_urls: %s", loadErr)
+		return
 	}
 
 	func() {
 		d.confMu.Lock()
 		defer d.confMu.Unlock()
-		d.conf.ServiceURLs = data.ServiceURLs
+		d.conf.ServiceURLs = slices.Clone(urls)
 	}()
 
-	// Reinitialize service loader（不绑定请求生命周期）
-	d.initServiceLoader()
-
-	// Reload services：使用后台超时上下文，避免客户端断开导致取消
-	if serviceLoader != nil {
-		reloadCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-		defer cancel()
-
-		_, loadErr := serviceLoader.LoadServices(reloadCtx)
-		if loadErr != nil {
-			log.Error("failed to reload services: %s", loadErr)
-		}
-		updateBlockedServicesFromLoader(r.Context())
-	}
-
-	// 在更新 ServiceURLs 后，对当前全局 blocked_services 做一次规范化与清理：
-	// 仅保留仍然有效的 ID，删除因源变化而变为未知的项，避免后续更新时报 422。
-	func() {
-		d.confMu.Lock()
-		defer d.confMu.Unlock()
-		if d.conf.BlockedServices != nil && len(d.conf.BlockedServices.IDs) > 0 {
-			kept, dropped := SanitizeBlockedServiceIDs(d.conf.BlockedServices.IDs)
-			if len(dropped) > 0 {
-				log.Debug("service_urls.set: removed unknown blocked-service ids after source change: %v", dropped)
-			}
-			d.conf.BlockedServices.IDs = kept
-		}
-	}()
+	activateDynamicCatalog(urls, loader, services)
+	d.normalizeBlockedServicesAfterCatalogChange()
 
 	log.Debug("Updated service URLs: %d", len(data.ServiceURLs))
-	d.conf.ConfigModified()
+	if d.conf.ConfigModified != nil {
+		d.conf.ConfigModified()
+	}
 
 	aghhttp.WriteJSONResponseOK(w, r, struct {
 		Status  string   `json:"status"`
