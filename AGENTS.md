@@ -38,6 +38,7 @@
 
 - Go：以 `gofumpt` 为准；新增文件避免下划线命名（除 `*_test.go`、`*_linux.go` 等约定）；避免引入 `scripts/make/go-lint.sh` 中被禁用的 imports。
 - 前端：Prettier + ESLint（`client/.prettierrc` 采用 `tabWidth: 4`，ESLint 基于 Airbnb）。
+- 前端代码中的 i18n `defaultValue` 默认使用英文；如无明确需求，不要把兜底翻译写成中文。
 
 ## 测试指南
 

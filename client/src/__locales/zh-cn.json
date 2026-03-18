@@ -759,6 +759,7 @@
     "form_get_my_ip": "获取我的 IP",
     "hide_urls": "隐藏配置源",
     "loading_service_urls": "正在加载服务配置源...",
+    "online_generate_anti_addiction_list": "在线生成防沉迷清单",
     "reload_services": "重新加载服务",
     "service_url_placeholder": "输入服务配置源URL",
     "service_urls": "服务配置源",

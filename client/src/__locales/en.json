@@ -767,6 +767,7 @@
     "form_get_my_ip": "Get my IP",
     "hide_urls": "Hide configuration sources",
     "loading_service_urls": "Loading service configuration source...",
+    "online_generate_anti_addiction_list": "Generate anti-addiction list online",
     "reload_services": "Reload services",
     "service_url_placeholder": "Enter service configuration source URL",
     "service_urls": "Service configuration source",

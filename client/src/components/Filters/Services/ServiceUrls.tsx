@@ -58,20 +58,32 @@ const ServiceUrls = () => {
     }
 
     return (
-        <Card 
+        <Card
             bodyType="card-body box-body--settings"
             title={t('service_urls')}
             subtitle={t('service_urls_desc')}
             id="service-urls"
         >
             <div className="mb-4">
-                <button
-                    type="button"
-                    className={cn('btn mb-2', showInputs ? 'btn-outline-primary' : 'btn-primary')}
-                    onClick={() => setShowInputs(!showInputs)}
-                >
-                    {showInputs ? t('hide_urls') : t('show_urls')}
-                </button>
+                <div className="d-flex flex-wrap align-items-center mb-2">
+                    <button
+                        type="button"
+                        className={cn('btn mr-2 mb-2', showInputs ? 'btn-outline-primary' : 'btn-primary')}
+                        onClick={() => setShowInputs(!showInputs)}
+                    >
+                        {showInputs ? t('hide_urls') : t('show_urls')}
+                    </button>
+                    <a
+                        href="https://list.adguardprivate.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-outline-primary mb-2"
+                    >
+                        {t('online_generate_anti_addiction_list', {
+                            defaultValue: 'Generate anti-addiction list online',
+                        })}
+                    </a>
+                </div>
                 {showInputs && (
                     <form onSubmit={handleSubmit}>
                         <div className="row">
