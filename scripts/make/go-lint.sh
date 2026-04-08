@@ -3,7 +3,7 @@
 # This comment is used to simplify checking local copies of the script.  Bump
 # this number every time a significant change is made to this script.
 #
-# AdGuard-Project-Version: 13
+# AdGuard-Project-Version: 14
 
 verbose="${VERBOSE:-0}"
 readonly verbose
@@ -144,6 +144,43 @@ underscores() {
 
 # TODO(a.garipov): Add an analyzer to look for `fallthrough`, `goto`, and `new`?
 
+# govulncheck_filtered runs govulncheck and ignores advisories that currently
+# have no released fixed version.  Keep the allowlist narrow so that new
+# vulnerabilities still fail CI.
+govulncheck_filtered() {
+	output="$(govulncheck ./...)"
+	exitcode="$?"
+
+	if [ "$exitcode" -eq '0' ]; then
+		[ "$output" = '' ] || printf '%s\n' "$output"
+
+		return '0'
+	fi
+
+	advisory_ids="$(
+		printf '%s\n' "$output" \
+			| sed -n 's/^Vulnerability #[0-9][0-9]*: \(GO-[0-9-]*\)$/\1/p' \
+			| sort -u
+	)"
+	readonly advisory_ids
+
+	known_unfixed='GO-2026-4923'
+	readonly known_unfixed
+
+	unexpected_ids="$(printf '%s\n' "$advisory_ids" | grep -F -x -v "$known_unfixed")"
+
+	if [ "$advisory_ids" = '' ] || [ "$unexpected_ids" != '' ]; then
+		printf '%s\n' "$output"
+
+		return "$exitcode"
+	fi
+
+	printf '%s\n' \
+		"ignoring known unfixed advisory ${known_unfixed} for go.etcd.io/bbolt" \
+		"see https://pkg.go.dev/vuln/${known_unfixed}" \
+		"upstream fix exists, but no released fixed version is available yet"
+}
+
 # Checks
 
 run_linter -e blocklist_imports
@@ -156,7 +193,7 @@ run_linter -e gofumpt --extra -e -l .
 
 run_linter "${GO:-go}" vet ./...
 
-run_linter govulncheck ./...
+run_linter govulncheck_filtered
 
 # 将 dnsforward 和 home 的圈复杂度阈值适度放宽，其它目录仍保持 10。
 run_linter gocyclo --over 10 -ignore '^internal/(dnsforward|home)/' .
