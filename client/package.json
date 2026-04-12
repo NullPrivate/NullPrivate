@@ -22,7 +22,7 @@
     "dependencies": {
         "@nivo/line": "^0.64.0",
         "ajv": "^8.17.1",
-        "axios": "^0.19.2",
+        "axios": "^1.15.0",
         "classnames": "^2.5.1",
         "clsx": "^2.1.1",
         "countries-and-timezones": "^3.6.0",
