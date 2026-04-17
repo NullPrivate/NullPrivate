@@ -1453,7 +1453,9 @@ func TestPTRResponseFromHosts(t *testing.T) {
 	}, hostsFilename)
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		assert.Equal(t, uint32(1), atomic.LoadUint32(&eventsCalledCounter))
+		require.Eventually(t, func() bool {
+			return atomic.LoadUint32(&eventsCalledCounter) == 1
+		}, testTimeout, time.Millisecond)
 	})
 
 	flt, err := filtering.New(&filtering.Config{
