@@ -12,7 +12,7 @@
 
 ## 开发环境
 
-- Go 版本以 `go.mod` 为准（当前为 `go 1.24.11`）；如需查看构建环境变量可用 `make go-env`。
+- Go 版本以 `go.mod` 为准（当前为 `go 1.26.0`）；CI 工作流中的 `GO_VERSION` 需不低于该版本；如需查看构建环境变量可用 `make go-env`。
 - 前端依赖位于 `client/`，使用 `npm`（Makefile 会通过 `--prefix client` 调用）。
 - 首次克隆后建议执行 `make init`，启用仓库自带的 Git hooks（位于 `scripts/hooks`）。
 

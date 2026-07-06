@@ -19,11 +19,11 @@ func haveAdminRights() (bool, error) {
 	if err != nil {
 		return false, err
 	}
+	defer func() { _ = token.Close() }()
 
 	info := make([]byte, 4)
 	var returnedLen uint32
 	err = windows.GetTokenInformation(token, windows.TokenElevation, &info[0], uint32(len(info)), &returnedLen)
-	token.Close()
 	if err != nil {
 		return false, err
 	}

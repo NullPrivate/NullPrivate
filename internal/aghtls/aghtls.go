@@ -21,7 +21,7 @@ func init() {
 		cipherSuites[s.Name] = s.ID
 	}
 
-	log.Debug("tls: known ciphers: %q", cipherSuites)
+	log.Debug("tls: known ciphers: %v", cipherSuites)
 }
 
 // cipherSuites are a name-to-ID mapping of cipher suites from crypto/tls.  It

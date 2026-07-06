@@ -21,8 +21,6 @@ import (
 	"github.com/AdguardTeam/golibs/osutil"
 	"github.com/NYTimes/gziphandler"
 	"github.com/quic-go/quic-go/http3"
-	"golang.org/x/net/http2"
-	"golang.org/x/net/http2/h2c"
 )
 
 // TODO(a.garipov): Make configurable.
@@ -209,8 +207,7 @@ func (web *webAPI) start(ctx context.Context) {
 		printHTTPAddresses(urlutil.SchemeHTTP, web.tlsManager)
 		errs := make(chan error, 2)
 
-		// Use an h2c handler to support unencrypted HTTP/2, e.g. for proxies.
-		hdlr := h2c.NewHandler(withMiddlewares(globalContext.mux, limitRequestBody), &http2.Server{})
+		hdlr := withMiddlewares(globalContext.mux, limitRequestBody)
 
 		logger := web.baseLogger.With(loggerKeyServer, "plain")
 
@@ -219,9 +216,14 @@ func (web *webAPI) start(ctx context.Context) {
 		hdlr = logMw.Wrap(hdlr)
 
 		// Create a new instance, because the Web is not usable after Shutdown.
+		var plainProtocols http.Protocols
+		plainProtocols.SetHTTP1(true)
+		plainProtocols.SetUnencryptedHTTP2(true)
+
 		web.httpServer = &http.Server{
 			Addr:              web.conf.BindAddr.String(),
 			Handler:           hdlr,
+			Protocols:         &plainProtocols,
 			ReadTimeout:       web.conf.ReadTimeout,
 			ReadHeaderTimeout: web.conf.ReadHeaderTimeout,
 			WriteTimeout:      web.conf.WriteTimeout,

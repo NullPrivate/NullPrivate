@@ -1,7 +1,7 @@
 'name': 'lint'
 
 'env':
-  'GO_VERSION': '1.25.9'
+  'GO_VERSION': '1.26.4'
 
 'on':
   'push':
@@ -14,9 +14,9 @@
   'go-lint':
     'runs-on': 'ubuntu-latest'
     'steps':
-    - 'uses': 'actions/checkout@v2'
+    - 'uses': 'actions/checkout@v7'
     - 'name': 'Set up Go'
-      'uses': 'actions/setup-go@v3'
+      'uses': 'actions/setup-go@v6'
       'with':
         'go-version': '${{ env.GO_VERSION }}'
     - 'name': 'run-lint'
@@ -26,7 +26,7 @@
   'eslint':
     'runs-on': 'ubuntu-latest'
     'steps':
-    - 'uses': 'actions/checkout@v2'
+    - 'uses': 'actions/checkout@v7'
     - 'name': 'Install modules'
       'run': 'npm --prefix="./client" ci'
     - 'name': 'Run ESLint'
