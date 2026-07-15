@@ -45,6 +45,13 @@ const config = {
     module: {
         rules: [
             {
+                test: /\.mjs$/,
+                include: /node_modules/,
+                resolve: {
+                    fullySpecified: false,
+                },
+            },
+            {
                 test: /\.ya?ml$/,
                 type: 'json',
                 use: 'yaml-loader',
