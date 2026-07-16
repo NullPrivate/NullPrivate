@@ -9,18 +9,20 @@ type hlServices struct {
 // hlServicesService is the JSON structure for a service in the Hostlists
 // Registry.
 type hlServicesService struct {
-	ID      string   `json:"id"`
-	Name    string   `json:"name"`
-	IconSVG string   `json:"icon_svg"`
-	Rules   []string `json:"rules"`
+	ID         string   `json:"id"`
+	Name       string   `json:"name"`
+	IconSVG    string   `json:"icon_svg"`
+	IconBase64 []byte   `json:"icon_base64"`
+	Rules      []string `json:"rules"`
 }
 
 // blockedService represents a single blocked service.
 type blockedService struct {
-	ID      string   `json:"id"`
-	Name    string   `json:"name"`
-	IconSVG []byte   `json:"icon_svg"`
-	Rules   []string `json:"rules"`
+	ID         string   `json:"id"`
+	Name       string   `json:"name"`
+	IconSVG    []byte   `json:"icon_svg"`
+	IconBase64 []byte   `json:"icon_base64"`
+	Rules      []string `json:"rules"`
 }
 
 var blockedServices = []blockedService{{

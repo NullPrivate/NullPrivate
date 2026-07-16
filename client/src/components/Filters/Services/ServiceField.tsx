@@ -7,11 +7,12 @@ type Props = ControllerRenderProps<FieldValues> & {
     disabled?: boolean;
     className?: string;
     icon?: string;
+    iconBase64?: string;
     error?: string;
 };
 
 export const ServiceField = React.forwardRef<HTMLInputElement, Props>(
-    ({ name, value, onChange, onBlur, placeholder, disabled, className, icon, error, ...rest }, ref) => (
+    ({ name, value, onChange, onBlur, placeholder, disabled, className, icon, iconBase64, error, ...rest }, ref) => (
         <>
             <label className={cn('service custom-switch', className)}>
                 <input
@@ -31,7 +32,16 @@ export const ServiceField = React.forwardRef<HTMLInputElement, Props>(
                 <span className="service__text" title={placeholder}>
                     {placeholder}
                 </span>
-                {icon && <div dangerouslySetInnerHTML={{ __html: window.atob(icon) }} className="service__icon" />}
+                {iconBase64 ? (
+                    <img
+                        className="service__icon"
+                        src={`data:image/jpeg;base64,${iconBase64}`}
+                        alt=""
+                        aria-hidden="true"
+                    />
+                ) : (
+                    icon && <div dangerouslySetInnerHTML={{ __html: window.atob(icon) }} className="service__icon" />
+                )}
             </label>
 
             {!disabled && error && <span className="form__message form__message--error">{error}</span>}

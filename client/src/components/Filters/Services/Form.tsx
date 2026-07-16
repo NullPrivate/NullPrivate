@@ -15,7 +15,8 @@ const toFieldPath = (id: string) => `blocked_services.${encodeKey(id)}`;
 export type BlockedService = {
     id: string;
     name: string;
-    icon_svg: string;
+    icon_svg?: string;
+    icon_base64?: string;
 };
 
 type FormValues = {
@@ -99,6 +100,7 @@ export const Form = ({ initialValues, blockedServices, processing, processingSet
                                     placeholder={service.name}
                                     disabled={processing || processingSet}
                                     icon={service.icon_svg}
+                                    iconBase64={service.icon_base64}
                                 />
                             )}
                         />

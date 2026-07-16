@@ -60,6 +60,10 @@
     fill: #495057;
 }
 
+img.service__icon {
+    object-fit: contain;
+}
+
 .service--global .service__icon {
     display: none;
 }

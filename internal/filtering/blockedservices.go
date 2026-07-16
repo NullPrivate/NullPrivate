@@ -325,14 +325,15 @@ func convertToBlockedServices(hlServices []*hlServicesService) []blockedService 
 
 	for _, service := range hlServices {
 		icon := service.IconSVG
-		if strings.TrimSpace(icon) == "" {
+		if strings.TrimSpace(icon) == "" && len(service.IconBase64) == 0 {
 			icon = defaultIconSVG
 		}
 		services = append(services, blockedService{
-			ID:      service.ID,
-			Name:    service.Name,
-			IconSVG: []byte(icon),
-			Rules:   service.Rules,
+			ID:         service.ID,
+			Name:       service.Name,
+			IconSVG:    []byte(icon),
+			IconBase64: service.IconBase64,
+			Rules:      service.Rules,
 		})
 	}
 

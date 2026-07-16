@@ -77,6 +77,7 @@ export const BlockedServices = ({ services }: Props) => {
                                         placeholder={service.name}
                                         disabled={useGlobalServices}
                                         icon={service.icon_svg}
+                                        iconBase64={service.icon_base64}
                                     />
                                 )}
                             />

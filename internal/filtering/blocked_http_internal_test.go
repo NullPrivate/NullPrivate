@@ -26,6 +26,7 @@ func TestDNSFilter_handleBlockedServicesAll_recoversPendingCatalog(t *testing.T)
 			"blocked_services": [{
 				"id": "dynamic_service",
 				"name": "Dynamic Service",
+				"icon_base64": "AQID",
 				"rules": ["||dynamic.example^"]
 			}]
 		}`))
@@ -56,6 +57,7 @@ func TestDNSFilter_handleBlockedServicesAll_recoversPendingCatalog(t *testing.T)
 	require.NoError(t, json.NewDecoder(w.Body).Decode(&resp))
 	assert.NotEmpty(t, resp.BlockedServices)
 	assert.Equal(t, "dynamic_service", resp.BlockedServices[0].ID)
+	assert.Equal(t, []byte{1, 2, 3}, resp.BlockedServices[0].IconBase64)
 }
 
 func TestDNSFilter_handleBlockedServicesUpdate_clearsPendingDynamicIDsOnExplicitEmpty(t *testing.T) {
