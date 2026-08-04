@@ -6,6 +6,20 @@ The format is based on [*Keep a Changelog*](https://keepachangelog.com/en/1.0.0/
 
 ## [Unreleased]
 
+### Security
+
+- Upgraded `google.golang.org/grpc` to `v1.79.3` to fix [CVE-2026-33186][cve-2026-33186] and [GHSA-hrxh-6v49-42gf][ghsa-hrxh-6v49-42gf].
+
+- Upgraded frontend dependencies to fix known vulnerabilities: `uuid` to `11.1.1` (CVE-2026-41907), `websocket-driver` to `0.7.5` (CVE-2026-54466), `fast-uri` to `3.1.5` (CVE-2026-16221), `postcss` to `8.5.25`, and `brace-expansion` to `1.1.18`/`2.1.4`.
+
+- Upgraded `dns-packet` (querylog tool) to `5.6.1` to fix [CVE-2021-23386][cve-2021-23386] and removed the vulnerable `ip` dependency (CVE-2023-42282).
+
+- Upgraded `@modelcontextprotocol/sdk` (root lockfile) to `1.30.0` to fix CVE-2025-66414 and CVE-2026-25536.
+
+[cve-2021-23386]: https://nvd.nist.gov/vuln/detail/CVE-2021-23386
+[cve-2026-33186]: https://nvd.nist.gov/vuln/detail/CVE-2026-33186
+[ghsa-hrxh-6v49-42gf]: https://github.com/advisories/GHSA-hrxh-6v49-42gf
+
 <!--
 ## [v0.108.0] – TBA
 
