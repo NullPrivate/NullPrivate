@@ -8,7 +8,9 @@ The format is based on [*Keep a Changelog*](https://keepachangelog.com/en/1.0.0/
 
 ### Security
 
-- Upgraded `google.golang.org/grpc` to `v1.79.3` to fix [CVE-2026-33186][cve-2026-33186] and [GHSA-hrxh-6v49-42gf][ghsa-hrxh-6v49-42gf].
+- Upgraded `google.golang.org/grpc` to `v1.82.1` to fix [CVE-2026-33186][cve-2026-33186] and [GHSA-hrxh-6v49-42gf][ghsa-hrxh-6v49-42gf].
+
+- Upgraded frontend `js-yaml` to `4.3.1` to fix [CVE-2026-59870][cve-2026-59870] / [GHSA-5p4m-2wfm-xmqj][ghsa-5p4m-2wfm-xmqj], and `nanoid` to `3.3.18` to fix [CVE-2026-67213][cve-2026-67213].
 
 - Upgraded frontend dependencies to fix known vulnerabilities: `uuid` to `11.1.1` (CVE-2026-41907), `websocket-driver` to `0.7.5` (CVE-2026-54466), `fast-uri` to `3.1.5` (CVE-2026-16221), `postcss` to `8.5.25`, and `brace-expansion` to `1.1.18`/`2.1.4`.
 
@@ -18,7 +20,10 @@ The format is based on [*Keep a Changelog*](https://keepachangelog.com/en/1.0.0/
 
 [cve-2021-23386]: https://nvd.nist.gov/vuln/detail/CVE-2021-23386
 [cve-2026-33186]: https://nvd.nist.gov/vuln/detail/CVE-2026-33186
+[cve-2026-59870]: https://nvd.nist.gov/vuln/detail/CVE-2026-59870
+[cve-2026-67213]: https://nvd.nist.gov/vuln/detail/CVE-2026-67213
 [ghsa-hrxh-6v49-42gf]: https://github.com/advisories/GHSA-hrxh-6v49-42gf
+[ghsa-5p4m-2wfm-xmqj]: https://github.com/advisories/GHSA-5p4m-2wfm-xmqj
 
 <!--
 ## [v0.108.0] – TBA

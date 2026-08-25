@@ -14,7 +14,9 @@ const DEFAULT_PORT = 80;
  */
 const importConfig = () => {
     try {
-        const doc = yaml.safeLoad(fs.readFileSync('../AdGuardHome.yaml', 'utf8'));
+        // js-yaml v4 的 load 默认使用安全模式（仅支持 JSON schema），
+        // 等价于 v3 的 safeLoad。
+        const doc = yaml.load(fs.readFileSync('../AdGuardHome.yaml', 'utf8'));
         const { bind_host, bind_port } = doc;
         return {
             bind_host,
