@@ -49,7 +49,7 @@
 
 - 提交信息遵循 Conventional Commits：`feat: ...`、`fix(scope): ...`、`refactor: ...`、`chore: ...`。
 - 提交前优先跑通 `make lint` 与 `make test`；涉及前端变更建议补充 `make js-test-e2e`。
-- PR 需写清动机、影响范围与验证方式；涉及 UI 变更请附截图/GIF；涉及行为变更请同步更新 `CHANGELOG.md`/相关文档。
+- 变更记录以 Git 提交历史及 PR 说明为准。PR 需写清动机、影响范围与验证方式；涉及 UI 变更请附截图/GIF；涉及行为变更请同步更新相关使用文档。
 
 ## 安全与配置提示
 

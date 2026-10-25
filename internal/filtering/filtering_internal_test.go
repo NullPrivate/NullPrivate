@@ -1,14 +1,11 @@
 package filtering
 
 import (
-	"bytes"
 	"fmt"
 	"net/netip"
+	"sync/atomic"
 	"testing"
 
-	"github.com/AdguardTeam/AdGuardHome/internal/aghtest"
-	"github.com/AdguardTeam/AdGuardHome/internal/filtering/hashprefix"
-	"github.com/AdguardTeam/golibs/log"
 	"github.com/AdguardTeam/golibs/netutil"
 	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/AdguardTeam/urlfilter/rules"
@@ -51,21 +48,15 @@ func newForTest(t testing.TB, c *Config, filters []Filter) (f *DNSFilter, setts 
 	return f, setts
 }
 
-func newChecker(host string) Checker {
-	return hashprefix.New(&hashprefix.Config{
-		CacheTime: 10,
-		CacheSize: 100000,
-		Upstream:  aghtest.NewBlockUpstream(host, true),
-	})
+// countingChecker 记录调用次数，并提供可匹配的结果以验证产品策略的短路行为。
+type countingChecker struct {
+	calls atomic.Uint64
 }
 
-func (d *DNSFilter) checkMatch(t *testing.T, hostname string, setts *Settings) {
-	t.Helper()
+func (c *countingChecker) Check(_ string) (block bool, err error) {
+	c.calls.Add(1)
 
-	res, err := d.CheckHost(hostname, dns.TypeA, setts)
-	require.NoErrorf(t, err, "host %q", hostname)
-
-	assert.Truef(t, res.IsFiltered, "host %q", hostname)
+	return true, nil
 }
 
 func (d *DNSFilter) checkMatchIP(t *testing.T, hostname, ip string, qtype uint16, setts *Settings) {
@@ -90,6 +81,7 @@ func (d *DNSFilter) checkMatchEmpty(t *testing.T, hostname string, setts *Settin
 	require.NoErrorf(t, err, "host %q", hostname)
 
 	assert.Falsef(t, res.IsFiltered, "host %q", hostname)
+	assert.Equal(t, NotFilteredNotFound, res.Reason)
 }
 
 func TestDNSFilter_CheckHost_hostRules(t *testing.T) {
@@ -167,11 +159,7 @@ func TestDNSFilter_CheckHost_hostRules(t *testing.T) {
 // Safe Browsing.
 
 func TestSafeBrowsing(t *testing.T) {
-	logOutput := &bytes.Buffer{}
-	aghtest.ReplaceLogWriter(t, logOutput)
-	aghtest.ReplaceLogLevel(t, log.DEBUG)
-
-	sbChecker := newChecker(sbBlocked)
+	sbChecker := &countingChecker{}
 
 	d, setts := newForTest(t, &Config{
 		SafeBrowsingEnabled: true,
@@ -179,23 +167,22 @@ func TestSafeBrowsing(t *testing.T) {
 	}, nil)
 	t.Cleanup(d.Close)
 
-	d.checkMatch(t, sbBlocked, setts)
-
-	require.Contains(t, logOutput.String(), fmt.Sprintf("safebrowsing lookup for %q", sbBlocked))
-
-	d.checkMatch(t, "test."+sbBlocked, setts)
+	d.checkMatchEmpty(t, sbBlocked, setts)
+	d.checkMatchEmpty(t, "test."+sbBlocked, setts)
 	d.checkMatchEmpty(t, "yandex.ru", setts)
 	d.checkMatchEmpty(t, pcBlocked, setts)
 
-	// Cached result.
-	d.checkMatch(t, sbBlocked, setts)
+	// 重复请求同样由产品策略放行。
+	d.checkMatchEmpty(t, sbBlocked, setts)
 	d.checkMatchEmpty(t, pcBlocked, setts)
+	assert.Zero(t, sbChecker.calls.Load())
 }
 
 func TestParallelSB(t *testing.T) {
+	sbChecker := &countingChecker{}
 	d, setts := newForTest(t, &Config{
 		SafeBrowsingEnabled: true,
-		SafeBrowsingChecker: newChecker(sbBlocked),
+		SafeBrowsingChecker: sbChecker,
 	}, nil)
 	t.Cleanup(d.Close)
 
@@ -203,39 +190,88 @@ func TestParallelSB(t *testing.T) {
 		for i := range 100 {
 			t.Run(fmt.Sprintf("aaa%d", i), func(t *testing.T) {
 				t.Parallel()
-				d.checkMatch(t, sbBlocked, setts)
-				d.checkMatch(t, "test."+sbBlocked, setts)
+				d.checkMatchEmpty(t, sbBlocked, setts)
+				d.checkMatchEmpty(t, "test."+sbBlocked, setts)
 				d.checkMatchEmpty(t, "yandex.ru", setts)
 				d.checkMatchEmpty(t, pcBlocked, setts)
 			})
 		}
 	})
+	assert.Zero(t, sbChecker.calls.Load())
 }
 
 // Parental.
 
 func TestParentalControl(t *testing.T) {
-	logOutput := &bytes.Buffer{}
-	aghtest.ReplaceLogWriter(t, logOutput)
-	aghtest.ReplaceLogLevel(t, log.DEBUG)
-
+	pcChecker := &countingChecker{}
 	d, setts := newForTest(t, &Config{
 		ParentalEnabled:        true,
-		ParentalControlChecker: newChecker(pcBlocked),
+		ParentalControlChecker: pcChecker,
 	}, nil)
 	t.Cleanup(d.Close)
 
-	d.checkMatch(t, pcBlocked, setts)
-	require.Contains(t, logOutput.String(), fmt.Sprintf("parental lookup for %q", pcBlocked))
-
-	d.checkMatch(t, "www."+pcBlocked, setts)
+	d.checkMatchEmpty(t, pcBlocked, setts)
+	d.checkMatchEmpty(t, "www."+pcBlocked, setts)
 	d.checkMatchEmpty(t, "www.yandex.ru", setts)
 	d.checkMatchEmpty(t, "yandex.ru", setts)
 	d.checkMatchEmpty(t, "api.jquery.com", setts)
 
-	// Test cached result.
-	d.checkMatch(t, pcBlocked, setts)
+	// 重复请求同样由产品策略放行。
+	d.checkMatchEmpty(t, pcBlocked, setts)
 	d.checkMatchEmpty(t, "yandex.ru", setts)
+	assert.Zero(t, pcChecker.calls.Load())
+}
+
+// TestDNSFilter_productPolicy 验证历史配置、直接请求及有效规则共同工作。
+func TestDNSFilter_productPolicy(t *testing.T) {
+	sbChecker, pcChecker := &countingChecker{}, &countingChecker{}
+	conf := &Config{
+		ProtectionEnabled:      true,
+		FilteringEnabled:       true,
+		SafeBrowsingEnabled:    true,
+		ParentalEnabled:        true,
+		SafeBrowsingChecker:    sbChecker,
+		ParentalControlChecker: pcChecker,
+		SafeSearchConf:         SafeSearchConfig{Enabled: true, Google: true},
+	}
+	d, setts := newForTest(t, conf, []Filter{{ID: 1, Data: []byte("||ads.example^\n")}})
+	t.Cleanup(d.Close)
+	d.SetEnabled(true)
+
+	assert.False(t, conf.SafeBrowsingEnabled)
+	assert.False(t, conf.ParentalEnabled)
+	require.True(t, setts.SafeBrowsingEnabled)
+	require.True(t, setts.ParentalEnabled)
+
+	// 模拟内存中保留的历史开关，验证请求、状态和持久化边界各自遵循产品策略。
+	d.confMu.Lock()
+	d.conf.SafeBrowsingEnabled = true
+	d.conf.ParentalEnabled = true
+	d.confMu.Unlock()
+
+	for _, host := range []string{sbBlocked, pcBlocked, "www.example.org"} {
+		d.checkMatchEmpty(t, host, setts)
+	}
+	res, err := d.CheckHost("ads.example", dns.TypeA, setts)
+	require.NoError(t, err)
+	assert.True(t, res.IsFiltered)
+	assert.Equal(t, FilteredBlockList, res.Reason)
+	assert.Zero(t, sbChecker.calls.Load())
+	assert.Zero(t, pcChecker.calls.Load())
+
+	settings := d.Settings()
+	assert.False(t, settings.SafeBrowsingEnabled)
+	assert.False(t, settings.ParentalEnabled)
+	assert.True(t, settings.FilteringEnabled)
+	assert.True(t, settings.SafeSearchEnabled)
+
+	var disk Config
+	d.WriteDiskConfig(&disk)
+	assert.False(t, disk.SafeBrowsingEnabled)
+	assert.False(t, disk.ParentalEnabled)
+	assert.True(t, disk.ProtectionEnabled)
+	assert.True(t, disk.FilteringEnabled)
+	assert.Equal(t, conf.SafeSearchConf, disk.SafeSearchConf)
 }
 
 // Filtering.
@@ -591,12 +627,13 @@ func applyClientSettings(setts *Settings) {
 }
 
 func TestClientSettings(t *testing.T) {
+	sbChecker, pcChecker := &countingChecker{}, &countingChecker{}
 	d, setts := newForTest(t,
 		&Config{
 			ParentalEnabled:        true,
 			SafeBrowsingEnabled:    false,
-			SafeBrowsingChecker:    newChecker(sbBlocked),
-			ParentalControlChecker: newChecker(pcBlocked),
+			SafeBrowsingChecker:    sbChecker,
+			ParentalControlChecker: pcChecker,
 		},
 		[]Filter{{
 			ID: 0, Data: []byte("||example.org^\n"),
@@ -605,66 +642,69 @@ func TestClientSettings(t *testing.T) {
 	t.Cleanup(d.Close)
 
 	type testCase struct {
-		name       string
-		host       string
-		before     bool
-		wantReason Reason
+		name   string
+		host   string
+		before Reason
+		after  Reason
 	}
 	testCases := []testCase{{
-		name:       "filters",
-		host:       "example.org",
-		before:     true,
-		wantReason: FilteredBlockList,
+		name:   "filters",
+		host:   "example.org",
+		before: FilteredBlockList,
+		after:  NotFilteredNotFound,
 	}, {
-		name:       "parental",
-		host:       pcBlocked,
-		before:     true,
-		wantReason: FilteredParental,
+		name:   "parental",
+		host:   pcBlocked,
+		before: NotFilteredNotFound,
+		after:  NotFilteredNotFound,
 	}, {
-		name:       "safebrowsing",
-		host:       sbBlocked,
-		before:     false,
-		wantReason: FilteredSafeBrowsing,
+		name:   "safebrowsing",
+		host:   sbBlocked,
+		before: NotFilteredNotFound,
+		after:  NotFilteredNotFound,
 	}, {
-		name:       "additional_rules",
-		host:       "facebook.com",
-		before:     false,
-		wantReason: FilteredBlockedService,
+		name:   "additional_rules",
+		host:   "facebook.com",
+		before: NotFilteredNotFound,
+		after:  FilteredBlockedService,
 	}}
 
-	makeTester := func(tc testCase, before bool) func(t *testing.T) {
+	makeTester := func(tc testCase, wantReason Reason) func(t *testing.T) {
 		return func(t *testing.T) {
 			t.Helper()
 
 			r, err := d.CheckHost(tc.host, dns.TypeA, setts)
 			require.NoError(t, err)
 
-			if before {
-				assert.True(t, r.IsFiltered)
-				assert.Equal(t, tc.wantReason, r.Reason)
-			} else {
-				assert.False(t, r.IsFiltered)
-			}
+			assert.Equal(t, wantReason != NotFilteredNotFound, r.IsFiltered)
+			assert.Equal(t, wantReason, r.Reason)
 		}
 	}
 
 	// Check behaviour without any per-client settings, then apply per-client
 	// settings and check behavior once again.
 	for _, tc := range testCases {
-		t.Run(tc.name, makeTester(tc, tc.before))
+		t.Run(tc.name+"/global", makeTester(tc, tc.before))
 	}
 
 	applyClientSettings(setts)
 
 	for _, tc := range testCases {
-		t.Run(tc.name, makeTester(tc, !tc.before))
+		t.Run(tc.name+"/client", makeTester(tc, tc.after))
 	}
+	assert.Zero(t, sbChecker.calls.Load())
+	assert.Zero(t, pcChecker.calls.Load())
 }
 
-func BenchmarkSafeBrowsing(b *testing.B) {
+// BenchmarkCheckHost_productPolicy 衡量产品策略下的正常放行路径。
+// 哈希前缀算法及缓存行为由 hashprefix 包的测试独立验证。
+func BenchmarkCheckHost_productPolicy(b *testing.B) {
+	sbChecker, pcChecker := &countingChecker{}, &countingChecker{}
 	d, setts := newForTest(b, &Config{
-		SafeBrowsingEnabled: true,
-		SafeBrowsingChecker: newChecker(sbBlocked),
+		SafeBrowsingEnabled:    true,
+		ParentalEnabled:        true,
+		SafeBrowsingChecker:    sbChecker,
+		ParentalControlChecker: pcChecker,
 	}, nil)
 	b.Cleanup(d.Close)
 
@@ -676,38 +716,33 @@ func BenchmarkSafeBrowsing(b *testing.B) {
 	}
 
 	require.NoError(b, err)
-	assert.Truef(b, res.IsFiltered, "expected hostname %q to match", sbBlocked)
-
-	// Most recent results:
-	//
-	//	goos: darwin
-	//	goarch: amd64
-	//	pkg: github.com/AdguardTeam/AdGuardHome/internal/filtering
-	//	cpu: Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz
-	//	BenchmarkSafeBrowsing-12    	  358934	      2994 ns/op	    1304 B/op	      40 allocs/op
+	assert.Equal(b, Result{}, res)
+	assert.Zero(b, sbChecker.calls.Load())
+	assert.Zero(b, pcChecker.calls.Load())
 }
 
-func BenchmarkSafeBrowsing_parallel(b *testing.B) {
+func BenchmarkCheckHost_productPolicy_parallel(b *testing.B) {
+	sbChecker, pcChecker := &countingChecker{}, &countingChecker{}
 	d, setts := newForTest(b, &Config{
-		SafeBrowsingEnabled: true,
-		SafeBrowsingChecker: newChecker(sbBlocked),
+		SafeBrowsingEnabled:    true,
+		ParentalEnabled:        true,
+		SafeBrowsingChecker:    sbChecker,
+		ParentalControlChecker: pcChecker,
 	}, nil)
 	b.Cleanup(d.Close)
 
+	b.ReportAllocs()
+	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
+		var res Result
+		var err error
 		for pb.Next() {
-			res, err := d.CheckHost(sbBlocked, dns.TypeA, setts)
-			require.NoError(b, err)
-
-			assert.Truef(b, res.IsFiltered, "expected hostname %q to match", sbBlocked)
+			res, err = d.CheckHost(sbBlocked, dns.TypeA, setts)
 		}
+		assert.NoError(b, err)
+		assert.Equal(b, Result{}, res)
 	})
-
-	// Most recent results:
-	//
-	//	goos: darwin
-	//	goarch: amd64
-	//	pkg: github.com/AdguardTeam/AdGuardHome/internal/filtering
-	//	cpu: Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz
-	//	BenchmarkSafeBrowsing_parallel-12    	  507327	      2382 ns/op	    1352 B/op	      42 allocs/op
+	b.StopTimer()
+	assert.Zero(b, sbChecker.calls.Load())
+	assert.Zero(b, pcChecker.calls.Load())
 }

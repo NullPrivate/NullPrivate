@@ -209,9 +209,9 @@ func (o *clientObject) toPersistent(
 
 		UseOwnSettings:        !o.UseGlobalSettings,
 		FilteringEnabled:      o.FilteringEnabled,
-		ParentalEnabled:       o.ParentalEnabled,
+		ParentalEnabled:       filtering.SafeBrowsingAndParentalEnabled && o.ParentalEnabled,
 		SafeSearchConf:        o.SafeSearchConf,
-		SafeBrowsingEnabled:   o.SafeBrowsingEnabled,
+		SafeBrowsingEnabled:   filtering.SafeBrowsingAndParentalEnabled && o.SafeBrowsingEnabled,
 		UseOwnBlockedServices: !o.UseGlobalBlockedServices,
 		IgnoreQueryLog:        o.IgnoreQueryLog,
 		IgnoreStatistics:      o.IgnoreStatistics,
@@ -391,9 +391,9 @@ func (clients *clientsContainer) forConfig() (objs []*clientObject) {
 
 			UseGlobalSettings:        !cli.UseOwnSettings,
 			FilteringEnabled:         cli.FilteringEnabled,
-			ParentalEnabled:          cli.ParentalEnabled,
+			ParentalEnabled:          filtering.SafeBrowsingAndParentalEnabled && cli.ParentalEnabled,
 			SafeSearchConf:           cli.SafeSearchConf,
-			SafeBrowsingEnabled:      cli.SafeBrowsingEnabled,
+			SafeBrowsingEnabled:      filtering.SafeBrowsingAndParentalEnabled && cli.SafeBrowsingEnabled,
 			UseGlobalBlockedServices: !cli.UseOwnBlockedServices,
 			IgnoreQueryLog:           cli.IgnoreQueryLog,
 			IgnoreStatistics:         cli.IgnoreStatistics,

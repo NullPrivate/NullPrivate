@@ -8,7 +8,7 @@ import { ClientForm } from '../types';
 import { Checkbox } from '../../../../ui/Controls/Checkbox';
 import { RootState } from '../../../../../initialState';
 
-type ProtectionSettings = 'use_global_settings' | 'filtering_enabled' | 'safebrowsing_enabled' | 'parental_enabled';
+type ProtectionSettings = 'use_global_settings' | 'filtering_enabled';
 
 const settingsCheckboxes: {
     name: ProtectionSettings;
@@ -23,16 +23,6 @@ const settingsCheckboxes: {
     {
         name: 'filtering_enabled',
         placeholder: i18next.t('block_domain_use_filters_and_hosts'),
-        requiredServiceTypes: ['family', 'enterprise'],
-    },
-    {
-        name: 'safebrowsing_enabled',
-        placeholder: i18next.t('use_adguard_browsing_sec'),
-        requiredServiceTypes: ['family', 'enterprise'],
-    },
-    {
-        name: 'parental_enabled',
-        placeholder: i18next.t('use_adguard_parental'),
         requiredServiceTypes: ['family', 'enterprise'],
     },
 ];

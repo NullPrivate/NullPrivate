@@ -11,7 +11,7 @@ import queryString from 'query-string';
 import {
     DEBOUNCE_FILTER_TIMEOUT,
     DEFAULT_LOGS_FILTER,
-    RESPONSE_FILTER,
+    VISIBLE_RESPONSE_FILTERS,
     RESPONSE_FILTER_QUERIES,
 } from '../../../helpers/constants';
 import { setLogsFilter } from '../../../actions/queryLogs';
@@ -99,7 +99,7 @@ export const Form = ({ className, setIsLoading }: Props) => {
                 <select
                     {...register('response_status')}
                     className="form-control custom-select custom-select--logs custom-select__arrow--left form-control--transparent d-sm-block">
-                    {Object.values(RESPONSE_FILTER).map(({ QUERY, LABEL, disabled }: any) => (
+                    {VISIBLE_RESPONSE_FILTERS.map(({ QUERY, LABEL, disabled }: any) => (
                         <option key={LABEL} value={QUERY} disabled={disabled}>
                             {t(LABEL)}
                         </option>

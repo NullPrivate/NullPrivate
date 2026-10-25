@@ -767,10 +767,11 @@
       'tags':
       - 'safebrowsing'
       'operationId': 'safebrowsingEnable'
-      'summary': 'Enable safebrowsing'
+      'summary': '兼容接口：安全浏览在本开源版本中固定停用'
+      'deprecated': true
       'responses':
-        '200':
-          'description': 'OK.'
+        '403':
+          'description': '功能已停用，返回纯文本说明。'
   '/safebrowsing/disable':
     'post':
       'tags':
@@ -786,6 +787,7 @@
       - 'safebrowsing'
       'operationId': 'safebrowsingStatus'
       'summary': 'Get safebrowsing status'
+      'description': '兼容状态接口，本开源版本始终返回 enabled: false。'
       'responses':
         '200':
           'description': 'OK.'
@@ -805,10 +807,11 @@
       'tags':
       - 'parental'
       'operationId': 'parentalEnable'
-      'summary': 'Enable parental filtering'
+      'summary': '兼容接口：成人网站分类拦截在本开源版本中固定停用'
+      'deprecated': true
       'responses':
-        '200':
-          'description': 'OK.'
+        '403':
+          'description': '功能已停用，返回纯文本说明。'
   '/parental/disable':
     'post':
       'tags':
@@ -824,6 +827,7 @@
       - 'parental'
       'operationId': 'parentalStatus'
       'summary': 'Get parental filtering status'
+      'description': '兼容状态接口，本开源版本始终返回 enabled: false。'
       'responses':
         '200':
           'description': 'OK.'
@@ -832,15 +836,12 @@
               'schema':
                 'type': 'object'
                 'properties':
-                  'enable':
+                  'enabled':
                     'type': 'boolean'
-                  'sensitivity':
-                    'type': 'integer'
               'examples':
                 'response':
                   'value':
-                    'enabled': true
-                    'sensitivity': 13
+                    'enabled': false
   '/safesearch/enable':
     'post':
       'deprecated': true

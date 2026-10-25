@@ -197,12 +197,8 @@ const Dashboard = ({
                             interval={msToDays(stats.interval)}
                             dnsQueries={stats.dnsQueries}
                             blockedFiltering={stats.blockedFiltering}
-                            replacedSafebrowsing={stats.replacedSafebrowsing}
-                            replacedParental={stats.replacedParental}
                             numDnsQueries={stats.numDnsQueries}
                             numBlockedFiltering={stats.numBlockedFiltering}
-                            numReplacedSafebrowsing={stats.numReplacedSafebrowsing}
-                            numReplacedParental={stats.numReplacedParental}
                             refreshButton={refreshButton}
                         />
                     </div>

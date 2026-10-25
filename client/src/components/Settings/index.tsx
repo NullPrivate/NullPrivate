@@ -17,28 +17,9 @@ import PageTitle from '../ui/PageTitle';
 
 import Card from '../ui/Card';
 
-import { getObjectKeysSorted, captitalizeWords } from '../../helpers/helpers';
+import { captitalizeWords } from '../../helpers/helpers';
 import './Settings.css';
-import { SettingsData , RootState } from '../../initialState';
-
-const ORDER_KEY = 'order';
-
-const SETTINGS = {
-    safebrowsing: {
-        enabled: false,
-        title: i18next.t('use_adguard_browsing_sec'),
-        subtitle: i18next.t('use_adguard_browsing_sec_hint'),
-        testId: 'safebrowsing',
-        [ORDER_KEY]: 0,
-    },
-    parental: {
-        enabled: false,
-        title: i18next.t('use_adguard_parental'),
-        subtitle: i18next.t('use_adguard_parental_hint'),
-        testId: 'parental',
-        [ORDER_KEY]: 1,
-    },
-};
+import { SettingsData, RootState } from '../../initialState';
 
 interface SettingsProps {
     initSettings: (...args: unknown[]) => unknown;
@@ -82,7 +63,7 @@ interface SettingsProps {
 
 class Settings extends Component<SettingsProps> {
     componentDidMount() {
-        this.props.initSettings(SETTINGS);
+        this.props.initSettings();
 
         this.props.getStatsConfig();
 
@@ -90,24 +71,6 @@ class Settings extends Component<SettingsProps> {
 
         this.props.getFilteringStatus();
     }
-
-    renderSettings = (settings: any) =>
-        getObjectKeysSorted(SETTINGS, ORDER_KEY).map((key: any) => {
-            const setting = settings[key];
-            const { enabled, title, subtitle, testId } = setting;
-
-            return (
-                <div key={key} className="form__group form__group--checkbox">
-                    <Checkbox
-                        data-testid={testId}
-                        value={enabled}
-                        title={title}
-                        subtitle={subtitle}
-                        onChange={(checked) => this.props.toggleSetting(key, !checked)}
-                    />
-                </div>
-            );
-        });
 
     renderSafeSearch = () => {
         const {
@@ -187,12 +150,7 @@ class Settings extends Component<SettingsProps> {
                                             processing={filtering.processingSetConfig}
                                             setFiltersConfig={setFiltersConfig}
                                         />
-                                        {this.props.serviceType !== 'personal' && (
-                                            <>
-                                                {this.renderSettings(settings.settingsList)}
-                                                {this.renderSafeSearch()}
-                                            </>
-                                        )}
+                                        {this.props.serviceType !== 'personal' && this.renderSafeSearch()}
                                     </div>
                                 </Card>
                             </div>

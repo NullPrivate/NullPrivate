@@ -25,7 +25,6 @@ import (
 	"github.com/AdguardTeam/AdGuardHome/internal/aghtest"
 	"github.com/AdguardTeam/AdGuardHome/internal/client"
 	"github.com/AdguardTeam/AdGuardHome/internal/filtering"
-	"github.com/AdguardTeam/AdGuardHome/internal/filtering/hashprefix"
 	"github.com/AdguardTeam/AdGuardHome/internal/filtering/safesearch"
 	"github.com/AdguardTeam/AdGuardHome/internal/schedule"
 	"github.com/AdguardTeam/dnsproxy/proxy"
@@ -1165,27 +1164,50 @@ func TestBlockedByHosts(t *testing.T) {
 	assert.Equalf(t, net.IP{127, 0, 0, 1}, a.A, "dns server %s returned wrong answer instead of 8.8.8.8: %v", addr, a.A)
 }
 
-func TestBlockedBySafeBrowsing(t *testing.T) {
-	const (
-		hostname  = "wmconvirus.narod.ru"
-		cacheTime = 10 * time.Minute
-		cacheSize = 10000
-	)
+// policyCountingChecker 使用原子计数验证 DNS 请求在产品策略下的实际调用路径。
+type policyCountingChecker struct {
+	calls atomic.Uint64
+}
 
-	sbChecker := hashprefix.New(&hashprefix.Config{
-		CacheTime: cacheTime,
-		CacheSize: cacheSize,
-		Upstream:  aghtest.NewBlockUpstream(hostname, true),
+func (c *policyCountingChecker) Check(_ string) (block bool, err error) {
+	c.calls.Add(1)
+
+	return true, nil
+}
+
+// TestResolveWithProductPolicy 延续原安全浏览用例，验证正常解析及保留的过滤能力。
+func TestResolveWithProductPolicy(t *testing.T) {
+	sbChecker, pcChecker := &policyCountingChecker{}, &policyCountingChecker{}
+	safeSearchConf := filtering.SafeSearchConfig{Enabled: true, Yandex: true}
+	safeSearch, err := safesearch.NewDefault(testutil.ContextWithTimeout(t, testTimeout), &safesearch.DefaultConfig{
+		Logger:         slogutil.NewDiscardLogger(),
+		ServicesConfig: safeSearchConf,
+		CacheSize:      1000,
+		CacheTTL:       time.Minute,
 	})
-
-	ans4, _ := aghtest.HostToIPs(hostname)
+	require.NoError(t, err)
 
 	filterConf := &filtering.Config{
-		BlockingMode:          filtering.BlockingModeDefault,
-		ProtectionEnabled:     true,
-		SafeBrowsingEnabled:   true,
-		SafeBrowsingChecker:   sbChecker,
-		SafeBrowsingBlockHost: ans4.String(),
+		BlockingMode:           filtering.BlockingModeDefault,
+		ProtectionEnabled:      true,
+		SafeBrowsingEnabled:    true,
+		ParentalEnabled:        true,
+		SafeBrowsingChecker:    sbChecker,
+		ParentalControlChecker: pcChecker,
+		SafeBrowsingBlockHost:  "192.0.2.200",
+		ParentalBlockHost:      "192.0.2.201",
+		SafeSearchConf:         safeSearchConf,
+		SafeSearch:             safeSearch,
+		BlockedServices: &filtering.BlockedServices{
+			Schedule: schedule.EmptyWeekly(),
+			IDs:      []string{"bilibili"},
+		},
+	}
+	var clientSettingsCalls atomic.Uint64
+	filterConf.ApplyClientFiltering = func(_ string, _ netip.Addr, setts *filtering.Settings) {
+		clientSettingsCalls.Add(1)
+		setts.SafeBrowsingEnabled = true
+		setts.ParentalEnabled = true
 	}
 	forwardConf := ServerConfig{
 		UDPListenAddrs: []*net.UDPAddr{{}},
@@ -1201,17 +1223,44 @@ func TestBlockedBySafeBrowsing(t *testing.T) {
 		ServePlainDNS: true,
 	}
 	s := createTestServer(t, filterConf, forwardConf)
+	t.Cleanup(s.dnsFilter.Close)
+	require.Equal(t, []string{"bilibili"}, filterConf.BlockedServices.IDs)
+
+	// 使用确定性的上游应答，区分正常解析与历史拦截地址。
+	var upstreamCalls atomic.Uint64
+	ups := aghtest.NewUpstreamMock(func(req *dns.Msg) (resp *dns.Msg, err error) {
+		upstreamCalls.Add(1)
+		return aghtest.MatchedResponse(req, dns.TypeA, req.Question[0].Name, "192.0.2.10"), nil
+	})
+	s.conf.UpstreamConfig.Upstreams = []upstream.Upstream{ups}
 	startDeferStop(t, s)
 	addr := s.dnsProxy.Addr(proxy.ProtoUDP)
 
-	// SafeBrowsing blocking.
-	req := createTestMessage(hostname + ".")
-
-	reply, err := dns.Exchange(req, addr.String())
-	require.NoErrorf(t, err, "couldn't talk to server %s: %s", addr, err)
-	require.Lenf(t, reply.Answer, 1, "dns server %s returned reply with wrong number of answers - %d", addr, len(reply.Answer))
-
-	assertResponse(t, reply, ans4)
+	testCases := []struct {
+		name string
+		host string
+		want string
+	}{
+		{name: "safebrowsing_host", host: "wmconvirus.narod.ru.", want: "192.0.2.10"},
+		{name: "parental_host", host: "pornhub.com.", want: "192.0.2.10"},
+		{name: "ordinary_host", host: "www.example.org.", want: "192.0.2.10"},
+		{name: "ordinary_rule", host: "NULL.example.org.", want: "0.0.0.0"},
+		{name: "safe_search", host: "yandex.ru.", want: "213.180.193.56"},
+		{name: "blocked_service", host: "www.bilibili.com.", want: "0.0.0.0"},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			reply, exchangeErr := dns.Exchange(createTestMessage(tc.host), addr.String())
+			require.NoError(t, exchangeErr)
+			require.Equal(t, dns.RcodeSuccess, reply.Rcode)
+			require.Len(t, reply.Answer, 1)
+			assertResponse(t, reply, netip.MustParseAddr(tc.want))
+		})
+	}
+	assert.GreaterOrEqual(t, clientSettingsCalls.Load(), uint64(len(testCases)))
+	assert.Equal(t, uint64(3), upstreamCalls.Load())
+	assert.Zero(t, sbChecker.calls.Load())
+	assert.Zero(t, pcChecker.calls.Load())
 }
 
 func TestRewrite(t *testing.T) {

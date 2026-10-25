@@ -2,7 +2,7 @@ http:
   pprof:
     port: 6060
     enabled: false
-  address: 0.0.0.0:34020
+  address: 127.0.0.1:34020
   session_ttl: 720h
 users:
   - name: test
@@ -15,10 +15,10 @@ theme: light
 service_type: family
 dns:
   bind_hosts:
-    - 0.0.0.0
-  port: 0
+    - 127.0.0.1
+  port: 5354
   anonymize_client_ip: false
-  ratelimit: 1
+  ratelimit: 20
   ratelimit_subnet_len_ipv4: 24
   ratelimit_subnet_len_ipv6: 56
   ratelimit_whitelist: []
@@ -79,7 +79,7 @@ dns:
   pending_requests:
     enabled: true
 tls:
-  enabled: true
+  enabled: false
   server_name: dns.jqknono.com
   force_https: false
   port_https: 34025
@@ -146,8 +146,6 @@ filtering:
     schedule:
       time_zone: Local
     ids:
-      - 1password.com
-      - www.adition.com
       - zhihu
   protection_disabled_until: null
   safe_search:
@@ -178,8 +176,8 @@ filtering:
   filters_maximum_count: 5000
   blocked_response_ttl: 10
   filtering_enabled: true
-  parental_enabled: true
-  safebrowsing_enabled: true
+  parental_enabled: false
+  safebrowsing_enabled: false
   protection_enabled: true
   service_urls:
     - https://list.nullprivate.com/api/lists/anti-addiction?username=adgadminadgadmin&ids=1password.com%2Cwww.adition.com
@@ -207,8 +205,6 @@ clients:
           time_zone: Local
         ids:
           - zhihu
-          - 1password.com
-          - www.adition.com
       name: "123"
       ids:
         - "456"

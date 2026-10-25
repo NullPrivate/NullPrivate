@@ -416,8 +416,8 @@ func (d *DNSFilter) Settings() (s *Settings) {
 	return &Settings{
 		FilteringEnabled:    atomic.LoadUint32(&d.conf.enabled) != 0,
 		SafeSearchEnabled:   d.conf.SafeSearchConf.Enabled,
-		SafeBrowsingEnabled: d.conf.SafeBrowsingEnabled,
-		ParentalEnabled:     d.conf.ParentalEnabled,
+		SafeBrowsingEnabled: SafeBrowsingAndParentalEnabled && d.conf.SafeBrowsingEnabled,
+		ParentalEnabled:     SafeBrowsingAndParentalEnabled && d.conf.ParentalEnabled,
 	}
 }
 
@@ -428,6 +428,8 @@ func (d *DNSFilter) WriteDiskConfig(c *Config) {
 		defer d.confMu.Unlock()
 
 		*c = *d.conf
+		c.SafeBrowsingEnabled = SafeBrowsingAndParentalEnabled && c.SafeBrowsingEnabled
+		c.ParentalEnabled = SafeBrowsingAndParentalEnabled && c.ParentalEnabled
 		c.Rewrites = cloneRewrites(c.Rewrites)
 	}()
 
@@ -1039,6 +1041,9 @@ func InitModule() {
 // New creates properly initialized DNS Filter that is ready to be used.  c must
 // be non-nil.
 func New(c *Config, blockFilters []Filter) (d *DNSFilter, err error) {
+	c.SafeBrowsingEnabled = SafeBrowsingAndParentalEnabled && c.SafeBrowsingEnabled
+	c.ParentalEnabled = SafeBrowsingAndParentalEnabled && c.ParentalEnabled
+
 	d = &DNSFilter{
 		idGen:                  newIDGenerator(int32(time.Now().Unix())),
 		bufPool:                syncutil.NewSlicePool[byte](rulelist.DefaultRuleBufSize),
@@ -1232,7 +1237,7 @@ func (d *DNSFilter) checkSafeBrowsing(
 	_ uint16,
 	setts *Settings,
 ) (res Result, err error) {
-	if !setts.ProtectionEnabled || !setts.SafeBrowsingEnabled {
+	if !SafeBrowsingAndParentalEnabled || !setts.ProtectionEnabled || !setts.SafeBrowsingEnabled {
 		return Result{}, nil
 	}
 
@@ -1264,7 +1269,7 @@ func (d *DNSFilter) checkParental(
 	_ uint16,
 	setts *Settings,
 ) (res Result, err error) {
-	if !setts.ProtectionEnabled || !setts.ParentalEnabled {
+	if !SafeBrowsingAndParentalEnabled || !setts.ProtectionEnabled || !setts.ParentalEnabled {
 		return Result{}, nil
 	}
 

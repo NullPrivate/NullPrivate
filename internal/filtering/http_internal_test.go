@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/AdguardTeam/AdGuardHome/internal/schedule"
-	"github.com/AdguardTeam/golibs/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -143,169 +142,96 @@ func TestDNSFilter_handleFilteringSetURL(t *testing.T) {
 }
 
 func TestDNSFilter_handleSafeBrowsingStatus(t *testing.T) {
-	const (
-		testTimeout = time.Second
-		statusURL   = "/control/safebrowsing/status"
-	)
-
-	confModCh := make(chan struct{})
-	filtersDir := t.TempDir()
-
-	testCases := []struct {
-		name       string
-		url        string
-		enabled    bool
-		wantStatus assert.BoolAssertionFunc
-	}{{
-		name:       "enable_off",
-		url:        "/control/safebrowsing/enable",
-		enabled:    false,
-		wantStatus: assert.True,
-	}, {
-		name:       "enable_on",
-		url:        "/control/safebrowsing/enable",
-		enabled:    true,
-		wantStatus: assert.True,
-	}, {
-		name:       "disable_on",
-		url:        "/control/safebrowsing/disable",
-		enabled:    true,
-		wantStatus: assert.False,
-	}, {
-		name:       "disable_off",
-		url:        "/control/safebrowsing/disable",
-		enabled:    false,
-		wantStatus: assert.False,
-	}}
-
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			handlers := make(map[string]http.Handler)
-
-			d, err := New(&Config{
-				ConfigModified: func() {
-					testutil.RequireSend(testutil.PanicT{}, confModCh, struct{}{}, testTimeout)
-				},
-				DataDir: filtersDir,
-				HTTPRegister: func(_, url string, handler http.HandlerFunc) {
-					handlers[url] = handler
-				},
-				SafeBrowsingEnabled: tc.enabled,
-			}, nil)
-			require.NoError(t, err)
-			t.Cleanup(d.Close)
-
-			d.RegisterFilteringHandlers()
-			require.NotEmpty(t, handlers)
-			require.Contains(t, handlers, statusURL)
-
-			r := httptest.NewRequest(http.MethodPost, tc.url, nil)
-			w := httptest.NewRecorder()
-
-			go handlers[tc.url].ServeHTTP(w, r)
-
-			testutil.RequireReceive(t, confModCh, testTimeout)
-
-			r = httptest.NewRequest(http.MethodGet, statusURL, nil)
-			w = httptest.NewRecorder()
-
-			handlers[statusURL].ServeHTTP(w, r)
-			require.Equal(t, http.StatusOK, w.Code)
-
-			status := struct {
-				Enabled bool `json:"enabled"`
-			}{
-				Enabled: false,
-			}
-
-			err = json.NewDecoder(w.Body).Decode(&status)
-			require.NoError(t, err)
-
-			tc.wantStatus(t, status.Enabled)
-		})
-	}
+	testCompatibilityStatus(t, "safebrowsing", func(c *Config, enabled bool) {
+		c.SafeBrowsingEnabled = enabled
+	})
 }
 
 func TestDNSFilter_handleParentalStatus(t *testing.T) {
-	const (
-		testTimeout = time.Second
-		statusURL   = "/control/parental/status"
-	)
+	testCompatibilityStatus(t, "parental", func(c *Config, enabled bool) {
+		c.ParentalEnabled = enabled
+	})
+}
 
-	confModCh := make(chan struct{})
-	filtersDir := t.TempDir()
+// testCompatibilityStatus 复用两组既有 API 分支，验证兼容状态和配置写入语义。
+func testCompatibilityStatus(t *testing.T, feature string, configure func(*Config, bool)) {
+	t.Helper()
+	baseURL := "/control/" + feature
+	statusURL := baseURL + "/status"
 
 	testCases := []struct {
-		name       string
-		url        string
-		enabled    bool
-		wantStatus assert.BoolAssertionFunc
+		name         string
+		action       string
+		enabled      bool
+		wantCode     int
+		wantModified int
 	}{{
-		name:       "enable_off",
-		url:        "/control/parental/enable",
-		enabled:    false,
-		wantStatus: assert.True,
+		name:     "enable_off",
+		action:   "enable",
+		enabled:  false,
+		wantCode: http.StatusForbidden,
 	}, {
-		name:       "enable_on",
-		url:        "/control/parental/enable",
-		enabled:    true,
-		wantStatus: assert.True,
+		name:     "enable_on",
+		action:   "enable",
+		enabled:  true,
+		wantCode: http.StatusForbidden,
 	}, {
-		name:       "disable_on",
-		url:        "/control/parental/disable",
-		enabled:    true,
-		wantStatus: assert.False,
+		name:         "disable_on",
+		action:       "disable",
+		enabled:      true,
+		wantCode:     http.StatusOK,
+		wantModified: 1,
 	}, {
-		name:       "disable_off",
-		url:        "/control/parental/disable",
-		enabled:    false,
-		wantStatus: assert.False,
+		name:         "disable_off",
+		action:       "disable",
+		enabled:      false,
+		wantCode:     http.StatusOK,
+		wantModified: 1,
 	}}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			handlers := make(map[string]http.Handler)
-
-			d, err := New(&Config{
+			modified := 0
+			conf := &Config{
 				ConfigModified: func() {
-					testutil.RequireSend(testutil.PanicT{}, confModCh, struct{}{}, testTimeout)
+					modified++
 				},
-				DataDir: filtersDir,
+				DataDir: t.TempDir(),
 				HTTPRegister: func(_, url string, handler http.HandlerFunc) {
 					handlers[url] = handler
 				},
-				ParentalEnabled: tc.enabled,
-			}, nil)
+			}
+			configure(conf, tc.enabled)
+			d, err := New(conf, nil)
 			require.NoError(t, err)
 			t.Cleanup(d.Close)
+
+			// 保留既有 on/off 分支的内存状态，直接验证兼容 API 的策略边界。
+			d.confMu.Lock()
+			configure(d.conf, tc.enabled)
+			d.confMu.Unlock()
 
 			d.RegisterFilteringHandlers()
 			require.NotEmpty(t, handlers)
 			require.Contains(t, handlers, statusURL)
 
-			r := httptest.NewRequest(http.MethodPost, tc.url, nil)
-			w := httptest.NewRecorder()
-
-			go handlers[tc.url].ServeHTTP(w, r)
-
-			testutil.RequireReceive(t, confModCh, testTimeout)
-
-			r = httptest.NewRequest(http.MethodGet, statusURL, nil)
-			w = httptest.NewRecorder()
-
-			handlers[statusURL].ServeHTTP(w, r)
-			require.Equal(t, http.StatusOK, w.Code)
-
-			status := struct {
-				Enabled bool `json:"enabled"`
-			}{
-				Enabled: false,
+			checkStatus := func() {
+				t.Helper()
+				w := httptest.NewRecorder()
+				handlers[statusURL].ServeHTTP(w, httptest.NewRequest(http.MethodGet, statusURL, nil))
+				require.Equal(t, http.StatusOK, w.Code)
+				assert.JSONEq(t, `{"enabled":false}`, w.Body.String())
 			}
 
-			err = json.NewDecoder(w.Body).Decode(&status)
-			require.NoError(t, err)
-
-			tc.wantStatus(t, status.Enabled)
+			checkStatus()
+			url := baseURL + "/" + tc.action
+			require.Contains(t, handlers, url)
+			w := httptest.NewRecorder()
+			handlers[url].ServeHTTP(w, httptest.NewRequest(http.MethodPost, url, nil))
+			assert.Equal(t, tc.wantCode, w.Code)
+			checkStatus()
+			assert.Equal(t, tc.wantModified, modified)
 		})
 	}
 }

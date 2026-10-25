@@ -153,7 +153,7 @@ func setupContext(opts options) (err error) {
 
 	if globalContext.firstRun {
 		log.Info("This is the first time AdGuard Home is launched")
-		checkNetworkPermissions()
+		// 初始化向导根据用户选择的地址和端口检查实际绑定能力。
 
 		return nil
 	}
@@ -359,29 +359,6 @@ func setupDNSFilteringConf(
 	conf *filtering.Config,
 	tlsMgr *tlsManager,
 ) (err error) {
-	const (
-		dnsTimeout = 3 * time.Second
-
-		sbService   = "safe browsing"
-		sbTXTSuffix = `sb.dns.adguard.com.`
-
-		pcService   = "parental control"
-		pcTXTSuffix = `pc.dns.adguard.com.`
-	)
-
-	// Use default values if configuration values are empty
-	safeBrowsingServer := conf.SafeBrowsingServer
-	if safeBrowsingServer == "" {
-		safeBrowsingServer = "https://family.adguard-dns.com/dns-query"
-		log.Info("%s: warning: empty server; using default: %q", sbService, safeBrowsingServer)
-	}
-
-	parentalServer := conf.ParentalServer
-	if parentalServer == "" {
-		parentalServer = "https://family.adguard-dns.com/dns-query"
-		log.Info("%s: warning: empty server; using default: %q", pcService, parentalServer)
-	}
-
 	conf.EtcHosts = globalContext.etcHosts
 	// TODO(s.chzhen):  Use empty interface.
 	if globalContext.etcHosts == nil || !config.DNS.HostsFileEnabled {
@@ -399,6 +376,58 @@ func setupDNSFilteringConf(
 
 	cacheTime := time.Duration(conf.CacheTime) * time.Minute
 
+	conf.SafeBrowsingEnabled = filtering.SafeBrowsingAndParentalEnabled && conf.SafeBrowsingEnabled
+	conf.ParentalEnabled = filtering.SafeBrowsingAndParentalEnabled && conf.ParentalEnabled
+	if filtering.SafeBrowsingAndParentalEnabled {
+		if err = setupSafeBrowsingAndParental(conf); err != nil {
+			return err
+		}
+	} else {
+		conf.SafeBrowsingChecker = nil
+		conf.ParentalControlChecker = nil
+	}
+
+	logger := baseLogger.With(slogutil.KeyPrefix, safesearch.LogPrefix)
+	conf.SafeSearch, err = safesearch.NewDefault(ctx, &safesearch.DefaultConfig{
+		Logger:         logger,
+		ServicesConfig: conf.SafeSearchConf,
+		CacheSize:      conf.SafeSearchCacheSize,
+		CacheTTL:       cacheTime,
+	})
+	if err != nil {
+		return fmt.Errorf("initializing safesearch: %w", err)
+	}
+
+	return nil
+}
+
+// setupSafeBrowsingAndParental 保留安全浏览与家长控制的专属初始化兼容实现，
+// 由固定产品策略统一控制调用。
+func setupSafeBrowsingAndParental(conf *filtering.Config) (err error) {
+	const (
+		dnsTimeout = 3 * time.Second
+
+		sbService   = "safe browsing"
+		sbTXTSuffix = `sb.dns.adguard.com.`
+
+		pcService   = "parental control"
+		pcTXTSuffix = `pc.dns.adguard.com.`
+	)
+
+	// 旧配置中的空值沿用兼容默认值。
+	safeBrowsingServer := conf.SafeBrowsingServer
+	if safeBrowsingServer == "" {
+		safeBrowsingServer = "https://family.adguard-dns.com/dns-query"
+		log.Info("%s: warning: empty server; using default: %q", sbService, safeBrowsingServer)
+	}
+
+	parentalServer := conf.ParentalServer
+	if parentalServer == "" {
+		parentalServer = "https://family.adguard-dns.com/dns-query"
+		log.Info("%s: warning: empty server; using default: %q", pcService, parentalServer)
+	}
+
+	cacheTime := time.Duration(conf.CacheTime) * time.Minute
 	upsOpts := &upstream.Options{
 		Timeout: dnsTimeout,
 		Bootstrap: upstream.StaticResolver{
@@ -459,17 +488,6 @@ func setupDNSFilteringConf(
 		log.Info("%s: warning: empty blocking host; using default: %q", pcService, host)
 
 		conf.ParentalBlockHost = host
-	}
-
-	logger := baseLogger.With(slogutil.KeyPrefix, safesearch.LogPrefix)
-	conf.SafeSearch, err = safesearch.NewDefault(ctx, &safesearch.DefaultConfig{
-		Logger:         logger,
-		ServicesConfig: conf.SafeSearchConf,
-		CacheSize:      conf.SafeSearchCacheSize,
-		CacheTTL:       cacheTime,
-	})
-	if err != nil {
-		return fmt.Errorf("initializing safesearch: %w", err)
 	}
 
 	return nil
@@ -862,40 +880,6 @@ func (c *configuration) anonymizer() (ipmut *aghnet.IPMut) {
 	}
 
 	return aghnet.NewIPMut(anonFunc)
-}
-
-// checkNetworkPermissions checks if the current user permissions are enough to
-// use the required networking functionality.
-func checkNetworkPermissions() {
-	log.Info("Checking if AdGuard Home has necessary permissions")
-
-	if ok, err := aghnet.CanBindPrivilegedPorts(); !ok || err != nil {
-		log.Fatal("This is the first launch of AdGuard Home. You must run it as Administrator.")
-	}
-
-	// We should check if AdGuard Home is able to bind to port 53
-	err := aghnet.CheckPort("tcp", netip.AddrPortFrom(netutil.IPv4Localhost(), defaultPortDNS))
-	if err != nil {
-		if errors.Is(err, os.ErrPermission) {
-			log.Fatal(`Permission check failed.
-
-AdGuard Home is not allowed to bind to privileged ports (for instance, port 53).
-Please note, that this is crucial for a server to be able to use privileged ports.
-
-You have two options:
-1. Run AdGuard Home with root privileges
-2. On Linux you can grant the CAP_NET_BIND_SERVICE capability:
-https://github.com/AdguardTeam/AdGuardHome/wiki/Getting-Started#running-without-superuser`)
-		}
-
-		log.Info(
-			"AdGuard failed to bind to port 53: %s\n\n"+
-				"Please note, that this is crucial for a DNS server to be able to use that port.",
-			err,
-		)
-	}
-
-	log.Info("AdGuard Home can bind to port 53")
 }
 
 // Write PID to a file

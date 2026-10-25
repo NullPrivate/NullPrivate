@@ -16,7 +16,8 @@ const settings = handleActions(
             const { settingsList } = payload;
             const newState = {
                 ...state,
-                settingsList,
+                // 仅更新本次加载的设置，保留历史兼容状态。
+                settingsList: { ...state.settingsList, ...settingsList },
                 processing: false,
             };
             return newState;

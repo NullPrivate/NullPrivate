@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import { execSync } from 'child_process';
 import { ADMIN_USERNAME, ADMIN_PASSWORD } from '../constants';
 
 test.describe('General Settings', () => {
@@ -14,60 +13,17 @@ test.describe('General Settings', () => {
         await page.waitForURL((url) => !url.href.endsWith('/login.html'));
     });
 
-    test('should toggle browsing security feature and verify DNS changes', async ({ page }) => {
+    test('展示规则过滤和安全搜索入口', async ({ page }) => {
         await page.goto('/#settings');
-
-        const browsingSecurity = await page.getByTestId('safebrowsing');
-        const browsingSecurityLabel = await browsingSecurity.locator('xpath=following-sibling::*[1]');
-
-        const initialState = await browsingSecurity.isChecked();
-
-        if (!initialState) {
-            await browsingSecurityLabel.click();
-            await expect(browsingSecurity).toBeChecked();
-        }
-
-        const resultEnabled = execSync('nslookup totalvirus.com 127.0.0.1').toString();
-
-        await browsingSecurityLabel.click();
-        await expect(browsingSecurity).not.toBeChecked();
-
-        const resultDisabled = execSync('nslookup totalvirus.com 127.0.0.1').toString();
-
-        expect(resultEnabled).not.toEqual(resultDisabled);
-
-        if (initialState) {
-            await browsingSecurityLabel.click();
-            await expect(browsingSecurity).toBeChecked();
-        }
+        await expect(page.getByTestId('filters_enabled')).toBeVisible();
+        await expect(page.getByTestId('filters_interval')).toBeVisible();
+        await expect(page.getByTestId('safesearch')).toBeVisible();
     });
 
-    test('should toggle parental control feature and verify DNS changes', async ({ page }) => {
+    test('保留查询日志和统计配置入口', async ({ page }) => {
         await page.goto('/#settings');
-
-        const parentalControl = page.getByTestId('parental');
-        const parentalControlLabel = await parentalControl.locator('xpath=following-sibling::*[1]');
-
-        const initialState = await parentalControl.isChecked();
-
-        if (!initialState) {
-            await parentalControlLabel.click();
-            await expect(parentalControl).toBeChecked();
-        }
-
-        const resultEnabled = execSync('nslookup pornhub.com 127.0.0.1').toString();
-
-        await parentalControlLabel.click();
-        await expect(parentalControl).not.toBeChecked();
-
-        const resultDisabled = execSync('nslookup pornhub.com 127.0.0.1').toString();
-
-        expect(resultEnabled).not.toEqual(resultDisabled);
-
-        if (initialState) {
-            await parentalControlLabel.click();
-            await expect(parentalControl).toBeChecked();
-        }
+        await expect(page.getByTestId('logs_enabled')).toBeVisible();
+        await expect(page.getByTestId('stats_config_enabled')).toBeVisible();
     });
 
     test('should toggle safe search feature', async ({ page }) => {

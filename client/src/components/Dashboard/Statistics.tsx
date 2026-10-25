@@ -14,12 +14,8 @@ interface StatisticsProps {
     interval: number;
     dnsQueries: number[];
     blockedFiltering: unknown[];
-    replacedSafebrowsing: unknown[];
-    replacedParental: unknown[];
     numDnsQueries: number;
     numBlockedFiltering: number;
-    numReplacedSafebrowsing: number;
-    numReplacedParental: number;
     refreshButton: React.ReactNode;
 }
 
@@ -27,15 +23,11 @@ const Statistics = ({
     interval,
     dnsQueries,
     blockedFiltering,
-    replacedSafebrowsing,
-    replacedParental,
     numDnsQueries,
     numBlockedFiltering,
-    numReplacedSafebrowsing,
-    numReplacedParental,
 }: StatisticsProps) => (
     <div className="row">
-        <div className="col-sm-6 col-lg-3">
+        <div className="col-sm-6">
             <StatsCard
                 total={numDnsQueries}
                 lineData={getNormalizedHistory(dnsQueries, interval, 'dnsQuery')}
@@ -48,7 +40,7 @@ const Statistics = ({
             />
         </div>
 
-        <div className="col-sm-6 col-lg-3">
+        <div className="col-sm-6">
             <StatsCard
                 total={numBlockedFiltering}
                 lineData={getNormalizedHistory(blockedFiltering, interval, 'blockedFiltering')}
@@ -64,34 +56,6 @@ const Statistics = ({
                     </Trans>
                 }
                 color="red"
-            />
-        </div>
-
-        <div className="col-sm-6 col-lg-3">
-            <StatsCard
-                total={numReplacedSafebrowsing}
-                lineData={getNormalizedHistory(replacedSafebrowsing, interval, 'replacedSafebrowsing')}
-                percent={getPercent(numDnsQueries, numReplacedSafebrowsing)}
-                title={
-                    <Link to={`logs?response_status=${RESPONSE_FILTER.BLOCKED_THREATS.QUERY}`}>
-                        <Trans>stats_malware_phishing</Trans>
-                    </Link>
-                }
-                color="green"
-            />
-        </div>
-
-        <div className="col-sm-6 col-lg-3">
-            <StatsCard
-                total={numReplacedParental}
-                lineData={getNormalizedHistory(replacedParental, interval, 'replacedParental')}
-                percent={getPercent(numDnsQueries, numReplacedParental)}
-                title={
-                    <Link to={`logs?response_status=${RESPONSE_FILTER.BLOCKED_ADULT_WEBSITES.QUERY}`}>
-                        <Trans>stats_adult</Trans>
-                    </Link>
-                }
-                color="yellow"
             />
         </div>
     </div>

@@ -80,28 +80,13 @@ export const initSettingsFailure = createAction('SETTINGS_INIT_FAILURE');
 export const initSettingsSuccess = createAction('SETTINGS_INIT_SUCCESS');
 
 export const initSettings =
-    (
-        settingsList = {
-            safebrowsing: {},
-            parental: {},
-        },
-    ) =>
+    (settingsList = {}) =>
     async (dispatch: any) => {
         dispatch(initSettingsRequest());
         try {
-            const safebrowsingStatus = await apiClient.getSafebrowsingStatus();
-            const parentalStatus = await apiClient.getParentalStatus();
             const safesearchStatus = await apiClient.getSafesearchStatus();
-            const { safebrowsing, parental } = settingsList;
             const newSettingsList = {
-                safebrowsing: {
-                    ...safebrowsing,
-                    enabled: safebrowsingStatus.enabled,
-                },
-                parental: {
-                    ...parental,
-                    enabled: parentalStatus.enabled,
-                },
+                ...settingsList,
                 safesearch: {
                     ...safesearchStatus,
                 },

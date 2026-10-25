@@ -557,6 +557,12 @@ func protectedBool(mu *sync.RWMutex, ptr *bool) (val bool) {
 // handleSafeBrowsingEnable is the handler for the POST
 // /control/safebrowsing/enable HTTP API.
 func (d *DNSFilter) handleSafeBrowsingEnable(w http.ResponseWriter, r *http.Request) {
+	if !SafeBrowsingAndParentalEnabled {
+		http.Error(w, "安全浏览功能已停用（safebrowsing disabled by product policy）", http.StatusForbidden)
+
+		return
+	}
+
 	setProtectedBool(d.confMu, &d.conf.SafeBrowsingEnabled, true)
 	d.conf.ConfigModified()
 }
@@ -574,7 +580,7 @@ func (d *DNSFilter) handleSafeBrowsingStatus(w http.ResponseWriter, r *http.Requ
 	resp := &struct {
 		Enabled bool `json:"enabled"`
 	}{
-		Enabled: protectedBool(d.confMu, &d.conf.SafeBrowsingEnabled),
+		Enabled: SafeBrowsingAndParentalEnabled && protectedBool(d.confMu, &d.conf.SafeBrowsingEnabled),
 	}
 
 	aghhttp.WriteJSONResponseOK(w, r, resp)
@@ -583,6 +589,12 @@ func (d *DNSFilter) handleSafeBrowsingStatus(w http.ResponseWriter, r *http.Requ
 // handleParentalEnable is the handler for the POST /control/parental/enable
 // HTTP API.
 func (d *DNSFilter) handleParentalEnable(w http.ResponseWriter, r *http.Request) {
+	if !SafeBrowsingAndParentalEnabled {
+		http.Error(w, "家长控制功能已停用（parental disabled by product policy）", http.StatusForbidden)
+
+		return
+	}
+
 	setProtectedBool(d.confMu, &d.conf.ParentalEnabled, true)
 	d.conf.ConfigModified()
 }
@@ -600,7 +612,7 @@ func (d *DNSFilter) handleParentalStatus(w http.ResponseWriter, r *http.Request)
 	resp := &struct {
 		Enabled bool `json:"enabled"`
 	}{
-		Enabled: protectedBool(d.confMu, &d.conf.ParentalEnabled),
+		Enabled: SafeBrowsingAndParentalEnabled && protectedBool(d.confMu, &d.conf.ParentalEnabled),
 	}
 
 	aghhttp.WriteJSONResponseOK(w, r, resp)

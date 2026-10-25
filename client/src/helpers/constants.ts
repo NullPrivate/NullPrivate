@@ -276,6 +276,11 @@ export const RESPONSE_FILTER = {
     },
 };
 
+// 日志界面展示当前支持的筛选项；完整映射继续兼容历史链接和原因。
+export const VISIBLE_RESPONSE_FILTERS = Object.values(RESPONSE_FILTER).filter(
+    (filter) => filter !== RESPONSE_FILTER.BLOCKED_THREATS && filter !== RESPONSE_FILTER.BLOCKED_ADULT_WEBSITES,
+);
+
 export const RESPONSE_FILTER_QUERIES = Object.values(RESPONSE_FILTER).reduce(
     (
         acc: Record<string, string>,

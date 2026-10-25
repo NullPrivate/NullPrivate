@@ -248,8 +248,8 @@ func (clients *clientsContainer) jsonToClient(
 	c.Upstreams = cj.Upstreams
 	c.UseOwnSettings = !cj.UseGlobalSettings
 	c.FilteringEnabled = cj.FilteringEnabled
-	c.ParentalEnabled = cj.ParentalEnabled
-	c.SafeBrowsingEnabled = cj.SafeBrowsingEnabled
+	c.ParentalEnabled = filtering.SafeBrowsingAndParentalEnabled && cj.ParentalEnabled
+	c.SafeBrowsingEnabled = filtering.SafeBrowsingAndParentalEnabled && cj.SafeBrowsingEnabled
 	c.UseOwnBlockedServices = !cj.UseGlobalBlockedServices
 
 	if c.SafeSearchConf.Enabled {
@@ -364,10 +364,10 @@ func clientToJSON(c *client.Persistent) (cj *clientJSON) {
 		Tags:                c.Tags,
 		UseGlobalSettings:   !c.UseOwnSettings,
 		FilteringEnabled:    c.FilteringEnabled,
-		ParentalEnabled:     c.ParentalEnabled,
+		ParentalEnabled:     filtering.SafeBrowsingAndParentalEnabled && c.ParentalEnabled,
 		SafeSearchEnabled:   safeSearchConf.Enabled,
 		SafeSearchConf:      safeSearchConf,
-		SafeBrowsingEnabled: c.SafeBrowsingEnabled,
+		SafeBrowsingEnabled: filtering.SafeBrowsingAndParentalEnabled && c.SafeBrowsingEnabled,
 
 		UseGlobalBlockedServices: !c.UseOwnBlockedServices,
 
