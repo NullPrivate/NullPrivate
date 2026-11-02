@@ -1,7 +1,7 @@
 'name': 'lint'
 
 'env':
-  'GO_VERSION': '1.26.9'
+  'GO_VERSION': '1.26.10'
 
 'on':
   'push':
@@ -31,6 +31,8 @@
       'run': 'npm --prefix="./client" ci'
     - 'name': 'Run ESLint'
       'run': 'npm --prefix="./client" run lint'
+    - 'name': 'Check TypeScript'
+      'run': 'make js-typecheck'
 
   'notify':
     'needs':

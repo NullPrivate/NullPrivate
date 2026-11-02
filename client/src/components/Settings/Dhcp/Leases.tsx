@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-// @ts-expect-error FIXME: update react-table
 import ReactTable from 'react-table';
 import { Trans, withTranslation } from 'react-i18next';
 import { LEASES_TABLE_DEFAULT_PAGE_SIZE, MODAL_TYPE } from '../../../helpers/constants';

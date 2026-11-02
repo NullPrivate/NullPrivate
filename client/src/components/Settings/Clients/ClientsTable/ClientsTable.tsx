@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useHistory, useLocation } from 'react-router-dom';
 
-// @ts-expect-error FIXME: update react-table
 import ReactTable from 'react-table';
 
 import { getAllBlockedServices, getBlockedServices } from '../../../../actions/services';
@@ -375,7 +374,7 @@ const ClientsTable = ({
                     defaultSorted={[
                         {
                             id: 'statistics',
-                            asc: true,
+                            desc: false,
                         },
                     ]}
                     className="-striped -highlight card-table-overflow"

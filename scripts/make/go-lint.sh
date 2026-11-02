@@ -68,6 +68,7 @@ set -f -u
 # TODO(a.garipov): Add golibs/log.
 blocklist_imports() {
 	find . \
+		-type 'd' -name 'node_modules' -prune -o \
 		-type 'f' \
 		-name '*.go' \
 		'!' '(' \
@@ -96,6 +97,7 @@ blocklist_imports() {
 # numbers where one should use named constants.
 method_const() {
 	find . \
+		-type 'd' -name 'node_modules' -prune -o \
 		-type 'f' \
 		-name '*.go' \
 		-exec \
@@ -117,6 +119,7 @@ method_const() {
 underscores() {
 	underscore_files="$(
 		find . \
+			-type 'd' -name 'node_modules' -prune -o \
 			-type 'f' \
 			-name '*_*.go' \
 			'!' '(' -name '*_bsd.go' \
@@ -148,7 +151,7 @@ underscores() {
 # have no released fixed version.  Keep the allowlist narrow so that new
 # vulnerabilities still fail CI.
 govulncheck_filtered() {
-	output="$(govulncheck ./...)"
+	output="$(govulncheck $go_project_packages)"
 	exitcode="$?"
 
 	if [ "$exitcode" -eq '0' ]; then
@@ -189,14 +192,14 @@ run_linter -e method_const
 
 run_linter -e underscores
 
-run_linter -e gofumpt --extra -e -l .
+run_linter -e gofumpt --extra -e -l main.go main_next.go internal scripts
 
-run_linter "${GO:-go}" vet ./...
+run_linter "${GO:-go}" vet $go_project_packages
 
 run_linter govulncheck_filtered
 
 # 将 dnsforward 和 home 的圈复杂度阈值适度放宽，其它目录仍保持 10。
-run_linter gocyclo --over 10 -ignore '^internal[/\\](dnsforward|home)[/\\]' .
+run_linter gocyclo --over 10 -ignore '^internal[/\\](dnsforward|home)[/\\]' main.go main_next.go internal scripts
 run_linter gocyclo --over 15 ./internal/home/
 run_linter gocyclo --over 15 ./internal/dnsforward/
 
@@ -262,9 +265,9 @@ run_linter gocognit --over='10' \
 	./scripts/ \
 	;
 
-run_linter ineffassign ./...
+run_linter ineffassign $go_project_packages
 
-run_linter unparam ./...
+run_linter unparam $go_project_packages
 
 find . \
 	'(' \
@@ -286,7 +289,7 @@ find . \
 	-exec 'misspell' '--error' '{}' '+'
 
 if [ "${SKIP_HEAVY_LINTERS:-0}" -eq '0' ]; then
-    run_linter nilness ./...
+    run_linter nilness $go_project_packages
 
     # TODO(a.garipov): Enable for all.
     run_linter fieldalignment \
@@ -316,7 +319,7 @@ if [ "${SKIP_HEAVY_LINTERS:-0}" -eq '0' ]; then
 		./internal/whois/ \
 		;
 
-    run_linter -e shadow --strict ./...
+    run_linter -e shadow --strict $go_project_packages
 
     # TODO(a.garipov): Enable for all.
     # TODO(e.burkov):  Re-enable G115.
@@ -347,7 +350,7 @@ if [ "${SKIP_HEAVY_LINTERS:-0}" -eq '0' ]; then
 		./internal/whois/ \
 		;
 
-    run_linter errcheck ./...
+    run_linter errcheck $go_project_packages
 else
     printf 'skip heavy linters: nilness/fieldalignment/shadow/gosec/errcheck\n' 1>&2
 fi
@@ -359,5 +362,5 @@ linux:   GOOS=linux
 '
 	readonly staticcheck_matrix
 
-	printf '%s' "$staticcheck_matrix" | run_linter staticcheck --matrix ./...
+	printf '%s' "$staticcheck_matrix" | run_linter staticcheck --matrix $go_project_packages
 fi

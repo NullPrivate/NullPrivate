@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { withTranslation } from 'react-i18next';
 
-// @ts-expect-error FIXME: update react-table
 import ReactTable from 'react-table';
 
 import Card from '../../ui/Card';
@@ -91,7 +90,7 @@ class AutoClients extends Component<AutoClientsProps> {
                     defaultSorted={[
                         {
                             id: 'statistics',
-                            asc: true,
+                            desc: false,
                         },
                     ]}
                     className="-striped -highlight card-table-overflow"

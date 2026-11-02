@@ -1,6 +1,5 @@
 import React from 'react';
 
-// @ts-expect-error FIXME: update react-table
 import ReactTable from 'react-table';
 import round from 'lodash/round';
 import { withTranslation, Trans } from 'react-i18next';

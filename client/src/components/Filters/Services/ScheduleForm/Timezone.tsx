@@ -1,5 +1,5 @@
 import React from 'react';
-import ct from 'countries-and-timezones';
+import { getAllTimezones } from 'countries-and-timezones';
 import { useTranslation } from 'react-i18next';
 
 import { LOCAL_TIMEZONE_VALUE } from '../../../../helpers/constants';
@@ -16,7 +16,7 @@ export const Timezone = ({ timezone, setTimezone }: TimezoneProps) => {
         setTimezone(event.target.value);
     };
 
-    const timezones = ct.getAllTimezones();
+    const timezones = getAllTimezones();
 
     return (
         <div className="schedule__timezone">

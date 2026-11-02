@@ -73,3 +73,7 @@ run_linter() (
 
 	return "$exitcode"
 )
+
+# Go 项目包范围覆盖入口、业务代码与维护脚本。
+go_project_packages=". ./internal/... ./scripts/..."
+readonly go_project_packages

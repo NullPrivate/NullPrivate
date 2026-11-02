@@ -29,6 +29,8 @@ readonly v_flags x_flags
 
 set -e -f -u
 
+. ./scripts/make/helper.sh
+
 if [ "${RACE:-1}" -eq '0' ]; then
 	race_flags='--race=0'
 else
@@ -52,7 +54,7 @@ go_test() {
 		"$timeout_flags" \
 		"$v_flags" \
 		"$x_flags" \
-		./...
+		$go_project_packages
 }
 
 test_reports_dir="${TEST_REPORTS_DIR:-}"
